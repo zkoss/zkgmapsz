@@ -1,0 +1,101 @@
+	--------
+Gmaps 2.0_12 (Work with ZK 3.6.2+)
+* Features:
+  2767037: Support onMapTypeChange event
+  
+* Bugs:
+  2693527: Gmaps: polygon disappear after zoom in
+  2588638: Gmarker doesn't open link in content with Firefox
+  2792012: onMapRightClick of gmapz doens't work
+  2813930: Memory Leak in GMaps Model clear
+  2800271: ginfo dissapears when zoom level changed in gmap
+  2825734: Javascript error. zkau.cleandrop not defined
+  2866238: Gmarker maxzoom should be 19(now is 17 )
+  
+	--------
+Gmaps 2.0_11
+* Features:
+
+* Bugs:
+  2167700: FF3 only. Exception when click on ZK Pet Shop Maps
+
+	--------
+Gmaps 2.0_10
+* Features:
+  2066750: Support lat and lng when open popup menu on Gmaps
+  2075353: Able to get Google Maps bound in server side
+
+* Bugs:
+  2099729: IE Only-Gmaps in Center region not auto resize vertically
+
+	--------
+Gmaps 2.0_9
+* Features:
+  2012173: Gmaps support MapModel and MapitemRenderer
+  2012174: Gmaps support MapModelSet
+  2012175: Gmaps support onMapRightClick
+  2012179: Gmaps support MapMouseEvent
+  2012180: Gmaps support Gscreen
+  2012184: Gmaps support onSelect event
+  2012185: Fine tune open info window to avoide round trip
+  2012188: Gmaps support onMapDrop
+  2012192: Gmarker support drag & drop onto other ZK component
+  2014101: Gmarker suupport onMapDrop
+  2012195: Gmaps support MapModelList
+  2012194: Gmaps support MapModelMap
+  
+* Bugs:
+  2014114: When dragging a gmarker, sometime it stick on the map
+  2015626: Fail to add opened out-of-range grmaker to Gmaps
+  
+* Upgrade Notes:
+  1. org.zkoss.gmaps.event.MapClickEvent is deprecated, now Gmaps
+     is sent the org.zkoss.gmaps.event.MapMouseEvent instead when
+	 onMapClick or onMapDoubleClick.
+  2. To distinguish whether Gmarker is draggable only inside Gmaps,
+     a new method setDraggingEnabled() is added into Gmarker. If
+	 setDraggingEnabled to true, then the Gmarker can be draggable
+	 only inside Gmaps as it was. If setDraggingEnabled to false,
+	 then the Gmarker can be dragged outside the Gmaps and drop
+	 onto other ZK components provided proper draggable property
+	 is set (by calling setDraggable) .
+
+	--------
+Gmaps 2.0_8
+* Features:
+  1856250: Gmarker support minZoom and maxZoom
+  1995769: Gmaps onMapMove event return Bounds
+  
+* Bugs:
+  1894759: Gmaps in non-embedded Window displays incorrectly
+  1995761: Gmaps js error when change gmarker openinfo very fast
+  
+* Upgrade Notes:
+
+	--------
+Gmaps 2.0_7
+* Features:
+  1856230: Gmaps Support more configuration
+  1856240: Gmaps support G_PHYSICAL_MAP
+  1856241: Gmaps support Gpolygon component
+  1856245: Gmaps support more controls
+  1856248: Gmaps support add and remove map type
+  1861261: Gmaps suport Gimage
+
+* Bugs:
+  
+* Upgrade Notes:
+
+	--------
+Gmaps 2.0_6
+* Features:
+  1771417: Gmaps support onMapDoubleClick
+  1771418: Gmaps support Gpolyline
+  1771419: Gmarker support change icon
+  1771421: Gmarker support dragging
+  1771422: Gmarker support onMarkerDrop event
+  
+* Bugs:
+  
+* Upgrade Notes:
+  + Gmaps 2.0_6 works with ZK 3.0.0 and later only.
