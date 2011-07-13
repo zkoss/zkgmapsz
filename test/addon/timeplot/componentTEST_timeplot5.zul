@@ -1,0 +1,146 @@
+<zk xmlns:w="http://www.zkoss.org/2005/zk/client">
+	<style>
+		.timeplot-valueflag-pole {
+			border-left:1px solid blue;
+		}
+	</style>
+	<zscript><![CDATA[
+		import java.util.Calendar;
+		import org.zkforge.timeplot.geometry.*;
+		import org.zkforge.timeplot.data.*;
+		import org.zkforge.timeplot.operator.*;
+		import org.zkforge.timeline.data.OccurEvent;
+		import org.zkoss.zul.*;
+		import java.math.BigDecimal;
+		import org.zkforge.timeplot.event.*;
+		
+		ValueGeometry vg = new DefaultValueGeometry();
+		vg.setGridColor("#000000");
+		TimeGeometry tg = new DefaultTimeGeometry();
+		tg.setAxisLabelsPlacement("bottom");
+		tg.setFormat(TimeGeometry.FORMAT_HOUR,"HH:mm a");
+		tg.setFormat(TimeGeometry.FORMAT_DAY,"yyyy-MM-dd hh:mm:ss");
+		
+		int period = Calendar.MINUTE;
+		
+		ListModelList lml = new ListModelList();
+		Calendar cal = Calendar.getInstance();
+		Date d = cal.getTime();
+		List datas = new ArrayList();
+		for (int i = 0; i < 30; i++) {
+			PlotData pd = new PlotData();
+			cal.add(period, 10);
+			pd.setTime(cal.getTime());
+			//b1.setScale(2);
+			if (i%8 == 0)
+				pd.setValue(null);
+			else pd.setValue(new BigDecimal(Math.random()).round(new java.math.MathContext(3)).floatValue());
+			
+			
+			pd.setFormat("yyyy/MM/dd HH:mm:ss");
+			Map _customValues = new HashMap();
+            _customValues.put("reliability", i);
+			pd.setCustomValues(_customValues );
+			
+			datas.add(pd);
+		}
+		lml.addAll(datas);
+		
+		
+		PlotData pd = new PlotData();
+		cal.setTime(new Date());
+		pd.setTime(cal.getTime());
+		pd.setValue(0.8f);
+		void addData() {
+			lml.add(pd);
+		}
+		void removeData() {
+			lml.remove(pd);
+		}	
+		
+		ListModelList lml2 = new ListModelList();
+		datas = new ArrayList();
+		cal.setTime(d);
+		for (int i = 0; i < 20; i++) {
+			PlotData pd = new PlotData();
+			cal.add(period, 15);
+			pd.setTime(cal.getTime());
+			pd.setValue(new BigDecimal(Math.random()).round(new java.math.MathContext(3)).floatValue());
+			pd.setFormat("HH:mm:ss");
+			Map _customValues = new HashMap();
+            _customValues.put("reliability", i);
+			pd.setCustomValues(_customValues );
+			
+			datas.add(pd);
+		}
+		lml2.addAll(datas);
+	]]></zscript>
+	
+	<grid width="480px">
+		<columns>
+			<column width="40px" label="id" />
+			<column width="300px" label="Date" />
+			<column width="60px" label="value" />
+			<column width="80px" label="reliability" />
+		</columns>
+		<rows>
+			<row>
+				<label value="plot 1" />
+				<label id="date1" />
+				<label id="value1" />
+				<label id="reliability1" />
+			</row>
+			<row>
+				<label value="plot 2" />
+				<label id="date2" />
+				<label id="value2" />
+				<label id="reliability2" />
+			</row>
+		</rows>
+	</grid>
+	<timeplot id="tp" width="1000px" height="300px" hideTimeFlag="true" timeFlagFormat="a -HH:mm:ss-">
+		<plotinfo id="plot1" dataModel="${lml}" timeGeometry="${tg}"
+			valueGeometry="${vg}" lineColor="#B9121B" dotColor="#000000"
+			showValues="true" hideValueFlag="true">
+			
+			<attribute w:name="onOverPlotData"><![CDATA[
+				var format = event.format,
+					time = new Date(event.time);
+				
+				time = format ? zk.fmt.Date.formatDate(time,format) : time.toTimeString();
+				zk.Widget.$('$date1').setValue(time);
+				zk.Widget.$('$value1').setValue(event.value);
+				zk.Widget.$('$reliability1').setValue(event.reliability);
+			]]></attribute>
+		</plotinfo>
+		<plotinfo id="plot2" dataModel="${lml2}"
+			timeGeometry="${tg}" valueGeometry="${vg}" lineColor="#5C832F"
+			dotColor="#000000" showValues="true" hideValueFlag="true" >
+<!--			 <attribute w:name="onOverPlotData"><![CDATA[-->
+<!--				var format = event.format,-->
+<!--					time = new Date(event.time);-->
+<!--				-->
+<!--				time = format ? zk.fmt.Date.formatDate(time,format) : time.toTimeString();-->
+<!--				zk.Widget.$('$date2').setValue(time);-->
+<!--				zk.Widget.$('$value2').setValue(event.value);-->
+<!--				zk.Widget.$('$reliability2').setValue(event.reliability);-->
+<!--	         ]]></attribute>-->
+		</plotinfo>
+	</timeplot>
+	<zscript ><![CDATA[
+		String script = " var format = event.format,"+
+						" time = new Date(event.time);"+
+						"time = format ? zk.fmt.Date.formatDate(time,format) : time.toTimeString();"+
+						"zk.Widget.$('$date2').setValue(time);"+
+						"zk.Widget.$('$value2').setValue(event.value);"+
+						"zk.Widget.$('$reliability2').setValue(event.reliability);";
+		
+						plot2.setWidgetListener("onOverPlotData", script);
+		System.out.println(1);
+	]]></zscript>
+	<button label="addData" onClick="addData()" />
+	<button label="removeData" onClick="removeData()" />
+	<button label="hide or show Time Flag" onClick="tp.hideTimeFlag = !tp.hideTimeFlag;" />
+	<button label="p1 hide or show time flag" onClick="plot1.hideValueFlag = !plot1.hideValueFlag;" />
+	<button label="p2 hide or show time flag" onClick="plot2.hideValueFlag = !plot2.hideValueFlag;" />
+</zk>

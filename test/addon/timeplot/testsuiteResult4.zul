@@ -1,0 +1,9 @@
+<zk>
+	<window id="MetricBrowser_wnd"
+		apply="com.zk.test.timeplot.TestSuiteResultCtrl4">
+		
+		<timeplot id="timeplot" width="100%"
+							height="250px" style="padding:0">
+		</timeplot>
+	</window>
+</zk>

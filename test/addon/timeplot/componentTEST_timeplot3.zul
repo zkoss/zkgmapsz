@@ -1,0 +1,59 @@
+<zk>
+
+	<div width="500px">
+		<zscript><![CDATA[
+			import java.util.Calendar;
+			import org.zkforge.timeplot.geometry.*;
+			import org.zkforge.timeplot.data.*;
+			import org.zkforge.timeplot.operator.*;
+			import org.zkforge.timeline.data.OccurEvent;
+			import org.zkoss.zul.*;
+			
+			ValueGeometry vg = new DefaultValueGeometry();
+			vg.setGridColor("#000000");
+			TimeGeometry tg = new DefaultTimeGeometry();
+			tg.setAxisLabelsPlacement("bottom");
+			
+			ListModelList lml = new ListModelList();
+			List datas = new ArrayList();
+			
+			void addDatas() {
+				int year = 1850;
+				for (int i = 0; i < 5; i++) {
+					PlotData pd = new PlotData();
+					Calendar cal = Calendar.getInstance();
+					cal.set(Calendar.YEAR, year);
+					pd.setTime(cal.getTime());
+					pd.setValue((int) (100000 * Math.random()));
+					datas.add(pd);
+					year += 2;
+				}
+				lml.addAll(datas);
+				plot.setDataModel(lml);
+			}
+			
+			void addSubData() {
+				lml.remove(0);
+				plot.setDataModel(lml);
+			}
+			void addSubData2() {
+				datas.remove(0);
+				plot.setDataModel(new ListModelList(datas));
+			}
+			
+		]]></zscript>
+
+
+		<timeplot width="1000px" height="300px">
+
+			<plotinfo id="plot"
+				valueGeometry="${vg}" timeGeometry="${tg}" lineColor="#5C832F" 
+				dotColor="#000000"  showValues="true"/>
+		</timeplot>
+		<button label="addDatas" onClick="addDatas()" />
+		<button label="addSubData" onClick="addSubData()" />
+		<button label="addSubData2" onClick="addSubData2()" />
+		
+	</div>
+
+</zk>

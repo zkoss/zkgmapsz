@@ -1,0 +1,51 @@
+<zk>
+<portallayout maximizedMode="whole">
+	<portalchildren style="padding: 5px" width="30%">
+		<panel height="300px" title="Google Tools" border="normal" collapsible="true" closable="true" maximizable="true" style="margin-bottom:10px">
+			<panelchildren>
+					<window title="11111">     
+					        <div apply="demo.TopologyPortlet4" >
+					        <grid >
+							<columns>
+								<column width="40px" label="id" />
+								<column width="300px" label="Date" />
+								<column width="60px" label="value" />
+								<column width="80px" label="reliability" />
+							</columns>
+							<rows>
+								<row>
+									<label id="plot11" />
+									<label id="date1" />
+									<label id="value1" />
+									<label id="reliability1" />
+									
+								</row>
+								<!-- <row>
+									<label value="plot 2" />
+									<label id="date2" />
+									<label id="value2" />
+									<label id="reliability2" />
+								</row> -->
+							</rows>
+						</grid>
+						
+					        
+					        <button id="btn" label="show"/>
+					        <div id="div"/>
+					        
+					        </div>
+					</window>
+			</panelchildren>
+		</panel>
+		<panel height="300px" title="LabPixies Clock" border="normal" collapsible="true" closable="true" maximizable="true" style="margin-bottom:10px">
+			<panelchildren>
+				<label>test</label>
+			</panelchildren>
+		</panel>
+		
+	</portalchildren>
+	
+	
+</portallayout>      
+</zk>
+

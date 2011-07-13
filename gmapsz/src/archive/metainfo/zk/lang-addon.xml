@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- lang-addon.xml
+	Purpose:
+		
+	Description:
+		
+	History:
+		Thu Oct 12 14:29:49     2006, Created by henrichen
+
+Copyright (C) 2006 Potix Corporation. All Rights Reserved.
+-->
+
+<language-addon>
+	<!-- The name of this addon. It must be unique -->
+	<addon-name>gmapsz</addon-name>
+	<!-- Specifies what other addon this depends
+	<depends></depends>
+	-->
+
+	<version>
+		<version-class>org.zkoss.gmaps.Version</version-class>
+		<version-uid>2.0.52-FL</version-uid>
+		<zk-version>5.0.0</zk-version><!-- or later -->
+	</version>
+
+	<!-- Which language this addon will be added to -->
+	<language-name>xul/html</language-name>
+
+	<!-- [Optional, Multiple] Defines the version of a JavaScript module,
+		such that, if the version is changed, the browser will reload them.
+		The name is either a package's name or a portion of it.
+	-->
+	<javascript-module name="gmaps" version="2.0.52-FL"/>
+
+	<zscript>
+	import org.zkoss.gmaps.*;
+	import org.zkoss.gmaps.event.*;
+	</zscript>
+ 
+	<component>
+		<component-name>ginfo</component-name>
+		<component-class>org.zkoss.gmaps.Ginfo</component-class>
+		<widget-class>gmaps.Ginfo</widget-class>
+		<text-as>content</text-as>
+	</component>
+
+	<component>
+		<component-name>gmaps</component-name>
+		<component-class>org.zkoss.gmaps.Gmaps</component-class>
+		<widget-class>gmaps.Gmaps</widget-class>
+	</component>
+	
+	<component>
+		<component-name>gmarker</component-name>
+		<component-class>org.zkoss.gmaps.Gmarker</component-class>
+		<widget-class>gmaps.Gmarker</widget-class>
+		<text-as>content</text-as>
+	</component>
+
+	<component>
+		<component-name>gpolyline</component-name>
+		<component-class>org.zkoss.gmaps.Gpolyline</component-class>
+		<widget-class>gmaps.Gpolyline</widget-class>
+	</component>
+
+	<component>
+		<component-name>gpolygon</component-name>
+		<component-class>org.zkoss.gmaps.Gpolygon</component-class>
+		<widget-class>gmaps.Gpolygon</widget-class>
+	</component>
+
+	<component>
+		<component-name>gimage</component-name>
+		<component-class>org.zkoss.gmaps.Gimage</component-class>
+		<widget-class>gmaps.Gimage</widget-class>
+	</component>
+
+	<component>
+		<component-name>gscreen</component-name>
+		<component-class>org.zkoss.gmaps.Gscreen</component-class>
+		<widget-class>gmaps.Gscreen</widget-class>
+	</component>
+</language-addon>

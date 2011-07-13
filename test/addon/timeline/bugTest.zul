@@ -1,0 +1,27 @@
+<zk>
+	<zscript deferred="true"><![CDATA[
+		import org.zkforge.timeline.*;
+		
+		public void createTimeline(){
+			Timeline timeline = new Timeline();
+			Bandinfo b1=new Bandinfo();
+			Bandinfo b2=new Bandinfo();
+			b1.setId("b1"); //$NON-NLS-1$
+			b1.setIntervalUnit("day"); //$NON-NLS-1$
+			b1.setWidth("70%"); //$NON-NLS-1$
+			b1.setBubbleVisible(true);
+			
+			b2.setIntervalUnit("month"); //$NON-NLS-1$
+			b2.setWidth("30%"); //$NON-NLS-1$
+			b2.setSyncWith(b1.getId());
+			b2.setBubbleVisible(true);
+			
+			timeline.appendChild(b1);
+			timeline.appendChild(b2);
+			
+			timeline.setParent(div);
+		}
+	]]></zscript>
+	<button label="create Timeline" onClick="createTimeline();"/>
+<div id="div"></div>
+</zk>
