@@ -60,7 +60,7 @@ public class Gmarker extends Ginfo {
 	private int _iconDragCrossAnchorY = -100;
 	private int _maxzoom = ZOOM_LIMIT; //visible zoom level default to 19
 	private int _minzoom = 0; //visible zoom level default to 0
-	private boolean _draggingEnabled = true;
+	private boolean _draggingEnabled;
 
 	public Gmarker() {
 	}
