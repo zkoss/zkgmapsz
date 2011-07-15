@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.zkoss.zkforge</groupId>
   <artifactId>gmapsz</artifactId>
-  <version>2.0.52.FL.20110504</version>
+  <version>3.0.0.Beta</version>
   <packaging>jar</packaging>
   <properties>
 	<zk.version>5.0.7.FL.20110304</zk.version>

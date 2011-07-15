@@ -1,4 +1,15 @@
 	--------
+Gmaps 3.0.0-Beta (work with ZK 5.0+ only)
+* Features:
+
+* Bugs:
+
+* Upgrade Notes:
+  + Migrate to Google Maps API v3
+  + Currently not support drag between map items and ZK components
+  + Currently not support GScreen and Google Bar
+
+  --------
 Gmaps 2.0.52 (work with ZK 5.0+ only)
 * Features:
 
