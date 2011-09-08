@@ -624,7 +624,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		// wait until markermanager loaded
 		var opts0 = [],
 			opts1 = [],
-			wgt = this
+			wgt = this, // B50-ZK-405 - First gmarker fails when there are more than one gmap in a page
 			maps = this._gmaps;
 		opts0['condition'] = function() {return window.MarkerManager};
 		opts0['callback'] = function() {
