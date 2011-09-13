@@ -624,7 +624,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		// wait until markermanager loaded
 		var opts0 = [],
 			opts1 = [],
-			wgt = this, // B50-ZK-405 - First gmarker fails when there are more than one gmap in a page
+			wgt = this, // Issue 8: First gmarker fails when there are more than one gmap in a page
 			maps = this._gmaps;
 		opts0['condition'] = function() {return window.MarkerManager};
 		opts0['callback'] = function() {
@@ -956,5 +956,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 });
 //register to be called when window.onunload. 
 //jq(function(...)) tells to do this until html document is ready.
-jq(function() {jq(window).unload(function(){if (GUnload) GUnload();})});
+jq(function() {jq(window).unload(function(){/** 
+ 	* Issue 9: Javascript Error: GUnload is not defined
+ 	* TODO unload maps if unload API avaliable*/})});
 })();
