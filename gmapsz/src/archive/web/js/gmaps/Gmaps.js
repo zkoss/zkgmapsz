@@ -56,8 +56,18 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	_doubleClickZoom: true,
 	_scrollWheelZoom: true,
 	_enableDragging: true,
+	_version: '3',
 	
 	$define: {
+		/** 
+		 * Returns the selected version of google map API v3.
+		 * @return String
+		 */
+		/** 
+		 * Set the selected version of google map API v3.
+		 * @param String version.
+		 */
+		version: null,
 		/** 
 		 * Returns the center point of this Gmaps.
 		 * @return double[]
@@ -588,7 +598,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 						            '&language=', this._language? this._language : '',
 						            '&region=', this._baseDomain? this._baseDomain : '',
 						            '&libraries=geometry'].join('');
-						google.load('maps','3',
+						google.load('maps', this._version,
 								{
 									other_params: opts,
 									callback: function(){// load marker manager after map api loaded

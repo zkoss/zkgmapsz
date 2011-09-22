@@ -94,6 +94,8 @@ public class Gmaps extends XulElement {
 	private Map _dataMap = new HashMap(64); //data object -> Mapitem
 	private Component _selected;
 
+	private String _version = "3";
+
 	/** Sets the center of the Google Maps.
 	 * @param lat latitude of the Google Maps center
 	 * @param lng longitude of the Google Maps center
@@ -659,6 +661,25 @@ public class Gmaps extends XulElement {
 		}
 	}
 
+	/** 
+	 * Returns the selected version of google map API v3.
+	 * @return String
+	 */
+	public String getVersion() {
+		return _version;
+	}
+
+	/** 
+	 * Set the selected version of google map API v3.
+	 * @param String version.
+	 */
+	public void setVersion(String version) {
+		if (!Objects.equals(_version, version)) {
+			this._version = version;
+			smartUpdate("language", version);
+		}
+	}
+
 	/** Open the specified Ginfo or Gmarker. The specified Ginfo must be child of this Gmaps.
 	 * @param info the specified Ginfo or Gmarker.
      */
@@ -1065,6 +1086,8 @@ public class Gmaps extends XulElement {
 			renderer.render("normal", isNormal());
 		if (_sensor)
 			renderer.render("sensor", true);
+		if (!"3".equals(_version))
+			renderer.render("version", _version);
 		if (!Strings.isBlank(_baseDomain))
 			renderer.render("baseDomain", _baseDomain);
 		if (!Strings.isBlank(_language))
