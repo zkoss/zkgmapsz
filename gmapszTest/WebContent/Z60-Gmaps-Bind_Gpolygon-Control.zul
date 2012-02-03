@@ -1,0 +1,15 @@
+<zk>
+	<hbox>
+		id: <label value="@load(vm.polygonvm.id)" />
+		points: <textbox rows="5" width="200px" value="@bind(vm.polygonvm.points)" />
+	</hbox>
+	<checkbox checked="@bind(vm.polygonvm.outline)" label="outline" /><div></div>
+	<checkbox checked="@bind(vm.polygonvm.fill)" label="fill" />
+	<hbox>
+		outline color: <textbox value="@bind(vm.polygonvm.color)" />
+		outline weight: <intbox value="@bind(vm.polygonvm.weight)" />
+		outline opacity: <intbox value="@bind(vm.polygonvm.opacity)" />
+		fill color: <textbox value="@bind(vm.polygonvm.fillColor)" />
+		fill opacity: <intbox value="@bind(vm.polygonvm.fillOpacity)" /> 
+	</hbox>
+</zk>

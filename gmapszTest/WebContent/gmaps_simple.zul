@@ -1,0 +1,689 @@
+<zk>
+	<zscript>
+		public void getMarkerContent() {
+			markerContent.setValue(firstMarker.getContent());
+		}
+		public void updateSelectedItem() {
+			if(theMap.getSelectedItem() != null)
+				selItem.setValue(theMap.getSelectedItem().toString());
+		}
+	</zscript>
+	<hbox>
+		<!-- map types: normal / satellite / hybrid / physical /  -->
+		<gmaps id="theMap" onSelect="updateSelectedItem()"
+			language="ja" baseDomain="GB"
+			width="500px" height="500px" lat="37.42838786" lng="-122.13998795"
+			zoom="11" mapType="normal"
+			normal="false" hybrid="false" physical="true" sensor="true"
+			doubleClickZoom="false" enableDragging="true" scrollWheelZoom="false"
+			showZoomCtrl="false" showTypeCtrl="false" showOverviewCtrl="true" showScaleCtrl="true">
+			<attribute name="onMapMove">
+				mapNelat.setValue(event.getNeLat().toString());
+				mapNelng.setValue(event.getNeLng().toString());
+				mapSwlat.setValue(event.getSwLat().toString());
+				mapSwlng.setValue(event.getSwLng().toString());
+				mapLat.setValue(event.getLat().toString());
+				mapLng.setValue(event.getLng().toString());
+			</attribute>
+			<attribute name="onMapClick">
+				mmeName.setValue(event.getName());
+				mmeKeys.setValue(event.getKeys().toString());
+				mmeRef.setValue(event.getReference().toString());
+				mmeLat.setValue(event.getLat().toString());
+				mmeLng.setValue(event.getLng().toString());
+				mmeX.setValue(event.getX().toString());
+				mmeY.setValue(event.getY().toString());
+				mmePageX.setValue(event.getPageX().toString());
+				mmePageY.setValue(event.getPageY().toString());
+				mmeTarget.setValue(event.getTarget().toString());
+				if (event.getReference() instanceof org.zkoss.gmaps.Gmarker) {
+					event.getReference().setOpen(true);
+				}
+			</attribute>
+			<attribute name="onMapDoubleClick">
+				mmeName.setValue(event.getName());
+				mmeKeys.setValue(event.getKeys().toString());
+				mmeRef.setValue(event.getReference().toString());
+				mmeLat.setValue(event.getLat().toString());
+				mmeLng.setValue(event.getLng().toString());
+				mmeX.setValue(event.getX().toString());
+				mmeY.setValue(event.getY().toString());
+				mmePageX.setValue(event.getPageX().toString());
+				mmePageY.setValue(event.getPageY().toString());
+				mmeTarget.setValue(event.getTarget().toString());
+			</attribute>
+			<attribute name="onMapRightClick">
+				mmeName.setValue(event.getName());
+				mmeKeys.setValue(event.getKeys().toString());
+				mmeRef.setValue(event.getReference().toString());
+				mmeLat.setValue(event.getLat().toString());
+				mmeLng.setValue(event.getLng().toString());
+				mmeX.setValue(event.getX().toString());
+				mmeY.setValue(event.getY().toString());
+				mmePageX.setValue(event.getPageX().toString());
+				mmePageY.setValue(event.getPageY().toString());
+				mmeTarget.setValue(event.getTarget().toString());
+			</attribute>
+			<attribute name="onMapDrop">
+				momdName.setValue(event.getName());
+				momdKeys.setValue(event.getKeys().toString());
+				momdLat.setValue(event.getLat().toString());
+				momdLng.setValue(event.getLng().toString());
+				momdX.setValue(event.getX().toString());
+				momdY.setValue(event.getY().toString());
+				momdPageX.setValue(event.getPageX().toString());
+				momdPageY.setValue(event.getPageY().toString());
+				momdTarget.setValue(event.getTarget().toString());
+			</attribute>
+			<attribute name="onMapZoom">
+				mzeName.setValue(event.getName());
+				mzeZoom.setValue(event.getZoom().toString());
+				mzeTarget.setValue(event.getTarget().toString());
+			</attribute>
+			<attribute name="onInfoChange">
+				oiceName.setValue(event.getName());
+				oiceTarget.setValue(event.getTarget().toString());
+			</attribute>
+			<gmarker id="firstMarker" lat="23" lng="121" minzoom="9" maxzoom="11"
+				iconAnchorX="0" iconAnchorY="0" open="true"
+				iconHeight="50" iconWidth="50" iconShadowHeight="80" iconShadowWidth="80"
+				iconImage="/img/Briefcase-16x16.png"
+				iconShadow="/img/QuestionmarkButton-16x16.png"
+				content="test test one">
+				<attribute name="onMapDrop">
+					omdName.setValue(event.getName());
+					omdKeys.setValue(event.getKeys().toString());
+					omdLat.setValue(event.getLat().toString());
+					omdLng.setValue(event.getLng().toString());
+					omdX.setValue(event.getX().toString());
+					omdY.setValue(event.getY().toString());
+					omdPageX.setValue(event.getPageX().toString());
+					omdPageY.setValue(event.getPageY().toString());
+					omdTarget.setValue(event.getTarget().toString());
+				</attribute>
+			</gmarker>
+			<gmarker id="secondMarker" lat="23.1" lng="121.1" content="test test second marker"
+				draggingEnabled="false">
+				<attribute name="onMapDrop">
+					omdName.setValue(event.getName());
+					omdKeys.setValue(event.getKeys().toString());
+					omdLat.setValue(event.getLat().toString());
+					omdLng.setValue(event.getLng().toString());
+					omdX.setValue(event.getX().toString());
+					omdY.setValue(event.getY().toString());
+					omdPageX.setValue(event.getPageX().toString());
+					omdPageY.setValue(event.getPageY().toString());
+					omdTarget.setValue(event.getTarget().toString());
+				</attribute>
+			</gmarker>
+			<gpolyline id="firstPolyline" color="#FF0000" onClick=""
+				opacity="100" weight="1"
+				points="37.42838786,-122.13998795,1,37.43561240,-122.13277816,1,37.42416187,-122.11441040,1,
+				37.42157162,-122.12007522,1,37.41734524,-122.12316513,1,37.42838786,-122.13998795,1"/>
+			<gpolygon id="firstPolygon" color="#FF0000" onClick=""
+				opacity="20" weight="1" fill="false" outline="true" fillColor="#336633" fillOpacity="20"
+				points="37.43838786,-122.14998795,3,37.44561240,-122.14277816,3,37.43416187,-122.12441040,3,
+				37.43157162,-122.13007522,3,37.42734524,-122.13316513,3"/>
+			<ginfo id="firstInfo" lat="37.42838786" lng="-122.13998795">
+				<attribute name="content"><![CDATA[
+					Hello, <a href="http://www.zkoss.org">ZK</a>.
+					]]>
+				</attribute>
+			</ginfo>
+			<gimage id="firstImage" src="/img/newIcon.png"
+				swlat="37.38215478" swlng="-122.09273453" nelat="37.44033195" nelng="-122.03191986"/>
+		</gmaps>
+		<!-- Controls of Gmap -->
+		<vbox>
+			<label value="select controls target" style="color: red;"/>
+			<hbox>
+				<button label="to maps control">
+					<attribute name="onClick">
+						mapsControl.setVisible(true);
+						markersControl.setVisible(false);
+						polylinesControl.setVisible(false);
+						polygonsControl.setVisible(false);
+						infosControl.setVisible(false);
+						imagesControl.setVisible(false);
+					</attribute>
+				</button>
+				<button label="to marker control">
+					<attribute name="onClick">
+						mapsControl.setVisible(false);
+						markersControl.setVisible(true);
+						polylinesControl.setVisible(false);
+						polygonsControl.setVisible(false);
+						infosControl.setVisible(false);
+						imagesControl.setVisible(false);
+					</attribute>
+				</button>
+				<button label="to polyline control">
+					<attribute name="onClick">
+						mapsControl.setVisible(false);
+						markersControl.setVisible(false);
+						polylinesControl.setVisible(true);
+						polygonsControl.setVisible(false);
+						infosControl.setVisible(false);
+						imagesControl.setVisible(false);
+					</attribute>
+				</button>
+				<button label="to polygon control">
+					<attribute name="onClick">
+						mapsControl.setVisible(false);
+						markersControl.setVisible(false);
+						polylinesControl.setVisible(false);
+						polygonsControl.setVisible(true);
+						infosControl.setVisible(false);
+						imagesControl.setVisible(false);
+					</attribute>
+				</button>
+				<button label="to info control">
+					<attribute name="onClick">
+						mapsControl.setVisible(false);
+						markersControl.setVisible(false);
+						polylinesControl.setVisible(false);
+						polygonsControl.setVisible(false);
+						infosControl.setVisible(true);
+						imagesControl.setVisible(false);
+					</attribute>
+				</button>
+				<button label="to image control">
+					<attribute name="onClick">
+						mapsControl.setVisible(false);
+						markersControl.setVisible(false);
+						polylinesControl.setVisible(false);
+						polygonsControl.setVisible(false);
+						infosControl.setVisible(false);
+						imagesControl.setVisible(true);
+					</attribute>
+				</button>
+			</hbox>
+			<vbox>
+				<div height="50px"/>
+			</vbox>
+			<vbox id="mapsControl">
+			<hbox>
+				Change map type: 
+						<radiogroup
+							onCheck='theMap.setMapType(self.selectedItem.value)'>
+							<hlayout>
+								<radio label="normal" value="normal"/>
+								<radio label="satellite" value="satellite"/>
+								<radio label="hybrid" value="hybrid" />
+								<radio label="physical" value="physical" />
+							</hlayout>
+						</radiogroup>
+						<button label="pan to marker">
+							<attribute name="onClick">
+								theMap.panTo(23.0,121.0);
+							</attribute>
+						</button>
+						<button label="pan to polyline">
+							<attribute name="onClick">
+								theMap.panTo(37.42838786, -122.13998795);
+							</attribute>
+						</button>
+			</hbox>
+			<vbox>
+				<hbox>
+					<button label="setLat">
+						<attribute name="onClick">
+							theMap.setLat(Double.parseDouble(latInp.getValue()));
+						</attribute>
+					</button>
+					<button label="setLng">
+						<attribute name="onClick">
+							theMap.setLng(Double.parseDouble(lngInp.getValue()));
+						</attribute>
+					</button>
+					<button label="setCenter">
+						<attribute name="onClick">
+							theMap.setCenter(Double.parseDouble(latInp.getValue()), Double.parseDouble(lngInp.getValue()));
+						</attribute>
+					</button>
+					<textbox id="latInp" />
+					<textbox id="lngInp" />
+				</hbox>
+				<hbox>
+					<button label="set zoom">
+						<attribute name="onClick">
+							theMap.setZoom(Integer.parseInt(zoomInp.getValue()));
+						</attribute>
+					</button>
+					<textbox id="zoomInp" />
+				</hbox>
+			</vbox>
+			<vbox>
+				Bounds Info:
+				<hbox>
+					NE Lat: <textbox id="mapNelat" />
+					NE Lng: <textbox id="mapNelng" />
+				</hbox>
+				<hbox>
+					SW Lat: <textbox id="mapSwlat" />
+					SW Lng: <textbox id="mapSwlng" />
+				</hbox>
+				<hbox>
+					Center Lat <textbox id="mapLat" />
+					Center Lng: <textbox id="mapLng" />
+				</hbox>
+				Selected Item:
+				<hbox>
+					<textbox id="selItem" />
+				</hbox>
+			</vbox>
+			<hbox>
+				Controls
+				<checkbox label="doubleclick zoom">
+					<attribute name="onCheck">
+						theMap.setDoubleClickZoom(self.checked);
+					</attribute>
+				</checkbox>
+				<checkbox label="scroll wheel zoom">
+					<attribute name="onCheck">
+						theMap.setScrollWheelZoom(self.checked);
+					</attribute>
+				</checkbox>
+				<checkbox label="dragable" checked="true">
+					<attribute name="onCheck">
+						theMap.setEnableDragging(self.checked);
+					</attribute>
+				</checkbox>
+			</hbox>
+			<hbox>
+				_________
+				<checkbox label="zoom control">
+					<attribute name="onCheck">
+						theMap.setShowZoomCtrl(self.checked);
+					</attribute>
+				</checkbox>
+				<checkbox label="scale control" checked="true">
+					<attribute name="onCheck">
+						theMap.setShowScaleCtrl(self.checked);
+					</attribute>
+				</checkbox>
+				<checkbox label="overview control" checked="true">
+					<attribute name="onCheck">
+						theMap.setShowOverviewCtrl(self.checked);
+					</attribute>
+				</checkbox>
+				<checkbox label="type control">
+					<attribute name="onCheck">
+						theMap.setShowTypeCtrl(self.checked);
+					</attribute>
+				</checkbox>
+			</hbox>
+			<hbox>
+				Add / Remove Map Types
+				<checkbox label="normal">
+					<attribute name="onCheck">
+						theMap.setNormal(self.checked);
+					</attribute>
+				</checkbox>
+				<checkbox label="hybrid">
+					<attribute name="onCheck">
+						theMap.setHybrid(self.checked);
+					</attribute>
+				</checkbox>
+				<checkbox label="satellite">
+					<attribute name="onCheck">
+						theMap.setSatellite(self.checked);
+					</attribute>
+				</checkbox>
+				<checkbox label="physical" checked="true">
+					<attribute name="onCheck">
+						theMap.setPhysical(self.checked);
+					</attribute>
+				</checkbox>
+			</hbox>
+			<vbox>
+				MapMouseEvent Info:
+				<hbox>
+					Event Name: <textbox id="mmeName" />
+					Keys: <textbox id="mmeKeys" />
+					Reference: <textbox id="mmeRef" />
+					Lat: <textbox id="mmeLat" />
+					Lng: <textbox id="mmeLng" />
+				</hbox>
+				<hbox>
+					X: <textbox id="mmeX" />
+					Y: <textbox id="mmeY" />
+					PageX: <textbox id="mmePageX" />
+					PageY: <textbox id="mmePageY" />
+					Target: <textbox id="mmeTarget" />
+				</hbox>
+			</vbox>
+			<vbox>
+				MapDropEvent Info:
+				<hbox>
+					Event Name: <textbox id="momdName" />
+					Keys: <textbox id="momdKeys" />
+					Droped Lat: <textbox id="momdLat" />
+					Droped Lng: <textbox id="momdLng" />
+				</hbox>
+				<hbox>
+					X: <textbox id="momdX" />
+					Y: <textbox id="momdY" />
+					PageX: <textbox id="momdPageX" />
+					PageY: <textbox id="momdPageY" />
+					Target: <textbox id="momdTarget" />
+				</hbox>
+			</vbox>
+			<vbox>
+				MapZoomEvent Info:
+				<hbox>
+					Event Name: <textbox id="mzeName" />
+					Zoom: <textbox id="mzeZoom" />
+					Target: <textbox id="mzeTarget" />
+				</hbox>
+			</vbox>
+			<vbox>
+				OnInfoChange Info:
+				<hbox>
+					Event Name: <textbox id="oiceName" />
+					Target: <textbox id="oiceTarget" />
+				</hbox>
+			</vbox>
+		</vbox>
+		<!-- controls of gmarker -->
+		<vbox id="markersControl" visible="false">
+			<hbox>
+				<button label="removeMarker">
+					<attribute name="onClick">
+						theMap.removeChild(firstMarker);
+					</attribute>
+				</button>
+				<button label="setLat">
+					<attribute name="onClick">
+						firstMarker.setLat(Double.parseDouble(markerLatInp.getValue()));
+					</attribute>
+				</button>
+				<button label="setLng">
+					<attribute name="onClick">
+						firstMarker.setLng(Double.parseDouble(markerLngInp.getValue()));
+					</attribute>
+				</button>
+				<button label="setAnchor">
+					<attribute name="onClick">
+						firstMarker.setAnchor(Double.parseDouble(markerLatInp.getValue()), Double.parseDouble(markerLngInp.getValue()));
+					</attribute>
+				</button>
+				<textbox id="markerLatInp" value="" />
+				<textbox id="markerLngInp" value="" />
+			</hbox>
+			<hbox>
+				<button label="set max zoom">
+					<attribute name="onClick">
+						firstMarker.setMaxzoom(Integer.parseInt(markerZoomInp.getValue()));
+					</attribute>
+				</button>
+				<button label="set min zoom">
+					<attribute name="onClick">
+						firstMarker.setMinzoom(Integer.parseInt(markerZoomInp.getValue()));
+					</attribute>
+				</button>
+				<textbox id="markerZoomInp" value="" />
+			</hbox>
+			<hbox>
+				<button label="set icon width">
+					<attribute name="onClick">
+						firstMarker.setIconWidth(80);
+					</attribute>
+				</button>
+				<button label="set icon height">
+					<attribute name="onClick">
+						firstMarker.setIconHeight(80);
+					</attribute>
+				</button>
+				<button label="set icon anchor X">
+					<attribute name="onClick">
+						firstMarker.setIconAnchorX(25);
+					</attribute>
+				</button>
+				<button label="set icon anchor Y">
+					<attribute name="onClick">
+						firstMarker.setIconAnchorY(50);
+					</attribute>
+				</button>
+				<button label="set icon image">
+					<attribute name="onClick">
+						firstMarker.setIconImage("/img/QuestionmarkButton-16x16.png");
+					</attribute>
+				</button>
+				<button label="set icon shadow width">
+					<attribute name="onClick">
+						firstMarker.setIconShadowWidth(100);
+					</attribute>
+				</button>
+				<button label="set icon shadow height">
+					<attribute name="onClick">
+						firstMarker.setIconShadowHeight(100);
+					</attribute>
+				</button>
+				<button label="set icon shadow">
+					<attribute name="onClick">
+						firstMarker.setIconShadow("/img/Briefcase-16x16.png");
+					</attribute>
+				</button>
+			</hbox>
+			<hbox>
+				<button label="set content">
+					<attribute name="onClick">
+						firstMarker.setContent("test test two");
+						markerContent.setValue(firstMarker.getContent());
+					</attribute>
+				</button>
+				<button label="set content two">
+					<attribute name="onClick">
+						firstMarker.setContent("test test three");
+						markerContent.setValue(firstMarker.getContent());
+					</attribute>
+				</button>
+				<button label="open info">
+					<attribute name="onClick">
+						firstMarker.setOpen(true);
+					</attribute>
+				</button>
+				<button label="close info">
+					<attribute name="onClick">
+						firstMarker.setOpen(false);
+					</attribute>
+				</button>
+				<button label="open second info">
+					<attribute name="onClick">
+						secondMarker.setOpen(true);
+					</attribute>
+				</button>
+				<button label="close second info">
+					<attribute name="onClick">
+						secondMarker.setOpen(false);
+					</attribute>
+				</button>
+				<textbox id="markerContent" value="" onCreate="getMarkerContent()" />
+			</hbox>
+			<hbox>
+				<checkbox label="set custom marker draggable" checked="true">
+					<attribute name="onCheck">
+						firstMarker.setDraggingEnabled(self.checked);
+					</attribute>
+				</checkbox>
+				<checkbox label="set traditional marker draggable">
+					<attribute name="onCheck">
+						secondMarker.setDraggingEnabled(self.checked);
+					</attribute>
+				</checkbox>
+			</hbox>
+			<vbox>
+				MapDropEvent Info:
+				<hbox>
+					Event Name: <textbox id="omdName" />
+					Keys: <textbox id="omdKeys" />
+					Droped Lat: <textbox id="omdLat" />
+					Droped Lng: <textbox id="omdLng" />
+				</hbox>
+				<hbox>
+					X: <textbox id="omdX" />
+					Y: <textbox id="omdY" />
+					PageX: <textbox id="omdPageX" />
+					PageY: <textbox id="omdPageY" />
+					Target: <textbox id="omdTarget" />
+				</hbox>
+			</vbox>
+		</vbox>
+		<!-- controls of polyline -->
+		<vbox id="polylinesControl" visible="false">
+			<button label="add point">
+				<attribute name="onClick">
+					firstPolyline.addPoint(37.43438786,-122.14598795,1);
+				</attribute>
+			</button>
+			<button label="add points">
+				<attribute name="onClick">
+					firstPolyline.setPoints("37.43138786,-122.14298795,1,37.43861240,-122.13577816,1,37.42716187,-122.11741040,1,37.42457162,-122.12307522,1,37.42034524,-122.12516513,1,37.43138786,-122.14298795,1");
+				</attribute>
+			</button>
+			<button label="change color">
+				<attribute name="onClick">
+					firstPolyline.setColor("#00FF00");
+				</attribute>
+			</button>
+			<button label="change opacity">
+				<attribute name="onClick">
+					firstPolyline.setOpacity(70);
+				</attribute>
+			</button>
+			<button label="change weight">
+				<attribute name="onClick">
+					firstPolyline.setWeight(5);
+				</attribute>
+			</button>
+			<checkbox label="show" checked="true">
+				<attribute name="onCheck">
+					if (!self.checked)
+						firstPolyline.setOpacity(0);
+					else
+						firstPolyline.setOpacity(100);
+				</attribute>
+			</checkbox>
+		</vbox>
+		<!-- controls of polygon -->
+		<vbox id="polygonsControl" visible="false">
+			<button label="add point">
+				<attribute name="onClick">
+					firstPolygon.addPoint(37.45838786,-122.16998795,3);
+				</attribute>
+			</button>
+			<button label="add points">
+				<attribute name="onClick">
+					firstPolygon.setPoints("37.44838786,-122.15998795,3,37.45561240,-122.15277816,3,37.44416187,-122.13441040,3,37.44157162,-122.14007522,3,37.43734524,-122.14316513,3");
+				</attribute>
+			</button>
+			<button label="change color">
+				<attribute name="onClick">
+					firstPolygon.setColor("#00FF00");
+				</attribute>
+			</button>
+			<button label="change opacity">
+				<attribute name="onClick">
+					firstPolygon.setOpacity(70);
+				</attribute>
+			</button>
+			<button label="change weight">
+				<attribute name="onClick">
+					firstPolygon.setWeight(5);
+				</attribute>
+			</button>
+			<button label="change fillColor">
+				<attribute name="onClick">
+					firstPolygon.setFillColor("#663366");
+				</attribute>
+			</button>
+			<button label="change fillOpacity">
+				<attribute name="onClick">
+					firstPolygon.setFillOpacity(70);
+				</attribute>
+			</button>
+			<checkbox label="set outline" checked="true">
+				<attribute name="onCheck">
+					firstPolygon.setOutline(self.checked);
+				</attribute>
+			</checkbox>
+			<checkbox label="set fill">
+				<attribute name="onCheck">
+					firstPolygon.setFill(self.checked);
+				</attribute>
+			</checkbox>
+		</vbox>
+		<!-- controls of info -->
+		<vbox id="infosControl" visible="false">
+			<button label="change info">
+				<attribute name="onClick">
+					firstInfo.setContent("changed info");
+				</attribute>
+			</button>
+			<button label="change lat">
+				<attribute name="onClick">
+					firstInfo.setLat(37.43838786);
+				</attribute>
+			</button>
+			<button label="change lng">
+				<attribute name="onClick">
+					firstInfo.setLng(-122.14998795);
+				</attribute>
+			</button>
+			<button label="change anchor">
+				<attribute name="onClick">
+					firstInfo.setAnchor(37.443838786, -122.15998795);
+				</attribute>
+			</button>
+			<checkbox label="open info">
+				<attribute name="onCheck">
+					firstInfo.setOpen(self.checked);
+				</attribute>
+			</checkbox>
+		</vbox>
+		<!-- controls of image -->
+		<vbox id="imagesControl" visible="false">
+			<button label="change src">
+				<attribute name="onClick">
+					firstImage.setSrc("/img/QuestionmarkButton-16x16.png");
+				</attribute>
+			</button>
+			<button label="change image content">
+				<attribute name="onClick">
+					firstImage.setContent(new org.zkoss.image.AImage(new java.io.File("WebContent/img/Briefcase-16x16.png")));
+				</attribute>
+			</button>
+			<button label="change swlat">
+				<attribute name="onClick">
+					firstImage.setSwlat(37.36215478);
+				</attribute>
+			</button>
+			<button label="change swlng">
+				<attribute name="onClick">
+					firstImage.setSwlng(-122.07273453);
+				</attribute>
+			</button>
+			<button label="change nelat">
+				<attribute name="onClick">
+					firstImage.setNelat(37.42033195);
+				</attribute>
+			</button>
+			<button label="change nelng">
+				<attribute name="onClick">
+					firstImage.setNelng(-122.01191986);
+				</attribute>
+			</button>
+			<button label="reset">
+				<attribute name="onClick">
+					firstImage.setSrc("/img/newIcon.png");
+					firstImage.setSwlat(37.38215478);
+					firstImage.setSwlng(-122.09273453);
+					firstImage.setNelat(37.44033195);
+					firstImage.setNelng(-122.03191986);
+				</attribute>
+			</button>
+		</vbox>
+		</vbox>
+	</hbox>
+</zk>
