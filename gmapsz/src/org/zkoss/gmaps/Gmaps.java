@@ -688,9 +688,7 @@ public class Gmaps extends XulElement {
 	        if (info.getParent() != this) {
 	            throw new UiException("The to be opened Ginfo or Gmarker must be child of this Gmaps!");
 	        }
-	        if (_info != null) {
-	        	_info.setOpenByClient(false); //closeInfo() <-- no need to fire the command
-	        }
+	        // do not need close old info
 	        _info = info;
 	        smartUpdate("openInfo_", info.getUuid());
         } else {

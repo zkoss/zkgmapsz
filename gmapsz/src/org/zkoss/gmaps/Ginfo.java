@@ -113,15 +113,17 @@ public class Ginfo extends XulElement implements Mapitem {
 	
 	/** Open this Info */
 	public void setOpen(boolean b) {
-		Gmaps gmaps = (Gmaps) getParent();
-		if (gmaps != null) {
-			if (b) {
-				gmaps.openInfo(this);
-			} else {
-				smartUpdate("open", b);
+		if (_open != b) {
+			Gmaps gmaps = (Gmaps) getParent();
+			if (gmaps != null) {
+				if (b) {
+					gmaps.openInfo(this);
+				} else {
+					smartUpdate("open", b);
+				}
 			}
+			_open = b;
 		}
-		_open = b;
 	}
 	
 	/*package*/ void setOpenByClient(boolean b) {

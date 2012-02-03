@@ -800,8 +800,10 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 				type = 'physical';
 				break;
 			}
-			_mapType = type;
-			this.fireX(new zk.Event(this, 'onMapTypeChange', {type:type}, {}, null));
+			if (this._mapType != type) {
+				this._mapType = type;
+				this.fireX(new zk.Event(this, 'onMapTypeChange', {type:type}, {}, null));
+			}
 		}
 	},
 	//1. when end user click the x icon, or click outside the info window, close without condition
@@ -809,10 +811,10 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	//3. when MarkerManager#removeOverlay_, _closing == true
 	//4. when Gmarker was removed from the gmaps(MarkerManager#removeOverlay_ then Gmarker#unbindMapitem_).
 	//5. when another Ginfo/Gmarker open (via API only), _opening == true
-	_doInfoClose: function(info) {
-		if (info) {
-			info.clearOpen_();
-			this.fireX(new zk.Event(this, 'onInfoChange', {}, {}, null));
+	_doInfoClose: function(ginfo) {
+		if (ginfo) {
+			ginfo.clearOpen_();
+			this.fireX(new zk.Event(this, 'onInfoChange', {info: ginfo}, {}, null));
 		}
 	},
 	_changeInfoPosition: function(c, info) {
@@ -860,7 +862,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		this._doubleclick = google.maps.event.addListener(maps, 'dblclick', function(event) {wgt.doDoubleClick_(event)});
 		this._zoomend = google.maps.event.addListener(maps, 'zoom_changed', function() {wgt._doZoomEnd()});
 		// TODO , vary hard
-		// this._maptypechanged = google.maps.event.addListener(maps, 'maptypeid_changed', function() {wgt._doMapTypeChanged()});
+		this._maptypechanged = google.maps.event.addListener(maps, 'maptypeid_changed', function() {wgt._doMapTypeChanged()});
 	},
 	_clearListeners: function() {
 		if (this._moveend ) {
