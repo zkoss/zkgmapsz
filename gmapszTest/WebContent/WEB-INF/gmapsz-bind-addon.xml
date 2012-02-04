@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- lang-addon.xml
+<!-- gmapsz-bind-addon.xml
 	Purpose:
 		
 	Description:
 		
 	History:
-		Tue Oct 7 17:56:45     2009, Created by jimmyshiau
+		Sat Feb 1 15:56:45     2012, Created by benbai
 
-Copyright (C) 2009 Potix Corporation. All Rights Reserved.
+Copyright (C) 2012 Potix Corporation. All Rights Reserved.
 -->
 
 <language-addon>
@@ -19,7 +19,7 @@ Copyright (C) 2009 Potix Corporation. All Rights Reserved.
 	-->
 	<!-- Which language this addon will be added to -->
 	<language-name>xul/html</language-name>
-
+	<!-- Add bind annotation to gmaps -->
 	<component>
 		<component-name>gmaps</component-name>
 		<extends>gmaps</extends>
