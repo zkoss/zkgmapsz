@@ -12,7 +12,5 @@ Copyright (C) 2012 Potix Corporation. All Rights Reserved.
 -->
 
 <zk>
-	<language-config>
-		<addon-uri>/WEB-INF/gmapsz-bind-addon.xml</addon-uri>
-	</language-config>
+	
 </zk>
