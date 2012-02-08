@@ -86,6 +86,7 @@ public class Gmaps extends XulElement {
 	private boolean _sensor;
 	private String _baseDomain;
 	private String _language;
+	private String _libraries = "geometry";
 	
 	private MapModel _model;
 	private MapitemRenderer _renderer;
@@ -660,6 +661,34 @@ public class Gmaps extends XulElement {
 			smartUpdate("language", language);
 		}
 	}
+	/**
+	 * Returns the libraries to load; default to geometry and means
+	 * load geometry library only, you can check libraries
+	 * <a href="http://code.google.com/intl/zh-TW/apis/maps/documentation/javascript/libraries.html">here</a>
+	 * <p> Use comma to separate different library
+	 * 
+	 * 
+	 * @return the libraries to load.
+	 * @since 3.0.0
+	 */
+	public String getLibraries () {
+		return _libraries;
+	}
+	/**
+	 * Sets the libraries to load; default to geometry and means using
+	 * load geometry library only, you can check libraries
+	 * <a href="http://code.google.com/intl/zh-TW/apis/maps/documentation/javascript/libraries.html">here</a>
+	 * <p> Use comma to separate different library
+	 * 
+	 * @param libraries the libraries to load
+	 * @since 3.0.0
+	 */
+	public void setLibraries (String libraries) {
+		if (!Objects.equals(_libraries, libraries)) {
+			this._libraries = libraries;
+			smartUpdate("libraries", libraries);
+		}
+	}
 
 	/** 
 	 * Returns the selected version of google map API v3.
@@ -1090,6 +1119,8 @@ public class Gmaps extends XulElement {
 			renderer.render("baseDomain", _baseDomain);
 		if (!Strings.isBlank(_language))
 			renderer.render("language", _language);
+		if (_libraries != null)
+			renderer.render("libraries", _libraries);
 	}
 	/** Processes an AU request.
 	 *

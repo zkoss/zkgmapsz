@@ -57,6 +57,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	_scrollWheelZoom: true,
 	_enableDragging: true,
 	_version: '3',
+	_libraries: 'geometry',
 	
 	$define: {
 		/** 
@@ -104,7 +105,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		 * @param String t the maps type("normal", "satellite", "hybrid", "physical".
 		 */
 		mapType: function(t) {
-			var maps = this._gmaps
+			var maps = this._gmaps;
 			if (maps) {
 				var amid = google.maps.MapTypeId,
 					type = amid.ROADMAP;
@@ -386,7 +387,27 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		 * 
 		 * @param String language the preferred language code
 		 */
-		language: null
+		language: null,
+		/**
+		 * Returns the libraries to load; default to geometry and means
+		 * load geometry library only, you can check libraries
+		 * <a href="http://code.google.com/intl/zh-TW/apis/maps/documentation/javascript/libraries.html">here</a>
+		 * <p> Use comma to separate different library
+		 * 
+		 * 
+		 * @return the libraries to load.
+		 * @since 3.0.0
+		 */
+		/**
+		 * Sets the libraries to load; default to geometry and means using
+		 * load geometry library only, you can check libraries
+		 * <a href="http://code.google.com/intl/zh-TW/apis/maps/documentation/javascript/libraries.html">here</a>
+		 * <p> Use comma to separate different library
+		 * 
+		 * @param libraries the libraries to load
+		 * @since 3.0.0
+		 */
+		libraries:null
 	},
 	/**
 	 * Add supported map type into this Gmaps("normal", "satellite", "hybrid", "physical").
@@ -597,7 +618,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 						            this._sensor? this._sensor : 'false',
 						            '&language=', this._language? this._language : '',
 						            '&region=', this._baseDomain? this._baseDomain : '',
-						            '&libraries=geometry'].join('');
+						            '&libraries=', this._libraries? this._libraries : ''].join('');
 						google.load('maps', this._version,
 								{
 									other_params: opts,
