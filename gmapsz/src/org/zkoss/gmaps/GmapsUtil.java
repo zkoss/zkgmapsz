@@ -123,6 +123,7 @@ public class GmapsUtil {
 	 * @throws UnsupportedEncodingException
 	 * @throws MalformedURLException
 	 * @throws IOException
+	 * @since 3.0.0
 	 */
 	public static StringBuilder getGeocodeJsonResult (String address, boolean sensor, String language)
 		throws ParseException, UnsupportedEncodingException, MalformedURLException, IOException {
@@ -145,6 +146,7 @@ public class GmapsUtil {
 	 * @throws UnsupportedEncodingException
 	 * @throws MalformedURLException
 	 * @throws IOException
+	 * @since 3.0.0
 	 */
 	public static StringBuilder getGeocodeJsonResult (double lat, double lng, boolean sensor, String language)
 		throws ParseException, UnsupportedEncodingException, MalformedURLException, IOException {
@@ -166,6 +168,7 @@ public class GmapsUtil {
 	 * @throws UnsupportedEncodingException
 	 * @throws MalformedURLException
 	 * @throws IOException
+	 * @since 3.0.0
 	 */
 	public static double[] getLatlngByAddress (String address, boolean sensor, String language)
 		throws ParseException, UnsupportedEncodingException, MalformedURLException, IOException {
@@ -189,6 +192,7 @@ public class GmapsUtil {
 	 * @throws UnsupportedEncodingException
 	 * @throws MalformedURLException
 	 * @throws IOException
+	 * @since 3.0.0
 	 */
 	public static String getAddressByLatlng (double lat, double lng, boolean sensor, String language)
 		throws ParseException, UnsupportedEncodingException, MalformedURLException, IOException {
