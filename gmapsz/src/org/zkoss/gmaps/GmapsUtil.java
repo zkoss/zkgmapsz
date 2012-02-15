@@ -18,6 +18,15 @@ Copyright (C) 2008 Potix Corporation. All Rights Reserved.
 */
 package org.zkoss.gmaps;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+
+import org.zkoss.json.JSONArray;
+import org.zkoss.json.JSONObject;
+import org.zkoss.json.parser.JSONParser;
+import org.zkoss.json.parser.ParseException;
 import org.zkoss.zk.ui.UiException;
 
 /**
@@ -26,6 +35,7 @@ import org.zkoss.zk.ui.UiException;
  * @since 2.0_10
  */
 public class GmapsUtil {
+	private static String GOOGLE_WEB_SERVICE_GEOCODE_JSON = "http://maps.googleapis.com/maps/api/geocode/json?";
 	/** Convert the latitude and longitude to x, y pixels. This is based on the Mercator 
 	 * Projection (check http://en.wikipedia.org/wiki/Mercator_projection) as used
 	 * in Google Maps
@@ -103,4 +113,121 @@ public class GmapsUtil {
 		
 		return out;
 	}
+	/**
+	 * Get Geocode Service Response by the given address
+	 * @param address String, the given address
+	 * @param sensor boolean, the value of Google Map sensor property
+	 * @param language String, the language code
+	 * @return StringBuilder, contains the response content
+	 * @throws ParseException
+	 * @throws UnsupportedEncodingException
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 */
+	public static StringBuilder getGeocodeJsonResult (String address, boolean sensor, String language)
+		throws ParseException, UnsupportedEncodingException, MalformedURLException, IOException {
+		// build the url path for request
+		String path = GOOGLE_WEB_SERVICE_GEOCODE_JSON
+				+ "address="+java.net.URLEncoder.encode(address, "UTF-8")
+		        + "&sensor="+sensor
+		        + "&language="+language;
+		StringBuilder sb = getResponse(path);
+		return sb;
+	}
+	/**
+	 * Get Geocode Service Response by the given Lat/Lng
+	 * @param lat double, the given latitude
+	 * @param lng double, the given longitude
+	 * @param sensor boolean, the value of Google Map sensor property
+	 * @param language String, the language code
+	 * @return StringBuilder, contains the response content
+	 * @throws ParseException
+	 * @throws UnsupportedEncodingException
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 */
+	public static StringBuilder getGeocodeJsonResult (double lat, double lng, boolean sensor, String language)
+		throws ParseException, UnsupportedEncodingException, MalformedURLException, IOException {
+		// build the url path for request
+		String path = GOOGLE_WEB_SERVICE_GEOCODE_JSON
+				+"latlng="+lat+","+lng
+				+"&sensor="+sensor
+				+"&language="+language;
+		StringBuilder sb = getResponse(path);
+		return sb;
+	}
+	/**
+	 * Get Latitude/Longitude by given address
+	 * @param address String, the given address
+	 * @param sensor boolean, the value of Google Map sensor property
+	 * @param language String, the language code
+	 * @return latlng double array, latlng[0] contains the Latitude, latlng[1] contains the Longitude 
+	 * @throws ParseException
+	 * @throws UnsupportedEncodingException
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 */
+	public static double[] getLatlngByAddress (String address, boolean sensor, String language)
+		throws ParseException, UnsupportedEncodingException, MalformedURLException, IOException {
+		StringBuilder sb = getGeocodeJsonResult(address, sensor, language);
+		double[] latlng = new double[2];
+
+		JSONArray results = (JSONArray)((JSONObject)new JSONParser().parse(sb.toString())).get("results");
+		JSONObject location = (JSONObject)((JSONObject)((JSONObject)results.get(0)).get("geometry")).get("location");
+		latlng[0] = ((Double)location.get("lat")).doubleValue();
+		latlng[1] = ((Double)location.get("lng")).doubleValue();
+		return latlng;
+	}
+	/**
+	 * Get address by given Latitude/Longitude
+	 * @param lat double, the given latitude
+	 * @param lng double, the given longitude
+	 * @param sensor boolean, the value of Google Map sensor property
+	 * @param language String, the language code
+	 * @return String, the address
+	 * @throws ParseException
+	 * @throws UnsupportedEncodingException
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 */
+	public static String getAddressByLatlng (double lat, double lng, boolean sensor, String language)
+		throws ParseException, UnsupportedEncodingException, MalformedURLException, IOException {
+		StringBuilder sb = getGeocodeJsonResult(lat, lng, sensor, language);
+		String address = null;
+		
+		JSONArray results = (JSONArray)((JSONObject)new JSONParser().parse(sb.toString())).get("results");
+		address = (String)((JSONObject)results.get(1)).get("formatted_address");
+		return address;
+	}
+	private static StringBuilder getResponse(String path) throws MalformedURLException, IOException{
+		java.net.URL url = new java.net.URL(path);
+        java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
+        conn.setRequestProperty("User-agent", "Mozilla/5.0");
+
+        conn.setRequestProperty("Accept-Charset", "UTF-8"); // encoding
+        conn.setReadTimeout(10000);// timeout limit
+        conn.connect();// connect
+        int status = conn.getResponseCode();
+
+        switch (status) {
+            case java.net.HttpURLConnection.HTTP_GATEWAY_TIMEOUT://504 timeout
+                break;
+            case java.net.HttpURLConnection.HTTP_FORBIDDEN://403 forbidden
+                break;
+            case java.net.HttpURLConnection.HTTP_INTERNAL_ERROR://500 server error
+                break;
+            case java.net.HttpURLConnection.HTTP_NOT_FOUND://404 not exist
+                break;
+            case java.net.HttpURLConnection.HTTP_OK: // ok
+                InputStreamReader reader = new InputStreamReader(conn.getInputStream(), "UTF-8");
+
+                int ch;
+                StringBuilder sb = new StringBuilder("");
+                while((ch = reader.read())!= -1){
+                    sb.append((char)ch);
+                }
+                return sb;
+        }
+        return null;
+    }
 }
