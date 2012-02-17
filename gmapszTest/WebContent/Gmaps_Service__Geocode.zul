@@ -1,7 +1,9 @@
 <zk>
+	<label id="address" />
+	<div></div>
 	<label id="latlng" />
 	<div></div>
-	<label id="address" />
+	<label id="bnds" />
 	<div></div>
 	<textbox id="jsonByLatlng" rows="6" width="1000px" />
 	<div></div>
@@ -9,8 +11,13 @@
 	<zscript><![CDATA[
 		import org.zkoss.gmaps.*;
 		double[] location = GmapsUtil.getLatlngByAddress("Wall St, ニューヨーク 10005 アメリカ合衆国", true, "en");
-		latlng.setValue("lat = "+location[0]+", lng = " + location[1]);
-		address.setValue(GmapsUtil.getAddressByLatlng(40.70615360000001, -74.0092164, true, "ja"));
+		double[] bounds = GmapsUtil.getBoundsByAddress("Wall St, ニューヨーク 10005 アメリカ合衆国", true, "en");
+		latlng.setValue("Location: lat = "+location[0]+", lng = " + location[1]);
+		bnds.setValue("Bounds: swlat = "+bounds[0]
+					+ ", swlng = "+bounds[1]
+					+ ", nelat = "+bounds[2]
+					+ ", nelng = "+bounds[3]);
+		address.setValue("Address: " + GmapsUtil.getAddressByLatlng(40.70615360000001, -74.0092164, true, "ja"));
 		jsonByLatlng.setValue(GmapsUtil.getGeocodeJsonResult("Wall St, ニューヨーク 10005 アメリカ合衆国", true, "en").toString());
 		jsonByAddress.setValue(GmapsUtil.getGeocodeJsonResult(40.70615360000001, -74.0092164, true, "ja").toString());
 	]]></zscript>

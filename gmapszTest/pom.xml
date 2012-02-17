@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.zkoss.zk</groupId>
-	<artifactId>zktest</artifactId>
+	<groupId>org.zkoss.gmaps</groupId>
+	<artifactId>gmapszTest</artifactId>
 	<properties>
 		<zkel.version>1.1.0</zkel.version>
 		<commons-lang.version>2.4</commons-lang.version>
@@ -21,13 +21,12 @@
 		<jasperreports.version>4.0.1</jasperreports.version>
 		<jfreechart.version>1.0.13</jfreechart.version>
 		<filters.version>2.0.235</filters.version>
-		<ckez.version>3.6.0.1</ckez.version>
-		<fckez.version>2.6.5_50</fckez.version>
+		<ckez.version>3.3.2_50</ckez.version>
 		<gmapsz.version>3.0.0.Beta</gmapsz.version>
 		<timelinez.version>2.3.1_50</timelinez.version>
 		<timeplotz.version>1.1_50</timeplotz.version>
 	</properties>
-	<version>6.0.0-SNAPSHOT</version>
+	<version>6.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<licenses>
 		<license>
@@ -77,13 +76,16 @@
 		</pluginRepository>
 	</pluginRepositories>
 	<dependencies>
-		<!-- turn this on if you want use breeze with zk5
 		<dependency>
 			<groupId>org.zkoss.theme</groupId>
-			<artifactId>breeze</artifactId>
+			<artifactId>sapphire</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		 -->
+		<dependency>
+			<groupId>org.zkoss.theme</groupId>
+			<artifactId>silvertail</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
@@ -107,17 +109,17 @@
 		</dependency>
 		<dependency>
 			<groupId>org.zkoss.zk</groupId>
-			<artifactId>zkbind</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.zkoss.zk</groupId>
 			<artifactId>zk</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.zkoss.zk</groupId>
 			<artifactId>zkplus</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.zkoss.zk</groupId>
+			<artifactId>zkbind</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -228,11 +230,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.zkoss.zkforge</groupId>
-			<artifactId>fckez</artifactId>
-			<version>${fckez.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.zkoss.zkforge</groupId>
 			<artifactId>timelinez</artifactId>
 			<version>${timelinez.version}</version>
 		</dependency>
@@ -240,12 +237,37 @@
 			<groupId>org.zkoss.zkforge</groupId>
 			<artifactId>timeplotz</artifactId>
 			<version>${timeplotz.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.zkoss.zkforge</groupId>
+					<artifactId>timelinez</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.zkoss.zkforge</groupId>
 			<artifactId>gmapsz</artifactId>
 			<version>${gmapsz.version}</version>
 		</dependency>
+		
+		<!--  for zkbind jsr 303 
+		-->
+		<dependency>
+		    <groupId>org.hibernate</groupId>
+		    <artifactId>hibernate-validator</artifactId>
+		    <version>4.0.2.GA</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-api</artifactId>
+		    <version>1.6.1</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-log4j12</artifactId>
+		    <version>1.6.1</version>
+		</dependency>
+		
 	</dependencies>
 	<build>
 		<directory>${project.basedir}/debug</directory>
@@ -265,8 +287,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.2</version>
 				<configuration>
-					<source>1.4</source>
-					<target>1.4</target>
+					<source>1.5</source>
+					<target>1.5</target>
 				</configuration>
 			</plugin>
 		</plugins>

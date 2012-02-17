@@ -182,6 +182,32 @@ public class GmapsUtil {
 		return latlng;
 	}
 	/**
+	 * Get Bounds by given address
+	 * @param address String, the given address
+	 * @param sensor boolean, the value of Google Map sensor property
+	 * @param language String, the language code
+	 * @return double[] with double[0] swlat, double[1] swlng, double[2] nelat, double[3] nelng 
+	 * @throws ParseException
+	 * @throws UnsupportedEncodingException
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 * @since 3.0.0
+	 */
+	public static double[] getBoundsByAddress (String address, boolean sensor, String language)
+		throws ParseException, UnsupportedEncodingException, MalformedURLException, IOException {
+		StringBuilder sb = getGeocodeJsonResult(address, sensor, language);
+		double[] bounds = new double[4];
+	
+		JSONArray results = (JSONArray)((JSONObject)new JSONParser().parse(sb.toString())).get("results");
+		JSONObject boundsInfo = (JSONObject)((JSONObject)((JSONObject)results.get(0)).get("geometry")).get("bounds");
+		bounds[0] = ((Double)((JSONObject)boundsInfo.get("southwest")).get("lat")).doubleValue();
+		bounds[1] = ((Double)((JSONObject)boundsInfo.get("southwest")).get("lng")).doubleValue();
+		bounds[2] = ((Double)((JSONObject)boundsInfo.get("northeast")).get("lat")).doubleValue();
+		bounds[3] = ((Double)((JSONObject)boundsInfo.get("northeast")).get("lng")).doubleValue();
+	
+		return bounds;
+	}
+	/**
 	 * Get address by given Latitude/Longitude
 	 * @param lat double, the given latitude
 	 * @param lng double, the given longitude
