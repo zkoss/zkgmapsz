@@ -677,7 +677,11 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			//bug #2929253 map canvas partly broken when map was invisible
 			//watch the global event onSize/onShow (must after $supers(gmaps.Gmaps, 'bind_', arguments)) 
 			zWatch.listen({onSize: wgt, onShow: wgt});
-			zWatch.fire('onSize', wgt); // real onSize after real bind
+			// set the hflex/vflex again after bind
+			if (wgt._hflex)
+				wgt.setHflex(wgt._hflex, {force:true});
+			if (wgt._vflex)
+				wgt.setVflex(wgt._vflex, {force:true});
 			
 			//Tricky!
 			//IE will not fire onSize at the end, so we have to enforce a 
