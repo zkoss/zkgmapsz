@@ -7,4 +7,5 @@
 	<widget name="Gpolygon"/>
 	<widget name="Gimage"/>
 	<widget name="Gscreen"/>
+	<widget name="Gcircle"/>
 </package>

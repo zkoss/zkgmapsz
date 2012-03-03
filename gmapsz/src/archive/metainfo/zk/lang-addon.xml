@@ -189,4 +189,9 @@ Copyright (C) 2006 Potix Corporation. All Rights Reserved.
 		<component-class>org.zkoss.gmaps.Gscreen</component-class>
 		<widget-class>gmaps.Gscreen</widget-class>
 	</component>
+	<component>
+		<component-name>gcircle</component-name>
+		<component-class>org.zkoss.gmaps.Gcircle</component-class>
+		<widget-class>gmaps.Gcircle</widget-class>
+	</component>
 </language-addon>

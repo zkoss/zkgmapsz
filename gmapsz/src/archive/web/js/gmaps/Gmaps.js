@@ -29,11 +29,11 @@ Copyright (C) 2009 Potix Corporation. All Rights Reserved.
 			if (!zk.gapi.LOADING) { //avoid double loading Google Ajax APIs
 				zk.gapi.LOADING = true;
 				if (!opts.condition()) {
-					if (!zk.googleAPIkey) {
-						zk.loadScript('http://www.google.com/jsapi');
-					}
+					var protocol = (wgt._protocol == 'https')? 'https' : 'http';
+					if (!zk.googleAPIkey)
+						zk.loadScript(protocol + '://www.google.com/jsapi');
 					else 
-						zk.loadScript('http://www.google.com/jsapi?key='+zk.googleAPIkey);
+						zk.loadScript(protocol + '://www.google.com/jsapi?key='+zk.googleAPIkey);
 				}
 			}
 		} else {
@@ -352,6 +352,21 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		 * @param String baseDomain the base domain from which to load the Maps API
 		 */
 		baseDomain: null,
+		/**
+		 * Returns the protocol to load the Maps API.
+		 * Currently support http for insecure connections
+		 * and https for secure connections.
+		 * @return the user specified protocol to load the Maps API.
+		 * @since 3.0.0
+		 */
+		/**
+		 * Sets the protocol to load the Maps API. 
+		 * Currently support http for insecure connections
+		 * and https for secure connections.
+		 * @param protocol the protocol to load the Maps API
+		 * @since 3.0.0
+		 */
+		protocol: null,
 	    /**
 	     * Returns whether your application is using a sensor (such as a GPS locator) 
 	     * to determine the user's location. This is especially important for mobile 

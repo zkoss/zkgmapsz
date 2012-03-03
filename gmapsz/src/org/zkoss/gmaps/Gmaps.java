@@ -87,6 +87,7 @@ public class Gmaps extends XulElement {
 	private String _baseDomain;
 	private String _language;
 	private String _libraries = "geometry";
+	private String _protocol;
 	
 	private MapModel _model;
 	private MapitemRenderer _renderer;
@@ -632,6 +633,31 @@ public class Gmaps extends XulElement {
 	}
 
 	/**
+	 * Returns the protocol to load the Maps API.
+	 * Currently support http for insecure connections
+	 * and https for secure connections.
+	 * @return the user specified protocol to load the Maps API.
+	 * @since 3.0.0
+	 */
+	public String getProtocol() {
+		return _protocol;
+	}
+
+	/**
+	 * Sets the protocol to load the Maps API. 
+	 * Currently support http for insecure connections
+	 * and https for secure connections.
+	 * @param protocol the protocol to load the Maps API
+	 * @since 3.0.0
+	 */
+	public void setProtocol(String protocol) {
+		if (!Objects.equals(_protocol, protocol)) {
+			this._protocol = protocol;
+			smartUpdate("protocol", protocol);
+		}
+	}
+
+	/**
 	 * Returns the preferred language code; default to null and means using
 	 * browser's preferred language. You can check language code 
 	 * <a href="http://spreadsheets.google.com/pub?key=p9pdwsai2hDMsLkXsoM05KQ&gid=1">here</a>
@@ -1117,6 +1143,8 @@ public class Gmaps extends XulElement {
 			renderer.render("version", _version);
 		if (!Strings.isBlank(_baseDomain))
 			renderer.render("baseDomain", _baseDomain);
+		if (!Strings.isBlank(_protocol))
+			renderer.render("protocol", _protocol);
 		if (!Strings.isBlank(_language))
 			renderer.render("language", _language);
 		if (_libraries != null)
