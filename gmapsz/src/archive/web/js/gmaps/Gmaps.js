@@ -806,7 +806,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			b = maps.getBounds(),
 			sw = b.getSouthWest(),
 			ne = b.getNorthEast();
-	
+		this._centerRestored = null;
 		// if this is not real visible, the move should caused by calling api,
 		// and map will move to wrong position,
 		// do not get center value from map, just keep default.
@@ -882,9 +882,9 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			}
 			
 			//Still has to restore the center if onSize event fired first
-			var shallRestoreCenter = isshow || !this._centerRestored; 
-			if (shallRestoreCenter)
-				google.maps.event.trigger(maps, 'resize');
+			var shallRestoreCenter = isshow || !this._centerRestored;
+			// should trigger resize for browser maximized case
+			google.maps.event.trigger(maps, 'resize');
 			
 			if (shallRestoreCenter) {
 				//@see #_doMoveEnd
@@ -984,7 +984,8 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	},
 	_clearGmaps: function() {
 		this._clearListeners();
-		this._gmaps = this._lctrl = this._sctrl = this._tctrl = this._cctrl = this._octrl = this._mm = this._mmLoaded = null;
+		this._gmaps = this._lctrl = this._sctrl = this._tctrl
+			= this._cctrl = this._octrl = this._mm = this._mmLoaded = this._centerRestored = null;
 	},
 	//zWatch//
 	onSize: function() {
@@ -1003,6 +1004,19 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
   	xyToPageXY: function(gmaps, x, y) {
   		var orgxy = zk(gmaps).revisedOffset();
   		return [x + orgxy[0], y + orgxy[1]]; 
+  	},
+  	// given Gmaps widget, latlng, return xy as [x, y]
+  	latlngToXY: function (wgt, latlng) {
+  		var gmaps = wgt._gmaps,
+  			zoom = gmaps.getZoom(),
+  			bounds = gmaps.getBounds(),
+  			nwLatlng = new google.maps.LatLng(bounds.getNorthEast().lat(),
+  							bounds.getSouthWest().lng()),
+  			projection = wgt._mm.projection_,
+  			nwXY = projection.fromLatLngToDivPixel(nwLatlng, zoom), // X, Y of North West of bounds
+  			evtXY = projection.fromLatLngToDivPixel(latlng, zoom); // X, Y of clicked point
+
+  		return {x: evtXY.x-nwXY.x, y: evtXY.y-nwXY.y};
   	},
   	errormsg: '<p>To use <code>&lt;gmaps&gt;</code>, you have to specify the following statement in your page:</p>'
 		+'<code>&lt;script content="zk.googleAPIkey='+"'key-assigned-by-google'"+'" /></code>' 
