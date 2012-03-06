@@ -1,0 +1,28 @@
+<zk>
+	Circles control
+	<hbox>
+		id: <label value="@load(vm.circlevm.id)" />
+		zindex: <intbox value="@bind(vm.circlevm.circleZIndex)" />
+	</hbox>
+	<hbox>
+		<checkbox label="clickable" checked="@bind(vm.circlevm.clickable)" />
+		<checkbox label="editable" checked="@bind(vm.circlevm.editable)" />
+		<checkbox label="visible" checked="@bind(vm.circlevm.circleVisible)" />
+	</hbox>
+	<hbox>
+		radius: <doublespinner value="@bind(vm.circlevm.radius)" step="0.001" />
+		lat: <doublespinner value="@bind(vm.circlevm.lat)" step="0.001" />
+		lng: <doublespinner value="@bind(vm.circlevm.lng)" step="0.001" />
+	</hbox>
+	<hbox>
+		fill color: <textbox value="@bind(vm.circlevm.fillColor)" />
+		fill opacity: <intbox value="@bind(vm.circlevm.fillOpacity)" />
+	</hbox>
+	<hbox>
+		stroke color: <textbox value="@bind(vm.circlevm.strokeColor)" />
+		stroke opacity: <intbox value="@bind(vm.circlevm.strokeOpacity)" />
+		stroke weight: <intbox value="@bind(vm.circlevm.strokeWeight)" />
+	</hbox>
+		
+	
+</zk>

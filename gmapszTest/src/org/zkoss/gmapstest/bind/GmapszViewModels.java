@@ -25,6 +25,7 @@ public class GmapszViewModels {
 	private GpolygonVM _polygonvm = null;
 	private GinfoVM _infovm = null;
 	private GimageVM _imagevm = null;
+	private GcircleVM _circlevm = null;
 	private Map<String, GmarkersVM> _markersvmMap = new HashMap<String, GmarkersVM>();
 
 	private boolean _controlvisibleOne = true;
@@ -33,6 +34,7 @@ public class GmapszViewModels {
 	private boolean _controlvisibleFour;
 	private boolean _controlvisibleFive;
 	private boolean _controlvisibleSix;
+	private boolean _controlvisibleSeven;
 	
 	public GmapsVM getMapsvm () {
 		return _mapsvm;
@@ -119,6 +121,11 @@ public class GmapszViewModels {
 		}
 		return _imagevm;
 	}
+	public GcircleVM getCirclevm () {
+		if (_circlevm == null)
+			_circlevm = new GcircleVM();
+		return _circlevm;
+	}
 	@Command @NotifyChange("mapsvm")
 	public void changeMapType() {
 		
@@ -172,7 +179,7 @@ public class GmapszViewModels {
 		return _mapsvm.getMiceData();
 	}
 
-	@NotifyChange({"controlvisibleOne", "controlvisibleTwo", "controlvisibleThree", "controlvisibleFour", "controlvisibleFive", "controlvisibleSix"})
+	@NotifyChange({"controlvisibleOne", "controlvisibleTwo", "controlvisibleThree", "controlvisibleFour", "controlvisibleFive", "controlvisibleSix", "controlvisibleSeven"})
 	public void setControlvisibleOne (boolean controlvisibleOne) {
 		clearAllVisible();
 		_controlvisibleOne = controlvisibleOne;
@@ -180,7 +187,7 @@ public class GmapszViewModels {
 	public boolean getControlvisibleOne () {
 		return _controlvisibleOne;
 	}
-	@NotifyChange({"controlvisibleOne", "controlvisibleTwo", "controlvisibleThree", "controlvisibleFour", "controlvisibleFive", "controlvisibleSix"})
+	@NotifyChange({"controlvisibleOne", "controlvisibleTwo", "controlvisibleThree", "controlvisibleFour", "controlvisibleFive", "controlvisibleSix", "controlvisibleSeven"})
 	public void setControlvisibleTwo (boolean controlvisibleTwo) {
 		clearAllVisible();
 		_controlvisibleTwo = controlvisibleTwo;
@@ -188,7 +195,7 @@ public class GmapszViewModels {
 	public boolean getControlvisibleTwo () {
 		return _controlvisibleTwo;
 	}
-	@NotifyChange({"controlvisibleOne", "controlvisibleTwo", "controlvisibleThree", "controlvisibleFour", "controlvisibleFive", "controlvisibleSix"})
+	@NotifyChange({"controlvisibleOne", "controlvisibleTwo", "controlvisibleThree", "controlvisibleFour", "controlvisibleFive", "controlvisibleSix", "controlvisibleSeven"})
 	public void setControlvisibleThree (boolean controlvisibleThree) {
 		clearAllVisible();
 		_controlvisibleThree = controlvisibleThree;
@@ -196,7 +203,7 @@ public class GmapszViewModels {
 	public boolean getControlvisibleThree () {
 		return _controlvisibleThree;
 	}
-	@NotifyChange({"controlvisibleOne", "controlvisibleTwo", "controlvisibleThree", "controlvisibleFour", "controlvisibleFive", "controlvisibleSix"})
+	@NotifyChange({"controlvisibleOne", "controlvisibleTwo", "controlvisibleThree", "controlvisibleFour", "controlvisibleFive", "controlvisibleSix", "controlvisibleSeven"})
 	public void setControlvisibleFour (boolean controlvisibleFour) {
 		clearAllVisible();
 		_controlvisibleFour = controlvisibleFour;
@@ -204,7 +211,7 @@ public class GmapszViewModels {
 	public boolean getControlvisibleFour () {
 		return _controlvisibleFour;
 	}
-	@NotifyChange({"controlvisibleOne", "controlvisibleTwo", "controlvisibleThree", "controlvisibleFour", "controlvisibleFive", "controlvisibleSix"})
+	@NotifyChange({"controlvisibleOne", "controlvisibleTwo", "controlvisibleThree", "controlvisibleFour", "controlvisibleFive", "controlvisibleSix", "controlvisibleSeven"})
 	public void setControlvisibleFive (boolean controlvisibleFive) {
 		clearAllVisible();
 		_controlvisibleFive = controlvisibleFive;
@@ -212,7 +219,7 @@ public class GmapszViewModels {
 	public boolean getControlvisibleFive () {
 		return _controlvisibleFive;
 	}
-	@NotifyChange({"controlvisibleOne", "controlvisibleTwo", "controlvisibleThree", "controlvisibleFour", "controlvisibleFive", "controlvisibleSix"})
+	@NotifyChange({"controlvisibleOne", "controlvisibleTwo", "controlvisibleThree", "controlvisibleFour", "controlvisibleFive", "controlvisibleSix", "controlvisibleSeven"})
 	public void setControlvisibleSix (boolean controlvisibleSix) {
 		clearAllVisible();
 		_controlvisibleSix = controlvisibleSix;
@@ -220,7 +227,15 @@ public class GmapszViewModels {
 	public boolean getControlvisibleSix () {
 		return _controlvisibleSix;
 	}
+	@NotifyChange({"controlvisibleOne", "controlvisibleTwo", "controlvisibleThree", "controlvisibleFour", "controlvisibleFive", "controlvisibleSix", "controlvisibleSeven"})
+	public void setControlvisibleSeven (boolean controlvisibleSeven) {
+		clearAllVisible();
+		_controlvisibleSeven = controlvisibleSeven;
+	}
+	public boolean getControlvisibleSeven () {
+		return _controlvisibleSeven;
+	}
 	private void clearAllVisible () {
-		_controlvisibleOne = _controlvisibleTwo = _controlvisibleThree = _controlvisibleFour = _controlvisibleFive = _controlvisibleSix = false;
+		_controlvisibleOne = _controlvisibleTwo = _controlvisibleThree = _controlvisibleFour = _controlvisibleFive = _controlvisibleSix = _controlvisibleSeven = false;
 	}
 }

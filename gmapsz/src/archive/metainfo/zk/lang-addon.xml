@@ -193,5 +193,41 @@ Copyright (C) 2006 Potix Corporation. All Rights Reserved.
 		<component-name>gcircle</component-name>
 		<component-class>org.zkoss.gmaps.Gcircle</component-class>
 		<widget-class>gmaps.Gcircle</widget-class>
+		<annotation>
+			<annotation-name>ZKBIND</annotation-name>
+			<property-name>lat</property-name>
+			<attribute>
+				<attribute-name>ACCESS</attribute-name>
+				<attribute-value>both</attribute-value>
+			</attribute>
+			<attribute>
+				<attribute-name>SAVE_EVENT</attribute-name>
+				<attribute-value>onCenterChange</attribute-value>
+			</attribute>
+		</annotation>
+		<annotation>
+			<annotation-name>ZKBIND</annotation-name>
+			<property-name>lng</property-name>
+			<attribute>
+				<attribute-name>ACCESS</attribute-name>
+				<attribute-value>both</attribute-value>
+			</attribute>
+			<attribute>
+				<attribute-name>SAVE_EVENT</attribute-name>
+				<attribute-value>onCenterChange</attribute-value>
+			</attribute>
+		</annotation>
+		<annotation>
+			<annotation-name>ZKBIND</annotation-name>
+			<property-name>radius</property-name>
+			<attribute>
+				<attribute-name>ACCESS</attribute-name>
+				<attribute-value>both</attribute-value>
+			</attribute>
+			<attribute>
+				<attribute-name>SAVE_EVENT</attribute-name>
+				<attribute-value>onRadiusChange</attribute-value>
+			</attribute>
+		</annotation>
 	</component>
 </language-addon>
