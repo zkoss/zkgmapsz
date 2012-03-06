@@ -309,7 +309,6 @@ public class Gcircle extends XulElement implements Mapitem {
 	 */
 	public void service(org.zkoss.zk.au.AuRequest request, boolean everError) {
 		final String cmd = request.getCommand();
-		System.out.println(cmd);
 		if (cmd.equals("onCenterChange")) {
 			final CenterChangeEvent evt = CenterChangeEvent.getCenterChangeEvent(request);
 			_lat = evt.getLat();
