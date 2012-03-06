@@ -212,12 +212,6 @@ public class Gimage extends XulElement implements Mapitem {
 			.encodeURL(_src != null ? _src: "~./img/spacer.gif"): "";
 	}
 
-	private class EncodedURL implements org.zkoss.zk.ui.util.DeferredValue {
-		public Object getValue() {
-			return getEncodedURL();
-		}
-	}
-
 	public Object getExtraCtrl() {
 		return new ExtraCtrl();
 	}
@@ -233,9 +227,10 @@ public class Gimage extends XulElement implements Mapitem {
 		}
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void smartRerender() {
 		final Map info = new HashMap();
-		info.put("src", new EncodedURL().getValue());
+		info.put("src", getEncodedURL());
 		info.put("swlat", new Double(_swlat));
 		info.put("swlng", new Double(_swlng));
 		info.put("nelat", new Double(_nelat));
