@@ -150,6 +150,8 @@ gmaps.Gcircle = zk.$extends(gmaps.Goverlay, {
 
 		gcircle.setRadius(this._radius);
 		gcircle.setCenter(latlng);
+		gcircle.setVisible(this._circleVisible);
+		gcircle.setEditable(this._editable);
 		gcircle._wgt = this;
 		this.mapitem_ = gcircle;
 	},
@@ -164,9 +166,7 @@ gmaps.Gcircle = zk.$extends(gmaps.Goverlay, {
 				strokeOpacity = this._strokeOpacity,
 				strokeWeight = this._strokeWeight;
 			this._circleOption =
-				{editable: this._editable,
-					clickable: this._clickable,
-					visible: this._circleVisible};
+				{clickable: this._clickable};
 			circleOption = this._circleOption;
 			if (circleZIndex)
 				circleOption['zIndex'] = circleZIndex;
