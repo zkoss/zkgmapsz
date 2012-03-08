@@ -227,7 +227,6 @@ public class Gimage extends XulElement implements Mapitem {
 		}
 	}
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void smartRerender() {
 		final Map info = new HashMap();
 		info.put("src", getEncodedURL());
