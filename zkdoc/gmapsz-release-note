@@ -1,15 +1,24 @@
 	--------
-Gmaps 3.0.0-Beta (work with ZK 5.0+ only)
+Gmaps 3.0.0 (work with ZK 5.0+ only)
 * Features:
-
+  Issue 3: Using GMap in HTTPS application
+  Issue 4: Supports vflex/hflex
+  Issue 7: create a circle with gmaps api v3
 
 * Bugs:
+  Issue 8: First gmarker fails when there are more than one gmap in a page
+  Issue 9: Javascript Error: GUnload is not defined
+  Issue 10: latlng is undefined
+  Issue 11: Google maps V 3.5
+  Issue 15: Javascript error with borderlayout
 
 * Upgrade Notes:
   + Migrate to Google Maps API v3
   + Currently not support drag between map items and ZK components
   + Currently not support GScreen and Google Bar
   + Provide a way to specify api version manually
+  + Provide a way to specify google map library manually
+  + Add Geocoding Service to GmapsUtil
 
   --------
 Gmaps 2.0.52 (work with ZK 5.0+ only)
