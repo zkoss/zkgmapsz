@@ -228,6 +228,7 @@ gmaps.Gcircle = zk.$extends(gmaps.Goverlay, {
 	},
 	_doClick: function (evt) {
 		this._fireClickEvent(evt.latLng, 'onClick');
+		this.doClick_(new zk.Event(this, 'onClick', {latLng: evt.latLng}))
 	},
 	_doDoubleClick: function (evt) {
 		this._fireClickEvent(evt.latLng, 'onDoubleClick');

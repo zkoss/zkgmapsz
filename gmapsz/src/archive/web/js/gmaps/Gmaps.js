@@ -718,23 +718,44 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	},
 	//override dom event//
 	doClick_: function(evt) {
-		var wgt = evt.target;
+		var wgt = evt.target,
+			gmap = this;
 
 		//calling this to correct the popup submenu not auto closed issue
 		zk.Widget.mimicMouseDown_(wgt);
-
-		if (wgt.$instanceof(gmaps.Gmarker) || wgt.$instanceof(gmaps.Gpolyline) || wgt.$instanceof(gmaps.Gpolygon)) {
-			var latLng = evt.latLng? evt.latLng : new google.maps.LatLng(0, 0),
-				xy = this._mm.projection_.fromLatLngToDivPixel(latLng, this._gmaps.getZoom()),
+		// google map event
+		if (evt.latLng) {
+			var latLng = evt.latLng,
+				xy = gmaps.Gmaps.latlngToXY(this, latLng),
 				pageXY = gmaps.Gmaps.xyToPageXY(this.parent, xy.x, xy.y),
 				data = zk.copy(evt.data, {lat:latLng.lat(),lng:latLng.lng(),reference:wgt,x:xy.x,y:xy.y,pageX:pageXY[0],pageY:pageXY[1]}),
 				opts = evt.opts;
-			this.fireX(new zk.Event(this, 'onMapClick', data, opts, evt.domEvent));
+			// keep the data,
+			// will modified by the widget event that triggered by mimicMouseDown_
+			this._onMapClickData = data;
+			// fire event later
+			setTimeout (
+				function () {
+					gmap.fireX(new zk.Event(gmap, 'onMapClick', data, opts, evt.domEvent));
+					delete gmap._onMapClickData;
+			}, 0);
 			// do not select self
 			if (wgt != this)
 				this.fireX(new zk.Event(this, 'onSelect', {items:[wgt],reference:wgt}, opts, evt.domEvent));
+
 			this.$supers(gmaps.Gmaps, 'doClick_', arguments);
-		} 
+		} else { // widget event
+			var edata = evt.data,
+				data;
+			// has google map data to update
+			if (data = this._onMapClickData) {
+				for (var key in evt.data) {
+					// copy data if not exist
+					if (!(key in data))
+						data[key] = edata[key];
+				}
+			}
+		}
 	},
 	doDoubleClick_: function (evt) {
 		//Google Maps API will not bubble up the double-click-on-gmarker
@@ -900,15 +921,19 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		var maps = this._gmaps,
 			wgt = this;
 		this._moveend = google.maps.event.addListener(maps, 'idle', function() {wgt._mm.onMapMoveEnd_(); wgt._doMoveEnd();});
+		this._click = google.maps.event.addListener(maps, 'click', function(event) {wgt.doClick_(new zk.Event(wgt, 'onClick', {latLng: event.latLng}))});
 		this._doubleclick = google.maps.event.addListener(maps, 'dblclick', function(event) {wgt.doDoubleClick_(event)});
 		this._zoomend = google.maps.event.addListener(maps, 'zoom_changed', function() {wgt._doZoomEnd()});
-		// TODO , vary hard
 		this._maptypechanged = google.maps.event.addListener(maps, 'maptypeid_changed', function() {wgt._doMapTypeChanged()});
 	},
 	_clearListeners: function() {
 		if (this._moveend ) {
 			google.maps.event.removeListener(this._moveend);
 			this._moveend = null;
+		}
+		if (this._click) {
+			google.maps.event.removeListener(this._click);
+			this._click = null;
 		}
 
 		if (this._doubleclick ) {
@@ -984,8 +1009,8 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	},
 	_clearGmaps: function() {
 		this._clearListeners();
-		this._gmaps = this._lctrl = this._sctrl = this._tctrl
-			= this._cctrl = this._octrl = this._mm = this._mmLoaded = this._centerRestored = null;
+		this._gmaps = this._lctrl = this._sctrl = this._tctrl = this._cctrl = this._octrl
+			= this._mm = this._mmLoaded = this._centerRestored = this._onMapClickData = null;
 	},
 	//zWatch//
 	onSize: function() {
