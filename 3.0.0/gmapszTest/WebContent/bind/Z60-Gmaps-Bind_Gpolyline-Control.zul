@@ -1,0 +1,11 @@
+<zk>
+	<hbox>
+		id: <label id="pliId" value="@load(vm.polylinevm.id)" />
+		points: <textbox id="pliPoints" rows="5" width="300px" value="@bind(vm.polylinevm.points)" />
+	</hbox>
+	<hbox>
+		color: <textbox id="pliColor" value="@bind(vm.polylinevm.color)" />
+		opacity: <intbox id="pliOpacity" value="@bind(vm.polylinevm.opacity)" />
+		weight: <intbox id="pliWeight" value="@bind(vm.polylinevm.weight)" />
+	</hbox>
+</zk>
