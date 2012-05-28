@@ -19,15 +19,15 @@ Copyright (C) 2009 Potix Corporation. All Rights Reserved.
 }}IS_RIGHT
 */
 (function() {
-	zk.gapi.loadAPIs = function(wgt, callback, msg, timeout) {
-		var opts = {};
+	gmapsGapi.loadAPIs = function(wgt, callback, msg, timeout, opts) {
+		if (!opts) opts = {};
 		opts['condition'] = function() {return window.google && window.google.load};
-		opts['callback'] = function() {callback(); delete zk.gapi.LOADING;}
+		opts['callback'] = function() {callback(); delete gmapsGapi.LOADING;}
 		opts['message'] = msg;
 		if (!opts.condition()) {
-			zk.gapi.waitUntil(wgt, opts);
-			if (!zk.gapi.LOADING) { //avoid double loading Google Ajax APIs
-				zk.gapi.LOADING = true;
+			gmapsGapi.waitUntil(wgt, opts);
+			if (!gmapsGapi.LOADING) { //avoid double loading Google Ajax APIs
+				gmapsGapi.LOADING = true;
 				if (!opts.condition()) {
 					var protocol = (wgt._protocol == 'https')? 'https' : 'http';
 					if (!zk.googleAPIkey)
@@ -38,6 +38,8 @@ Copyright (C) 2009 Potix Corporation. All Rights Reserved.
 			}
 		} else {
 			callback();
+			if (opts && opts.keepMask)
+				gmapsGapi.clearMask(wgt, opts);
 		}
 	};
 /**
@@ -602,14 +604,14 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	bind_: function(dt, skipper, after) {
 		var wgt = this;
 		if (!window.google || !window.google.maps)
-			zk.gapi.loadAPIs(wgt, function() {wgt._tryBind(dt, skipper, after)}, 'Loading Google Ajax APIs');
+			gmapsGapi.loadAPIs(wgt, function() {wgt._tryBind(dt, skipper, after)}, 'Loading Google Ajax APIs');
 		else {
 			var wgt = this,
 				opts1 = [];
 			opts1['condition'] = function() {return window.MarkerManager;};
 			opts1['callback'] = function() {wgt._realBind(dt, skipper, after);};
 			opts1['message'] = 'Loading Google Maps APIs';
-			zk.gapi.waitUntil(wgt, opts1);
+			gmapsGapi.waitUntil(wgt, opts1);
 		}
 	},
 	_tryBind: function(dt, skipper, after) {
@@ -625,7 +627,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			opts0['callback'] = function() {};
 			opts0['message'] = 'Loading Google Maps APIs';
 			if (!opts0.condition()) {
-				zk.gapi.waitUntil(wgt, opts0);
+				gmapsGapi.waitUntil(wgt, opts0);
 				if (!gmaps.Gmaps.LOADING) { //avoid double loading Google Maps APIs
 					gmaps.Gmaps.LOADING = true;
 					if (!opts0.condition()) {
@@ -648,7 +650,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			} else {
 				opts0['condition'] = function() {return window.MarkerManager;};
 				opts0['callback'] = function() {wgt._realBind(dt, skipper, after);};
-				zk.gapi.waitUntil(wgt, opts0);
+				gmapsGapi.waitUntil(wgt, opts0);
 			}
 		} else {
 			var wgt = this,
@@ -656,7 +658,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			opts1['condition'] = function() {return window.MarkerManager;};
 			opts1['callback'] = function() {wgt._realBind(dt, skipper, after);};
 			opts1['message'] = 'Loading Google Maps APIs';
-			zk.gapi.waitUntil(wgt, opts1);
+			gmapsGapi.waitUntil(wgt, opts1);
 		}
 	},
 	_realBind: function(dt, skipper, after) {
@@ -680,10 +682,12 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	        });
 		};
 		opts0['message'] = 'Loading Marker Manager API';
-		zk.gapi.waitUntil(wgt, opts0);
+		gmapsGapi.waitUntil(wgt, opts0);
 
 		// wait until marker manager is initialized
 		opts1['condition'] = function() {return wgt._mmLoaded};
+		if (zk.ie)
+			opts1['keepMask'] = true;
 		opts1['callback'] = function() {
 			wgt.overrideMarkermanager();
 			//init listeners
@@ -701,12 +705,11 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			//Tricky!
 			//IE will not fire onSize at the end, so we have to enforce a 
 			//resize(true) to restore the center
-			if (zk.ie) {
-				setTimeout(function () {wgt._resize(true)}, 500);
-			}
+			if (zk.ie)
+				setTimeout(function () {wgt._resize(true); gmapsGapi.clearMask(wgt, opts1);}, 500);
 		};
 		opts1['message'] = 'Initialize Marker Manager';
-		zk.gapi.waitUntil(wgt, opts1);
+		gmapsGapi.waitUntil(wgt, opts1);
 	},
 	unbind_: function() { //detach or server invalidate()
 		this.$supers(gmaps.Gmaps, 'unbind_', arguments);

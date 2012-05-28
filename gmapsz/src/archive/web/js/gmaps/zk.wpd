@@ -1,4 +1,5 @@
 <package name="gmaps" language="xul/html" depends="zk.gapi,zul">
+	<script src="gapi.js"/>
 	<widget name="Gmaps"/>
 	<script src="Goverlay.js"/>
 	<widget name="Ginfo"/>
