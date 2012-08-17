@@ -55,6 +55,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	_physical: true,
 	_showZoomCtrl: true,
 	_showTypeCtrl: true,
+	_showPanCtrl: true,
 	_doubleClickZoom: true,
 	_scrollWheelZoom: true,
 	_enableDragging: true,
@@ -236,6 +237,22 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			if (maps) {
 				var opts = this.getMapOptions();
 				opts.mapTypeControl = b;
+				maps.setOptions(opts);
+			}
+		},
+		/** 
+		 * Returns whether show the Google Maps pan Control.
+		 * @return boolean
+		 */
+		/** 
+		 * Sets whether show the Google Maps pan Control.
+		 * @param boolean b true to show the Google Maps pan Control.
+		 */
+		showPanCtrl: function(b) {
+			var maps = this._gmaps;
+			if (maps) {
+				var opts = this.getMapOptions();
+				opts.panControl = b;
 				maps.setOptions(opts);
 			}
 		},
@@ -982,6 +999,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			.setMapType(this._mapType, {force:true}) //set initial map type
 			.setShowTypeCtrl(this._showTypeCtrl, {force:true})
 			.setShowZoomCtrl(this._showZoomCtrl, {force:true})
+			.setShowPanCtrl(this._showPanCtrl, {force:true})
 			.setShowScaleCtrl(this._showScaleCtrl, {force:true})
 			.setShowOverviewCtrl(this._showOverviewCtrl, {force:true})
 			.setDoubleClickZoom(this._doubleClickZoom, {force:true})

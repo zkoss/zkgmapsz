@@ -63,6 +63,7 @@ public class Gmaps extends XulElement {
 	private boolean _small;
 	private boolean _type = true;
 	private boolean _smallZoom = true;
+	private boolean _pan = true; // PanControl
 	private boolean _scale;
 	private boolean _overview;
 	
@@ -313,6 +314,26 @@ public class Gmaps extends XulElement {
 	 */
 	public boolean isShowTypeCtrl() {
 		return _type;
+	}
+	
+	/** Sets whether show the Google Maps pan Control.
+	 * @param b true to show the Google Maps pan Control.
+	 * @since 3.0.1
+	 */
+	public void setShowPanCtrl(boolean b) {
+		if (_pan == b) {
+			return;
+		}
+		_pan = b;
+		smartUpdate("showPanCtrl", b);
+	}
+
+	/** Returns whether show the Google Maps pan Control, default to false.
+	 * @return whether show the Google Maps pan Control.
+	 * @since 3.0.1
+	 */
+	public boolean isShowPanCtrl() {
+		return _pan;
 	}
 	
 	/** Sets whether show the Google Maps scale Control.
@@ -1113,6 +1134,8 @@ public class Gmaps extends XulElement {
 			renderer.render("showZoomCtrl", isShowZoomCtrl());
 		if (!_type)
 			renderer.render("showTypeCtrl", isShowTypeCtrl());
+		if (!_pan)
+			renderer.render("showPanCtrl", isShowPanCtrl());
 		if (_scale)
 			renderer.render("showScaleCtrl", isShowScaleCtrl());
 		if (_overview)
