@@ -1,9 +1,9 @@
 	--------
 Gmaps 3.0.1 (work with ZK 5.0+ only)
 * Features:
-  
+  Issue 17: Add panControl option in Gmapsz 3.0
 * Bugs:
-  
+  Issue 19: Borderlayout errors with gmap - Message: 'this.__mask' is null or not an object - IE8
 * Upgrade Notes:
   
 	--------
