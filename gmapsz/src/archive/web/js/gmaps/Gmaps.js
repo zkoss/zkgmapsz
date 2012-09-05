@@ -21,8 +21,14 @@ Copyright (C) 2009 Potix Corporation. All Rights Reserved.
 (function() {
 	gmapsGapi.loadAPIs = function(wgt, callback, msg, timeout, opts) {
 		if (!opts) opts = {};
+		if (zk.ie)
+			opts['keepMask'] = true;
 		opts['condition'] = function() {return window.google && window.google.load};
-		opts['callback'] = function() {callback(); delete gmapsGapi.LOADING;}
+		opts['callback'] = function() {
+			if (opts && opts.keepMask)
+				gmapsGapi.clearMask(wgt, opts);
+			callback(); delete gmapsGapi.LOADING;
+		};
 		opts['message'] = msg;
 		if (!opts.condition()) {
 			gmapsGapi.waitUntil(wgt, opts);
@@ -38,8 +44,6 @@ Copyright (C) 2009 Potix Corporation. All Rights Reserved.
 			}
 		} else {
 			callback();
-			if (opts && opts.keepMask)
-				gmapsGapi.clearMask(wgt, opts);
 		}
 	};
 /**
