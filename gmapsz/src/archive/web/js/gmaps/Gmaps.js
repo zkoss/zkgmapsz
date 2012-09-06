@@ -618,10 +618,9 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		}
 	},
 	bind_: function(dt, skipper, after) {
-		var wgt = this,
-			maskOpts = {};
-		maskOpts['message'] = 'Loading Google Maps APIs';
-		this._maskOpts = gmapsGapi.initMask(wgt, maskOpts);
+		var wgt = this;
+
+		this._maskOpts = gmapsGapi.initMask(this, {message: 'Loading Google Maps APIs'});
 		if (!window.google || !window.google.maps)
 			gmapsGapi.loadAPIs(wgt, function() {wgt._tryBind(dt, skipper, after)}, 'Loading Google Ajax APIs');
 		else {
@@ -629,11 +628,21 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 				opts1 = [];
 			opts1['condition'] = function() {return window.MarkerManager;};
 			opts1['callback'] = function() {wgt._realBind(dt, skipper, after);};
-			
 			gmapsGapi.waitUntil(wgt, opts1);
 		}
 	},
 	_tryBind: function(dt, skipper, after) {
+		var maskOpts;
+		if (maskOpts = this._maskOpts) {
+			if (maskOpts._mask && maskOpts._mask._opts) {
+				maskOpts._mask._opts.anchor = this;
+				maskOpts._mask.sync();
+			} else {
+				gmapsGapi.clearMask(this, maskOpts);
+				this._maskOpts = gmapsGapi.initMask(this, {message: 'Loading Google Maps APIs'});
+			}
+		}
+
 		if (!window.google || !window.google.maps) {
 			if (!window.google.load || window.google.loader.LoadFailure) {
 				var n = jq(this.uuid, zk)[0];
@@ -646,6 +655,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			opts0['callback'] = function() {};
 			
 			if (!opts0.condition()) {
+				
 				gmapsGapi.waitUntil(wgt, opts0);
 				if (!gmaps.Gmaps.LOADING) { //avoid double loading Google Maps APIs
 					gmaps.Gmaps.LOADING = true;
@@ -681,7 +691,17 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		}
 	},
 	_realBind: function(dt, skipper, after) {
-		var n = jq(this.uuid, zk)[0];
+		var n = jq(this.uuid, zk)[0],
+			maskOpts;
+		if (maskOpts = this._maskOpts) {
+			if (maskOpts._mask && maskOpts._mask._opts) {
+				maskOpts._mask._opts.anchor = this;
+				maskOpts._mask.sync();
+			} else {
+				gmapsGapi.clearMask(this, maskOpts);
+				this._maskOpts = gmapsGapi.initMask(this, {message: 'Loading Google Maps APIs'});
+			}
+		}
 		if ( (window.google == null) || (window.google.maps == null) ) {
 			n.innerHTML = gmaps.Gmaps.errormsg;
 			return; //failed to load the Google Maps APIs
@@ -991,7 +1011,9 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	},
 	_initGmaps: function(n) {
 		var maps = new google.maps.Map(n, this.getMapOptions());
-		gmapsGapi.clearMask(this, this._maskOpts);
+		if (this._maskOpts)
+			gmapsGapi.clearMask(this, this._maskOpts);
+
 		this._gmaps = maps;
 		this.setNormal(this._normal, {force:true}) //prepare map types
 			.setHybrid(this._hybrid, {force:true})
