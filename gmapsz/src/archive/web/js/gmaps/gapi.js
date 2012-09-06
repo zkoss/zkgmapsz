@@ -59,8 +59,12 @@ function waitUntil(wgt, opts) {
 		}
 	}
 	opts.callback();
-	if (!(opts && opts.keepMask))
-		gmapsGapi.clearMask(wgt, opts);
+	if (zk.ie) { // wait after onsize
+		setTimeout(function () {
+			gmapsGapi.clearMask(wgt, opts);
+		}, 700);
+	} else gmapsGapi.clearMask(wgt, opts);
+		
 }
 function initMask(wgt, opts) {
 	var opt = {};

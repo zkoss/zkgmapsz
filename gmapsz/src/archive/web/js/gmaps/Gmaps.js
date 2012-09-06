@@ -21,12 +21,8 @@ Copyright (C) 2009 Potix Corporation. All Rights Reserved.
 (function() {
 	gmapsGapi.loadAPIs = function(wgt, callback, msg, timeout, opts) {
 		if (!opts) opts = {};
-		if (zk.ie)
-			opts['keepMask'] = true;
 		opts['condition'] = function() {return window.google && window.google.load};
 		opts['callback'] = function() {
-			if (opts && opts.keepMask)
-				gmapsGapi.clearMask(wgt, opts);
 			callback(); delete gmapsGapi.LOADING;
 		};
 		opts['message'] = msg;
@@ -707,8 +703,6 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 
 		// wait until marker manager is initialized
 		opts1['condition'] = function() {return wgt._mmLoaded};
-		if (zk.ie)
-			opts1['keepMask'] = true;
 		opts1['callback'] = function() {
 			wgt.overrideMarkermanager();
 			//init listeners
@@ -727,7 +721,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			//IE will not fire onSize at the end, so we have to enforce a 
 			//resize(true) to restore the center
 			if (zk.ie)
-				setTimeout(function () {wgt._resize(true); gmapsGapi.clearMask(wgt, opts1);}, 500);
+				setTimeout(function () {wgt._resize(true);}, 500);
 		};
 		opts1['message'] = 'Initialize Marker Manager';
 		gmapsGapi.waitUntil(wgt, opts1);
