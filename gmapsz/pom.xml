@@ -7,7 +7,7 @@
   <version>3.0.2-FL</version>
   <packaging>jar</packaging>
   <properties>
-	<zk.version>5.0.8</zk.version>
+	<zk.version>6.5.0</zk.version>
   </properties>
   <name>The Google Maps Component for ZK</name>
   <url>http://www.zkoss.org</url>
