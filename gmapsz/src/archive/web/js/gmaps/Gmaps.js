@@ -644,7 +644,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		}
 
 		if (!window.google || !window.google.maps) {
-			if (!window.google.load || window.google.loader.LoadFailure) {
+			if ((window.google && !window.google.load) || window.google.loader.LoadFailure) {
 				var n = jq(this.uuid, zk)[0];
 				n.innerHTML = gmaps.Gmaps.errormsg; 
 				return;  //failed to load the Google AJAX APIs
