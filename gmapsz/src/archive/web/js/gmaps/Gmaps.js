@@ -651,7 +651,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			}
 			var wgt = this,
 				opts0 = {};
-			opts0['condition'] = function() {return window.google.maps;};
+			opts0['condition'] = function() {return window.google && window.google.maps;};
 			opts0['callback'] = function() {};
 			
 			if (!opts0.condition()) {
