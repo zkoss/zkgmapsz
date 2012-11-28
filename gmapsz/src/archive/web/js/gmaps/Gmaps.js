@@ -58,7 +58,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	_doubleClickZoom: true,
 	_scrollWheelZoom: true,
 	_enableDragging: true,
-	_version: '3',
+	_version: '3.9',
 	_libraries: 'geometry',
 	
 	$define: {
