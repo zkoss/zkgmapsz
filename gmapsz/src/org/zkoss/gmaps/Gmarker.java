@@ -61,6 +61,7 @@ public class Gmarker extends Ginfo {
 	private int _maxzoom = ZOOM_LIMIT; //visible zoom level default to 19
 	private int _minzoom = 0; //visible zoom level default to 0
 	private boolean _draggingEnabled;
+	private String _tooltiptext; 
 
 	public Gmarker() {
 	}
@@ -613,6 +614,21 @@ public class Gmarker extends Ginfo {
 			smartRerender();
 		}
 	}
+	
+	/** Sets the Tooltiptext of the anchor point.
+	 */
+	public void setTooltiptext(String tooltiptext) {
+		if (tooltiptext != _tooltiptext) {
+			_tooltiptext = tooltiptext;
+			smartUpdate("tooltiptext", _tooltiptext);
+		}
+	}
+	
+	/** Gets the Tooltiptext of the anchor point.
+	 */
+	public String getTooltiptext() {
+		return _tooltiptext;
+	}
 
 	private String encodeURL(String url) {
 		final Desktop desktop = getDesktop();  
@@ -683,6 +699,9 @@ public class Gmarker extends Ginfo {
 		if (isDraggingEnabled()) {
 			render(renderer, "draggingEnabled", true);
 		}
+		if (getTooltiptext() != null) {
+			render(renderer, "tooltiptext", getTooltiptext());
+		}
 		render(renderer, "maxzoom", new Integer(getMaxzoom()));
 		render(renderer, "minzoom", new Integer(getMinzoom()));
 	}
@@ -748,6 +767,9 @@ public class Gmarker extends Ginfo {
 		}
 		if (getIconDragCrossAnchor() != null) {
 			info.put("iconDragCrossAnchor", getIconDragCrossAnchor());
+		}
+		if (getTooltiptext() != null) {
+			info.put("tooltiptext", getTooltiptext());
 		}
 		info.put("maxzoom", new Integer(getMaxzoom()));
 		info.put("minzoom", new Integer(getMinzoom()));

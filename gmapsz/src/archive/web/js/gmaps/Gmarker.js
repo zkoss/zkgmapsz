@@ -286,6 +286,13 @@ gmaps.Gmarker = zk.$extends(gmaps.Ginfo, {
 		},
 		draggable: function(v) {
 			this._initDraggable();
+		},
+		/** Sets the Tooltiptext of the anchor point.
+		 */
+		/** Gets the Tooltiptext of the anchor point.
+		 */
+		tooltiptext: function(t) {
+			this.rebindMapitem_();
 		}
 	},
 	gmarker: function() {
@@ -311,6 +318,7 @@ gmaps.Gmarker = zk.$extends(gmaps.Ginfo, {
 			isdwsz = this._iconShadowSize,
 			ianch = this._iconAnchor,
 			anch = this._anchor,
+			tooltiptext = this._tooltiptext,
 			opts = {};
 		if(anch) opts.position = new google.maps.LatLng(anch[0], anch[1]);
 		if (iimg) {
@@ -330,6 +338,9 @@ gmaps.Gmarker = zk.$extends(gmaps.Ginfo, {
 				isdwsz? new google.maps.Size(isdwsz[0], isdwsz[1]) : null
 			);
 			opts.shadow = markerImage;
+		}
+		if (tooltiptext) {
+			opts.title = tooltiptext;
 		}
 		var gmarker = new google.maps.Marker(opts);
 		gmarker._wgt = this;
@@ -504,6 +515,7 @@ gmaps.Gmarker = zk.$extends(gmaps.Ginfo, {
 		if (info.iconDragCrossImage) this._iconDragCrossImage = info.iconDragCrossImage;
 		if (info.iconDragCrossSize) this._iconDragCrossSize = info.iconDragCrossSize;
 		if (info.iconDragCrossAnchor) this._iconDragCrossAnchor = info.iconDragCrossAnchor;
+		if (info.tooltiptext) this._tooltiptext = info.tooltiptext;
 		
 		this.rebindMapitem_();
 	}
