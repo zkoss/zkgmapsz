@@ -1071,7 +1071,10 @@ public class Gmaps extends XulElement {
 	}
     /** used by the InfoChangeEvent */
     /* package */ void setInfoByClient(Ginfo info) {
-    	if (info == null && _info != null) {
+    	if (info != null) {
+    		info.setOpenByClient(false);
+    	}
+    	else if (_info != null) {
     		_info.setOpenByClient(false);
     	}
         _info = info;
@@ -1228,7 +1231,7 @@ public class Gmaps extends XulElement {
 	static {
 		addClientEvent(Gmaps.class, "onMapMove", CE_DUPLICATE_IGNORE);
 		addClientEvent(Gmaps.class, "onMapZoom", CE_DUPLICATE_IGNORE);
-		addClientEvent(Gmaps.class, "onInfoChange", CE_DUPLICATE_IGNORE);
+		addClientEvent(Gmaps.class, "onInfoChange", CE_DUPLICATE_IGNORE | CE_IMPORTANT | CE_NON_DEFERRABLE);
 		addClientEvent(Gmaps.class, "onMapClick", CE_DUPLICATE_IGNORE);
 		addClientEvent(Gmaps.class, "onMapDoubleClick", CE_DUPLICATE_IGNORE);
 		addClientEvent(Gmaps.class, "onMapRightClick", CE_DUPLICATE_IGNORE);

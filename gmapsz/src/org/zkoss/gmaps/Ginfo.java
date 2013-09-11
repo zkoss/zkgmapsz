@@ -134,7 +134,7 @@ public class Ginfo extends XulElement implements Mapitem {
      */
     public boolean isOpen() {
         Gmaps gmaps = (Gmaps) getParent();
-        return (gmaps != null && gmaps.getInfo() == this) || _open;
+        return _open;
     }
    
 	/** Returns the info anchor point in double[] array where [0] is lat and [1] is lng ; used by component developers
