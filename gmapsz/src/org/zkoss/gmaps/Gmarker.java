@@ -614,21 +614,6 @@ public class Gmarker extends Ginfo {
 			smartRerender();
 		}
 	}
-	
-	/** Sets the Tooltiptext of the anchor point.
-	 */
-	public void setTooltiptext(String tooltiptext) {
-		if (tooltiptext != _tooltiptext) {
-			_tooltiptext = tooltiptext;
-			smartUpdate("tooltiptext", _tooltiptext);
-		}
-	}
-	
-	/** Gets the Tooltiptext of the anchor point.
-	 */
-	public String getTooltiptext() {
-		return _tooltiptext;
-	}
 
 	private String encodeURL(String url) {
 		final Desktop desktop = getDesktop();  

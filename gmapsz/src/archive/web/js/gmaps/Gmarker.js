@@ -18,6 +18,81 @@ Copyright (C) 2009 Potix Corporation. All Rights Reserved.
 	it will be useful, but WITHOUT ANY WARRANTY.
 }}IS_RIGHT
 */
+(function () {
+	//Tooltip
+	var _tt_inf, _tt_tmClosing, _tt_tip, _tt_ref;
+	function _tt_beforeBegin(ref) {
+		if (_tt_tip && !_tt_tip.isOpen()) { //closed by other (such as clicking on menuitem)
+			_tt_clearOpening_();
+			_tt_clearClosing_();
+			_tt_tip = _tt_ref = null;
+		}
+
+		var overTip = _tt_tip && zUtl.isAncestor(_tt_tip, ref);
+		if (overTip) _tt_clearClosing_(); //not close tip if over tip
+		return !overTip;//disable tip in tip
+	}
+	function _tt_begin(tip, ref, params, event) {
+		if (_tt_tip != tip || _tt_ref != ref) {
+			_tt_close_();
+			_tt_inf = {
+				tip: tip, ref: ref, params: params,
+				timer: setTimeout(function() {_tt_open_(event);}, params.delay !== undefined ? params.delay : zk.tipDelay)
+			};
+		} else
+			_tt_clearClosing_();
+	}
+	function _tt_end(ref) {
+		if (_tt_ref == ref || _tt_tip == ref) {
+			_tt_clearClosing_(); //just in case
+			_tt_tmClosing = setTimeout(_tt_close_, 100);
+			//don't cloes immediate since user might move from ref to toolip
+		} else
+			_tt_clearOpening_();
+	}
+	function _tt_clearOpening_() {
+		var inf = _tt_inf;
+		if (inf) {
+			_tt_inf = null;
+			clearTimeout(inf.timer);
+		}
+	}
+	function _tt_clearClosing_() {
+		var tmClosing = _tt_tmClosing;
+		if (tmClosing) {
+			_tt_tmClosing = null;
+			clearTimeout(tmClosing);
+		}
+	}
+	function _tt_open_(event) {
+		var inf = _tt_inf;
+		if (inf) {
+			_tt_tip = inf.tip,
+			_tt_ref = inf.ref;
+			_tt_inf = null;
+			
+			var params = inf.params,
+				xy = params.x !== undefined ? [params.x, params.y] : zk.currentPointer;
+			// Issue 36: Tooltip only support At Pointer and Sepcific Position (x and y = 100px)
+			_tt_tip.open(undefined, xy, params.x ? null : 'at_pointer', {sendOnOpen: true});
+		}
+	}
+	function _tt_close_() {
+		_tt_clearOpening_();
+		_tt_clearClosing_();
+
+		var tip = _tt_tip;
+		if (tip && tip.desktop) { //check still attached to desktop
+			var $tip = jq(tip.$n()),
+				$tipOff = $tip.offset(),
+				pointer = zk.currentPointer;
+			if ((pointer[0] >= $tipOff.left && pointer[0] <= ($tipOff.left + $tip.width())) &&
+				(pointer[1] >= $tipOff.top  && pointer[1] <= ($tipOff.top + $tip.height())))
+				return;
+			_tt_tip = _tt_ref = null;
+			tip.close({sendOnOpen: true});
+		}
+	}
 /**
  * The gmarker that can be overlay on the Google Maps.
  */
@@ -445,7 +520,20 @@ gmaps.Gmarker = zk.$extends(gmaps.Ginfo, {
 		//@see Gmaps#doClick_
 		
 	},
-
+	doTooltipOver_: function (evt) {
+		if (!evt.tooltipped && _tt_beforeBegin(this)) {
+			var params = this._tooltip ? this._parsePopParams(this._tooltip) : {},
+				tip = this._smartFellow(params.id);
+			if (tip) {
+				evt.tooltipped = true;
+					//still call parent's doTooltipOver_ for better extensibility (though not necessary)
+				_tt_begin(tip, this, params, evt);
+			}
+		}
+	},
+	doTooltipOut_: function (evt) {
+		_tt_end(this);
+	},
 	_initListeners: function() {
 		var gmarker = this.mapitem_,
 			gmarkerwgt = this;
@@ -456,6 +544,8 @@ gmaps.Gmarker = zk.$extends(gmaps.Ginfo, {
 		// simply trigger gmaps doDoubleClick with self event
 		this._doubleClick = google.maps.event.addListener(gmarker, "dblclick", function(event) {event.target = gmarkerwgt; gmarkerwgt.parent.doDoubleClick_(event);});
 		this._rightclick = google.maps.event.addListener(gmarker, "rightclick", function(evt) {gmarkerwgt.doRightClick_(evt);});
+		this._mouseover = google.maps.event.addListener(gmarker, "mouseover", function(evt) {gmarkerwgt.doTooltipOver_(evt);});
+		this._mouseout = google.maps.event.addListener(gmarker, "mouseout", function(evt) {gmarkerwgt.doTooltipOut_(evt);});
 		if (this._area) {
 			//Google Maps API will not bubble up the right-click-on-gmarker
 			//and double-click-on-gmarker, so we add own dom listener here to 
@@ -490,6 +580,16 @@ gmaps.Gmarker = zk.$extends(gmaps.Ginfo, {
 			google.maps.event.removeListener(this._rightclick);
 			this._rightclick = null;
 		}
+		
+		if (this._mouseover) {
+			google.maps.event.removeListener(this._mouseover);
+			this._mouseover = null;
+		}
+		
+		if (this._mouseout) {
+			google.maps.event.removeListener(this._mouseout);
+			this._mouseout = null;
+		}
 
 		if (this._area) {
 			this.domUnlisten_(this._area, "ondblclick", "doDoubleClick_");
@@ -520,3 +620,5 @@ gmaps.Gmarker = zk.$extends(gmaps.Ginfo, {
 		this.rebindMapitem_();
 	}
 });
+
+})();
