@@ -49,6 +49,10 @@ Copyright (C) 2006 Potix Corporation. All Rights Reserved.
 		<component-name>gmaps</component-name>
 		<component-class>org.zkoss.gmaps.Gmaps</component-class>
 		<widget-class>gmaps.Gmaps</widget-class>
+        <mold>
+            <mold-name>default</mold-name>
+            <css-uri>css/gmaps.css.dsp</css-uri>
+        </mold>
 		<annotation>
 			<annotation-name>ZKBIND</annotation-name>
 			<property-name>mapType</property-name>
