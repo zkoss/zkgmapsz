@@ -1,0 +1,18 @@
+<zk xmlns:w="client">
+1. Click cross sign of info window to close it.
+2. Click button should see "false".
+	<window height="600px" width="500px" border="normal">
+		<gmaps lat="22" lng="22" width="500px" height="500px">
+			<gmarker id="gmarker" lat="22" lng="22"
+				content="marker content" open="true" />
+		</gmaps>
+		<button label="show open status">
+			<attribute name="onClick"><![CDATA[
+				alert(gmarker.isOpen());
+			]]></attribute>
+			<attribute name="onInfoChange"><![CDATA[
+			   event.getInfo().setOpen(false);
+			]]></attribute>
+		</button>
+	</window>
+</zk>

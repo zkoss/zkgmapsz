@@ -1,0 +1,26 @@
+<zk xmlns:w="client">
+	<window height="450px" width="450px" border="normal">
+		Click the gmarker, should show true, false.
+		<gmaps lat="22" lng="22" width="400px" height="400px">
+			<attribute name="onMapClick"><![CDATA[
+				import org.zkoss.gmaps.Gmarker;
+				Component target = event.getReference();
+				if (target instanceof Gmarker) {
+					Gmarker m = (Gmarker)target;
+					System.out.println(m.isOpen());
+					System.out.println(m.getContent());
+					if (m.getContent() != null
+						&& !m.isOpen()) {
+						m.setOpen(true);
+					} else if (m.isOpen()) {
+						alert(m.isOpen());
+						m.setOpen(false);
+						alert(m.isOpen());
+					}
+				}
+			]]></attribute>
+			<gmarker lat="22" lng="22"
+				content="marker content" open="true" />
+		</gmaps>
+	</window>
+</zk>
