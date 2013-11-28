@@ -645,7 +645,9 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		if (maskOpts = this._maskOpts) {
 			if (maskOpts._mask && maskOpts._mask._opts) {
 				maskOpts._mask._opts.anchor = this;
-				maskOpts._mask.sync();
+				// Issue 42: Check if the mask is still exist.
+				if (maskOpts._mask.mask)
+					maskOpts._mask.sync();
 			} else {
 				gmapsGapi.clearMask(this, maskOpts);
 				this._maskOpts = gmapsGapi.initMask(this, {message: 'Loading Google Maps APIs'});
@@ -708,7 +710,9 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		if (maskOpts = this._maskOpts) {
 			if (maskOpts._mask && maskOpts._mask._opts) {
 				maskOpts._mask._opts.anchor = this;
-				maskOpts._mask.sync();
+				// Issue 42: Check if the mask is still exist.
+				if (maskOpts._mask.mask)
+					maskOpts._mask.sync();
 			} else {
 				gmapsGapi.clearMask(this, maskOpts);
 				this._maskOpts = gmapsGapi.initMask(this, {message: 'Loading Google Maps APIs'});

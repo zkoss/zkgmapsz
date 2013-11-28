@@ -1,13 +1,14 @@
 	--------
 Gmaps 3.0.2 (work with ZK 5.0+ only)
 * Features:
-
+  Issue 37: Gmaps supports Client ID
 * Bugs:
   Issue 21: Tooltip not work after ZK6
   Issue 34: Gmarker#isOpen returns wrong value
   Issue 35: Open status of Gmarker is not updated properly when close info window
   Issue 36: Gmarker supports popup as tooltip
   Issue 29: gmapsz on mobile devices
+  Issue 42: JS error appear with multiple gmaps
 
 * Upgrade Notes:
   

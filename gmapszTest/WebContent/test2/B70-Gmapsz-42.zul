@@ -1,0 +1,5 @@
+<window title="Multiple Gmaps JS Error" width="250px" height="600px" border="normal">
+    <gmaps width="200px" height="200px" />
+    <gmaps width="200px" height="200px" />
+    <gmaps width="200px" height="200px" />
+</window>
