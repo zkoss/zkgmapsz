@@ -1,0 +1,13 @@
+<window height="250px" width="300px" border="normal">
+	<attribute name="onCreate">
+		map.panTo(48, 10);
+
+		Gmarker gmark = new Gmarker();
+		gmark.setParent(map);
+		gmark.setLat(48);
+		gmark.setLng(10);
+	</attribute>
+	<gmaps id="map" width="300px" height="200px"/>
+	<separator/>
+	<label value="Open it on the tablet, you should see the marker."/>
+</window>
