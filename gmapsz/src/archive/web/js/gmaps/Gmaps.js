@@ -440,7 +440,16 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		 * @param libraries the libraries to load
 		 * @since 3.0.0
 		 */
-		libraries:null
+		libraries:null,
+		/** Returns the client ID of the Maps.
+		 * @return client client ID of the Google Maps
+		 * @since 3.0.2
+		 */
+		/** Sets the client ID of the Maps.
+		 * @param client client ID of the Google Maps
+		 * @since 3.0.2
+		 */
+		client:null
 	},
 	/**
 	 * Add supported map type into this Gmaps("normal", "satellite", "hybrid", "physical").
@@ -664,7 +673,9 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 						            this._sensor? this._sensor : 'false',
 						            '&language=', this._language? this._language : '',
 						            '&region=', this._baseDomain? this._baseDomain : '',
-						            '&libraries=', this._libraries? this._libraries : ''].join('');
+						            '&libraries=', this._libraries? this._libraries : '',
+						            '&client=', this._client? this._client : '',
+						            		].join('');
 						google.load('maps', this._version,
 								{
 									other_params: opts,

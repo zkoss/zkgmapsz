@@ -86,6 +86,7 @@ public class Gmaps extends XulElement {
 	
 	private boolean _sensor;
 	private String _baseDomain;
+	private String _client;
 	private String _language;
 	private String _libraries = "geometry";
 	private String _protocol;
@@ -117,6 +118,24 @@ public class Gmaps extends XulElement {
 		if (update) {
 			smartUpdate("center", getCenter());
 		}
+	}
+	/** Sets the client ID of the Maps.
+	 * @param client client ID of the Google Maps
+	 * @since 3.0.2
+	 */
+	public void setClient(String client) {
+		if (!Objects.equals(_client, client)) {
+			this._client = client;
+			smartUpdate("client", client);
+		}
+	}
+	
+	/** Returns the client of the Maps.
+	 * @return client client of the Google Maps
+	 * @since 3.0.2
+	 */
+	public String getClient() {
+		return _client;
 	}
 
 	/** Sets the current latitude of the Maps center.
@@ -1175,6 +1194,8 @@ public class Gmaps extends XulElement {
 			renderer.render("language", _language);
 		if (_libraries != null)
 			renderer.render("libraries", _libraries);
+		if (_client != null)
+			renderer.render("client", _client);
 	}
 	/** Processes an AU request.
 	 *
