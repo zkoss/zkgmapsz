@@ -74,7 +74,8 @@ gmaps.Gpolygon = zk.$extends(gmaps.Gpolyline, {
 					strokeOpacity: this._outline? this._opacity : 0,
 					strokeWeight: this._weight,
 					fillColor: this._fillColor,
-					fillOpacity: this._fill? this._fillOpacity : 0
+					fillOpacity: this._fill? this._fillOpacity : 0,
+					visible: this._visible
 				},
 			gpolygon = new google.maps.Polygon(opt);
 

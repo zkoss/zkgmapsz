@@ -293,6 +293,12 @@ gmaps.Gmarker = zk.$extends(gmaps.Ginfo, {
 		 */
 		tooltiptext: function(t) {
 			this.rebindMapitem_();
+		},
+		visible: function(b) {
+			var marker = this.mapitem_;
+			if (this.mapitem_) {
+				marker.setVisible(b);
+			}
 		}
 	},
 	gmarker: function() {
@@ -319,6 +325,7 @@ gmaps.Gmarker = zk.$extends(gmaps.Ginfo, {
 			ianch = this._iconAnchor,
 			anch = this._anchor,
 			tooltiptext = this._tooltiptext,
+			visible = this._visible,
 			opts = {};
 		if(anch) opts.position = new google.maps.LatLng(anch[0], anch[1]);
 		if (iimg) {
@@ -342,6 +349,7 @@ gmaps.Gmarker = zk.$extends(gmaps.Ginfo, {
 		if (tooltiptext) {
 			opts.title = tooltiptext;
 		}
+		opts.visible = visible;
 		var gmarker = new google.maps.Marker(opts);
 		gmarker._wgt = this;
 		this.mapitem_ = gmarker;

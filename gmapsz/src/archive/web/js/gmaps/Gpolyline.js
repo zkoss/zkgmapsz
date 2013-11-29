@@ -77,6 +77,12 @@ gmaps.Gpolyline = zk.$extends(gmaps.Goverlay, {
 		 */
 		opacity: function(f) {
 			this.rebindMapitem_();
+		},
+		visible: function(b) {
+			var polyline = this.mapitem_;
+			if (this.mapitem_) {
+				polyline.setVisible(b);
+			}
 		}
 	},
 	initMapitem_: function() {
@@ -85,7 +91,8 @@ gmaps.Gpolyline = zk.$extends(gmaps.Goverlay, {
 		var polyOptions = {
 			strokeColor: this._color,
 			strokeOpacity: this._opacity,
-			strokeWeight: this._weight
+			strokeWeight: this._weight,
+			visible: this._visible
 		},
 		gpolyline = new google.maps.Polyline(polyOptions);
 		var path = gpolyline.setPath(decodedPath),
