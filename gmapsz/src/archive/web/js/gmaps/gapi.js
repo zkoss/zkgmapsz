@@ -56,8 +56,12 @@ function waitUntil(wgt, opts) {
 			setTimeout(function() {waitUntil(wgt, opts);}, 100);
 			return;
 		}
-	}
-	opts.callback();
+		var mopts = wgt._maskOpts;
+		// Issue 43: Clear mask after loading timeout
+		if (mopts && mopts._mask)
+			gmapsGapi.clearMask(wgt, wgt._maskOpts);
+	} else
+		opts.callback();
 }
 gmapsGapi.initMask = function (wgt, opts) {
 	var opt = {};
