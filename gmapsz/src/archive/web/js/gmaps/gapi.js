@@ -62,6 +62,8 @@ function waitUntil(wgt, opts) {
 gmapsGapi.initMask = function (wgt, opts) {
 	var opt = {};
 	opt['anchor'] = wgt;
+	// Issue 42: Give mask an unique id for each map.
+	opt['id'] = wgt.uuid + '-mask';
 	if (opts.message) opt['message'] = opts.message;
 	opts['_mask'] = new zk.eff.Mask(opt);
 	return opts;
