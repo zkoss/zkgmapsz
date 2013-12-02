@@ -69,6 +69,7 @@ gmaps.Gpolygon = zk.$extends(gmaps.Gpolyline, {
 	initMapitem_: function() {
 		var decodedPath = google.maps.geometry.encoding.decodePath(this._pointsAndLevels[0]),
 			opt = {
+					editable: this._editable,
 					paths: decodedPath,
 					strokeColor: this._color,
 					strokeOpacity: this._outline? this._opacity : 0,
@@ -85,6 +86,7 @@ gmaps.Gpolygon = zk.$extends(gmaps.Gpolyline, {
 	},
 	setRerender_: function(info) {
 		this.$supers(gmaps.Gpolygon, 'prepareRerender_', arguments);
+		this._editable = info.editable;
 		this._fillColor = info.fillColor;
 		this._outline = info.outline;
 		this._fill = info.fill;

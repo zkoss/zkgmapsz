@@ -23,11 +23,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.zkoss.gmaps.event.PathChangeEvent;
 import org.zkoss.lang.Objects;
 import org.zkoss.util.CollectionsX;
+import org.zkoss.zk.au.AuRequest;
 import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -41,7 +44,7 @@ import org.zkoss.zul.impl.XulElement;
  */
 public class Gpolyline extends XulElement implements Mapitem {
 	private static final long serialVersionUID = 200807041530L;
-	protected List _points = new ArrayList(32);
+	protected List<Tuple> _points = new ArrayList<Tuple>(32);
 	private String _strpoints;
 	private String _color = "#808080"; //default to dark gray
 	private int _weight = 5;  //default to 5
@@ -50,7 +53,12 @@ public class Gpolyline extends XulElement implements Mapitem {
 	private int _zoomFactor = 32; //zoom factor between polyline levels (2^5 if _numLevels == 4).
 	protected String _encodedPolyline; //cached value
 	protected String _encodedLevels; //cached value
+	private boolean _editable = false;
 	private boolean _smartUpdatePoly; //whether post the smartUpdate event already?
+	
+	static {
+		addClientEvent(Gpolyline.class, "onPathChange", CE_IMPORTANT|CE_DUPLICATE_IGNORE);
+	}
 
 	public Gpolyline() {
 		addEventListener("onSmartUpdatePoly", new EventListener() {
@@ -196,7 +204,56 @@ public class Gpolyline extends XulElement implements Mapitem {
 		return sb.toString();
 	}
 	
-
+	/**
+	 * Set encoded path to polyline and decode path to 
+	 * e.g. "_p~iF~ps|U_ulLnnqC_mqNvxq`@".
+	 * @param encodedPolyline
+	 * @Since 3.0.2
+	 */
+	public void setEncodedPolylineByClient(String encodedPolyline) {
+		if (!Objects.equals(encodedPolyline, _encodedPolyline)) {
+			_encodedPolyline = encodedPolyline;
+			_points = getDecodedPolyline(_encodedPolyline);
+		}
+	}
+	
+	protected List<Tuple> getDecodedPolyline(String encodedPolyline) {
+		List<Tuple> points = new LinkedList<Tuple>();
+		List<Double> values = decodeLatLngs(encodedPolyline); 
+		int length = values.size();
+		if (length > 2) {
+			points.add(new Tuple(values.get(0),values.get(1), 3));
+			for (int i = 2; i < length - 1; i += 2) {
+				points.add(new Tuple(values.get(i) + points.get(i/2 - 1).lat, values.get(i + 1) + points.get(i/2 - 1).lng, 3));
+			}
+			return points;
+		} else 
+			return new ArrayList<Tuple>(32);
+	}
+	
+	protected static List<Double> decodeLatLngs(String encodedPolyline) {
+		int length = encodedPolyline.length();
+		int index = 0, value = 0, shift = 0;
+		List<Double> decodeLatLngs = new LinkedList<Double>();
+		while (index < length) {
+			int chunk = ((int) encodedPolyline.charAt(index ++)) - 63;
+			value |= (chunk & 0x1f) << shift;
+			shift += 5;
+			if ((chunk & 0x20) == 0) {
+				decodeLatLngs.add(decodeInt(value));
+				value = 0;
+				shift = 0;
+			}
+		}
+		return decodeLatLngs;
+	}
+	
+	protected static double decodeInt(int x) {
+		boolean sign = ((x & 1) != 0);
+		double value = sign ? ~(x >> 1) : (x >> 1);
+		return value / 1e5;
+	}
+	
 	/**
 	 * Returns the line color in form of #RRGGBB, default to #808080.
 	 * @return the color
@@ -290,6 +347,25 @@ public class Gpolyline extends XulElement implements Mapitem {
 		}
 	}
 	
+	/** Returns whether can edit the Gpolyline by mouse; default to false.
+	 * @return whether can edit the Gpolyline by mouse; default to false.
+	 * @Sinec 3.0.2
+	 */
+	public boolean isEditable () {
+		return _editable;
+	}
+	
+	/** Sets whether can edit the Gpolyline by mouse; default to false.
+	 * @param editable whether enable edit the Gpolyline by mouse.
+	 * @Sinec 3.0.2
+	 */
+	public void setEditable (boolean editable) {
+		if (_editable != editable) {
+			_editable = editable;
+			smartUpdate("editable", _editable);
+		}
+	}
+	
 	/**
 	 * Returns the zoomFactor (zoomFactor change per the numLevels).
 	 */
@@ -319,6 +395,7 @@ public class Gpolyline extends XulElement implements Mapitem {
 		info.put("color", getColor());
 		info.put("weight", new Integer(getWeight()));
 		info.put("opacity", new Double(getOpacity()/100.0));
+		info.put("editable", isEditable());
 	}
 
 	protected void smartRerender() {
@@ -343,5 +420,21 @@ public class Gpolyline extends XulElement implements Mapitem {
 		render(renderer, "color", getColor());
 		render(renderer, "weight", new Integer(getWeight()));
 		render(renderer, "opacity", new Double(getOpacity()/100.0));
+		render(renderer, "editable", isEditable());
+	}
+	/** Processes an AU request.
+	 *
+	 * <p>Default: in addition to what are handled by {@link XulElement#service},
+	 * it also handles onClick.
+	 * @since 3.0.2
+	 */
+	public void service(AuRequest request, boolean everError) {
+		final String cmd = request.getCommand();
+		if ("onPathChange".equals(cmd)) {
+			final PathChangeEvent evt = PathChangeEvent.getPathChangeEvent(request);
+			setEncodedPolylineByClient(evt.getPath());
+			Events.postEvent(evt);
+		} else
+			super.service(request, everError);
 	}
 }

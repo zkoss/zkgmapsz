@@ -184,6 +184,7 @@ public class Gpolygon extends Gpolyline {
 	throws java.io.IOException {
 		super.renderProperties(renderer);
 		
+		render(renderer, "editable", isEditable());
 		render(renderer, "fill", isFill());
 		render(renderer, "outline", isOutline());
 		render(renderer, "fillColor", getFillColor());
@@ -193,6 +194,7 @@ public class Gpolygon extends Gpolyline {
 	protected void prepareRerender(Map info) {
 		super.prepareRerender(info);
 		
+		info.put("editable", isEditable());
 		info.put("fill", Boolean.valueOf(isFill()));
 		info.put("outline", Boolean.valueOf(isOutline()));
 		info.put("fillColor", getFillColor());

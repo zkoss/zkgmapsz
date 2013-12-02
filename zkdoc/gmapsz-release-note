@@ -3,6 +3,7 @@ Gmaps 3.0.2 (work with ZK 5.0+ only)
 * Features:
   Issue 37: Gmaps supports Client ID
   Issue 41: Gmarker support visible attribute
+  Issue 40: Gpolygon support editable attribute
 * Bugs:
   Issue 21: Tooltip not work after ZK6
   Issue 34: Gmarker#isOpen returns wrong value
