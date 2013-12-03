@@ -58,7 +58,8 @@ public class Gmarker extends Ginfo {
 	private int _iconDragCrossHeight = -100;
 	private int _iconDragCrossAnchorX = -100;
 	private int _iconDragCrossAnchorY = -100;
-	private int _maxzoom = ZOOM_LIMIT; //visible zoom level default to 19
+	// Issue 28: Do not specify default zoom limit level
+	private int _maxzoom = -1; // set to -1 as undefined.
 	private int _minzoom = 0; //visible zoom level default to 0
 	private boolean _draggingEnabled;
 
@@ -582,13 +583,10 @@ public class Gmarker extends Ginfo {
 	}
 	
 	/**
-	 * Sets the maximum visible zoom level of this Gmarker (max 17).
+	 * Sets the maximum visible zoom level of this Gmarker.
 	 * @since 2.0_8
 	 */
 	public void setMaxzoom(int lv) {
-		if (lv > ZOOM_LIMIT || lv < 0) {
-			throw new UiException("maxzoom level must be between 0 ~ "+ZOOM_LIMIT+". maxzoom: "+lv);
-		}
 		if (_maxzoom != lv) {
 			_maxzoom = lv;
 			smartRerender();
@@ -608,8 +606,8 @@ public class Gmarker extends Ginfo {
 	 * @since 2.0_8
 	 */
 	public void setMinzoom(int lv) {
-		if (lv > ZOOM_LIMIT || lv < 0) {
-			throw new UiException("maxzoom level must be between 0 ~ "+ZOOM_LIMIT+". maxzoom: "+lv);
+		if (lv < 0) {
+			throw new UiException("minzoom level must be larger then 0. minzoom: "+lv);
 		}
 		if (_minzoom != lv) {
 			_minzoom = lv;

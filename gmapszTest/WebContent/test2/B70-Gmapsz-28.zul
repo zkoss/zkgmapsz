@@ -1,0 +1,22 @@
+<window title="Marker's Max Zoom Level" height="400px" width="400px" border="normal">
+	<attribute name="onCreate">
+		map.panTo(48, 10);
+		map.setZoom(20);
+		
+		Gmarker gmark1 = new Gmarker();
+		gmark1.setParent(map);
+		gmark1.setLat(48);
+		gmark1.setLng(10);
+		gmark1.setMaxzoom(28);
+		Gmarker gmark2 = new Gmarker();
+		gmark2.setParent(map);
+		gmark2.setLat(48);
+		gmark2.setLng(10.0001);
+		Gmarker gmark3 = new Gmarker();
+		gmark3.setParent(map);
+		gmark3.setLat(48);
+		gmark3.setLng(10.01);
+		gmark3.setMaxzoom(16);
+	</attribute>
+	<gmaps id="map" width="400px" height="300px"/>
+</window>

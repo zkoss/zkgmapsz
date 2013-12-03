@@ -744,10 +744,25 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			maps = this._gmaps;
 		opts0['condition'] = function() {return window.MarkerManager};
 		opts0['callback'] = function() {
-			wgt._mm = new MarkerManager(maps, {trackMarkers: true});
+			
+			setTimeout(function() {
+			  var types = maps.mapTypes;
+
+			// Issue 28: Find map max zoom level.
+			  var mapsMaxZoom = 19;
+			  for (var type in types ) {
+				  if (typeof types.get(type) === 'object' && typeof types.get(type).maxZoom === 'number') {
+					  var zoom = types.get(type).maxZoom;
+				      if (zoom > mapsMaxZoom) {
+				        mapsMaxZoom = zoom;
+				      }
+				  }
+			  }
+			wgt._maxzoom = mapsMaxZoom;
+			wgt._mm = new MarkerManager(maps, {trackMarkers: true, maxZoom: mapsMaxZoom});
 			google.maps.event.addListener(wgt._mm, 'loaded', function(){
 				wgt._mmLoaded = true;
-	        });
+	        });}, 0);
 		};
 		
 		gmapsGapi.waitUntil(wgt, opts0);

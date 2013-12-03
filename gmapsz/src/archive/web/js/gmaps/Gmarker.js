@@ -244,11 +244,11 @@ gmaps.Gmarker = zk.$extends(gmaps.Ginfo, {
 			this.rebindMapitem_();
 		},
 		/**
-		 * Returns the maximum visible zoom level of this Gmarker (default to 17).
+		 * Returns the maximum visible zoom level of this Gmarker.
 		 * @return int maximum visible zoom level
 		 */
 		/**
-		 * Sets the maximum visible zoom level of this Gmarker (default to 17).
+		 * Sets the maximum visible zoom level of this Gmarker.
 		 * @param int zoom maximum visible zoom level
 		 */
 		maxzoom: function(i) {
@@ -310,9 +310,12 @@ gmaps.Gmarker = zk.$extends(gmaps.Ginfo, {
 			
 			//binding if exists Gmaps
 			if (this.parent) {
-				this.parent._mm.addMarker(this.mapitem_, this._minzoom, this._maxzoom);
+				var parent = this.parent,
+					maxzoom = this._maxzoom;
+				// Issue 28: Limit correspond to Gmaps max zoom level.
+				parent._mm.addMarker(this.mapitem_, this._minzoom, (maxzoom < 0 || maxzoom > parent._maxzoom) ? parent._maxzoom : maxzoom);
 				// open at begining, no panTo
-				if (this._open) this.parent.openInfo(this);
+				if (this._open) parent.openInfo(this);
 			}
 		}
 	},
@@ -359,13 +362,18 @@ gmaps.Gmarker = zk.$extends(gmaps.Ginfo, {
 	unbindMapitem_: function() {
 		var gmarker = this.mapitem_;
 		if (gmarker) {
-			if (this.parent) {
+			var parent = this.parent;
+			if (parent) {
 				if (this._infowindow) {
-					var curZoom = this.parent.getZoom();
-					if (curZoom < this.getMinzoom() || curZoom > this.getMaxzoom())
+					var curZoom = parent.getZoom(),
+						maxzoom = this.getMaxzoom();
+					// Issue 28: Limit correspond to Gmaps max zoom level.
+					if (maxzoom < 0 || maxzoom > parent._maxzoom)
+						maxzoom = parent._maxzoom;
+					if (curZoom < this.getMinzoom() || curZoom > maxzoom)
 						this.parent.closeInfo(this);
 				}
-				this.parent._mm.removeMarker(gmarker);
+				parent._mm.removeMarker(gmarker);
 			}
 			gmarker._wgt = null;
 			this.mapitem_ = null;

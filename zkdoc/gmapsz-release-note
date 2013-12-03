@@ -13,6 +13,7 @@ Gmaps 3.0.2 (work with ZK 5.0+ only)
   Issue 29: gmapsz on mobile devices
   Issue 42: JS error appear with multiple gmaps
   Issue 43: Loading mask not cleared without network
+  Issue 28: Incorrect max zoom level
 
 * Upgrade Notes:
   
