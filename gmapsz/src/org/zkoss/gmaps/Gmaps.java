@@ -56,8 +56,10 @@ public class Gmaps extends XulElement {
 	private transient Ginfo _oneinfo; //the only one Ginfo child of this Gmaps.
 	private transient Ginfo _info; //current opened info window, null means none is open.
 
-	private double _lat = 37.4419;
-	private double _lng = -122.1419;
+	private LatLng _center = new LatLng(37.4419, -122.1419);
+	private LatLngBounds _bounds = new LatLngBounds(
+								new LatLng(37.418026932311111, -122.1933746338),
+								new LatLng(37.4657298516, -122.0903778076));
 	private int _zoom = 13;
 	private boolean _large;
 	private boolean _small;
@@ -78,11 +80,6 @@ public class Gmaps extends XulElement {
 	private boolean _doubleClickZoom = true;
 	private boolean _scrollWheelZoom = true;
 	private boolean _enableGoogleBar;
-	
-	private double _swlat = 37.418026932311111;
-	private double _swlng = -122.1933746338;
-	private double _nelat = 37.4657298516;
-	private double _nelng = -122.0903778076;
 	
 	private boolean _sensor;
 	private String _baseDomain;
@@ -105,18 +102,16 @@ public class Gmaps extends XulElement {
 	 * @param lng longitude of the Google Maps center
 	 */
 	public void setCenter(double lat, double lng) {
-		boolean update = false;
-		if (lat != _lat) {
-			_lat = lat;
-			update = true;
-		}
-		if (lng != _lng) {
-			_lng = lng;
-			update = true;
-		}
-
-		if (update) {
-			smartUpdate("center", getCenter());
+		setCenter(new LatLng(lat, lng));
+	}
+	/** Sets the center of the Google Maps.
+	 * @param center the Google Maps center
+	 * @Since 3.0.2
+	 */
+	public void setCenter(LatLng center) {
+		if (!_center.equals(center)) {
+			_center = center;
+			smartUpdate("center", GmapsUtil.latLngToArray(center));
 		}
 	}
 	/** Sets the client ID of the Maps.
@@ -141,75 +136,87 @@ public class Gmaps extends XulElement {
 	/** Sets the current latitude of the Maps center.
 	 * @param lat latitude of the Google Maps center
 	 */
-	public void setLat(double lat) {
-		if (lat != _lat) {
-			_lat = lat;
-			smartUpdate("center", getCenter());
-		}
+	public void setLat (double lat) {
+		setCenter(new LatLng(lat, _center.getLongitude()));
 	}
 	
 	/** Returns the current latitude of the Maps center.
 	 * @return the current latitude of the Maps center.
 	 */
 	public double getLat() {
-		return _lat;
+		return _center.getLatitude();
 	}
 	
 	/** Sets the current longitude of the Maps center.
 	 * @param lng the current longitude of the Maps center.
 	 */
-	public void setLng(double lng) {
-		if (lng != _lng) {
-			_lng = lng;
-			smartUpdate("center", getCenter());
-		}
+	public void setLng (double lng) {
+		setCenter(new LatLng(_center.getLatitude(), lng));
 	}
 	
 	/** Returns the currrent longitude of the Maps center.
 	 * @return the currrent longitude of the Maps center.
 	 */
 	public double getLng() {
-		return _lng;
+		return _center.getLongitude();
 	}
 	
-	/** Returns the Maps center in double[] array where [0] is lat and [1] is lng ; used by component developers
-	 * only.
+	/** Sets the viewport to contain the given bounds.
+	 * 
+	 * @param bounds the instance represents a rectangle in geographical coordinates.
+	 * @since 3.0.2
 	 */
-	private double[] getCenter() {
-		return new double[] {_lat, _lng};
+	public void fitBounds(LatLngBounds bounds) {
+		if(!_bounds.equals(bounds)) {
+			_bounds = bounds;
+			syncModel();
+			smartUpdate("bounds", GmapsUtil.boundsToArray(bounds));
+		}
+	}
+	
+	/** Returns the bounds of the Maps center.
+	 * @return bounds the bounds of the Maps center.
+	 * @since 3.0.2
+	 */
+	public LatLngBounds getBounds() {
+		return _bounds;
 	}
 
 	/**
 	 * Returns the bounded south west latitude.
 	 * @return the bounded south west latitude.
 	 * @since 2.0_8
+	 * @deprecated As of release 3.0.2, replaced with {@link Gmaps#getBounds()} instead.
 	 */
 	public double getSwLat() {
-		return _swlat;
+		return _bounds.getSouthWest().getLatitude();
 	}
 	/**
 	 * Returns the bounded south west longitude.
 	 * @return the bounded south west longitude.
 	 * @since 2.0_8
+	 * @deprecated As of release 3.0.2, replaced with {@link Gmaps#getBounds()} instead.
 	 */
 	public double getSwLng() {
-		return _swlng;
+		return _bounds.getSouthWest().getLongitude();
 	}
 	/**
 	 * Returns the bounded north east latitude.
 	 * @return the bounded north east latitude.
 	 * @since 2.0_8
+	 * @deprecated As of release 3.0.2, replaced with {@link Gmaps#getBounds()} instead.
 	 */
 	public double getNeLat() {
-		return _nelat;
+		return _bounds.getNorthEast().getLatitude();
 	}
 	/**
 	 * Returns the bounded north east longitude.
 	 * @return the bounded north east longitude.
 	 * @since 2.0_8
+	 * @deprecated As of release 3.0.2, replaced with {@link Gmaps#getBounds()} instead.
 	 */
 	public double getNeLng() {
-		return _nelng;
+		return _bounds.getNorthEast().getLongitude();
 	}
 
 	/** Pan to the new center of the Google Maps.
@@ -217,18 +224,17 @@ public class Gmaps extends XulElement {
 	 * @param lng longitude of the Google Maps center
 	 */
 	public void panTo(double lat, double lng) {
-		boolean update = false;
-		if (lat != _lat) {
-			_lat = lat;
-			update = true;
-		}
-		if (lng != _lng) {
-			_lng = lng;
-			update = true;
-		}
-		
-		if (update) {
-			smartUpdate("panTo_", getCenter());
+		panTo(new LatLng(lat, lng));
+	}
+	
+	/** Pan to the new center of the Google Maps.
+	 * @param center the Google Maps center
+	 * @Since 3.0.2
+	 */
+	public void panTo(LatLng center) {
+		if (!_center.equals(center)) {
+			_center = center;
+			smartUpdate("panTo_", GmapsUtil.latLngToArray(center));
 		}
 	}
 	
@@ -869,12 +875,12 @@ public class Gmaps extends XulElement {
 	}
 	private void syncModel() {
 		//bounds not initiated yet(do it at server side)
-		if (_swlat == 37.418026932311111) { 
+		if (getSwLat() == 37.418026932311111) { 
 			initBounds();
 		}
 		if (_model != null)
 			onMapDataChange(new MapDataEvent(_model, MapDataEvent.BOUNDS_CHANGED, 
-				_model.getItemsIn(_swlat, _swlng, _nelat, _nelng, _lat, _lng, _zoom)));
+				_model.getItemsIn(getSwLat(), getSwLng(), getNeLat(), getNeLng(), getLat(), getLng(), _zoom)));
 	}
 	private void initMapDataListener() {
 		if (_dataListener == null) {
@@ -1078,9 +1084,8 @@ public class Gmaps extends XulElement {
 	}
 	
 	/** used by the MapMoveEvent */
-	/* package */ void setCenterByClient(double lat, double lng) {
-		_lat = lat;
-		_lng = lng;
+	/* package */ void setCenterByClient(LatLng center) {
+		_center = center;
 	}
 	/* package */ void setZoomByClient(int zoom) {
 		_zoom = zoom;
@@ -1098,11 +1103,8 @@ public class Gmaps extends XulElement {
     	}
         _info = info;
     }
-	/* package */ void setBoundsByClient(double swlat, double swlng, double nelat, double nelng) {
-		_swlat = swlat;
-		_swlng = swlng;
-		_nelat = nelat;
-		_nelng = nelng;
+	/* package */ void setBoundsByClient(LatLngBounds bounds) {
+		_bounds = bounds;
 	}
 
 	private int width(String width) {
@@ -1132,11 +1134,7 @@ public class Gmaps extends XulElement {
 		return Integer.parseInt(str);
 	}
 	private void initBounds() {
-		final double[] bounds = GmapsUtil.getBounds(_lat, _lng, width(getWidth()), height(getHeight()), _zoom);
-		_swlat = bounds[0];
-		_swlng = bounds[1];
-		_nelat = bounds[2];
-		_nelng = bounds[3];
+		_bounds = GmapsUtil.getBounds(_center, width(getWidth()), height(getHeight()), _zoom);
 	}
 
 	//-- ComponentCtrl --//
@@ -1144,8 +1142,12 @@ public class Gmaps extends XulElement {
 	throws java.io.IOException {
 		super.renderProperties(renderer);
 
-		if (_lat != 37.4419 || _lng != -122.1419)
-			render(renderer, "center", getCenter());
+		if (!_center.equals(new LatLng(37.4419, -122.1419)))
+			render(renderer, "center", GmapsUtil.latLngToArray(_center));
+		if (!_bounds.equals(new LatLngBounds(
+				new LatLng(37.418026932311111, -122.1933746338),
+				new LatLng(37.4657298516, -122.0903778076))))
+			render(renderer, "bounds", GmapsUtil.boundsToArray(_bounds));
 		if (_zoom != 13)
 			render(renderer, "zoom", new Integer(getZoom()));
 		if (_large)
@@ -1207,14 +1209,8 @@ public class Gmaps extends XulElement {
 		final String cmd = request.getCommand();
 		if (cmd.equals("onMapMove")) {
 			final MapMoveEvent evt = MapMoveEvent.getMapMoveEvent(request);
-			final double lat = evt.getLat();
-			final double lng = evt.getLng();
-			final double swlat = evt.getSwLat();
-			final double swlng = evt.getSwLng();
-			final double nelat = evt.getNeLat();
-			final double nelng = evt.getNeLng();
-			setCenterByClient(lat, lng);
-			setBoundsByClient(swlat, swlng, nelat, nelng);
+			setCenterByClient(evt.getLatLng());
+			setBoundsByClient(evt.getBounds());
 			Events.postEvent(evt);
 		} else if (cmd.equals("onMapZoom")) {
 			final MapZoomEvent evt = MapZoomEvent.getMapZoomEvent(request);

@@ -83,6 +83,13 @@ public class GmapsUtil {
 		
 		return out;
 	}
+	/** Convert the LatLng class's latitude and longitude to Array.
+	 * @param latLng the class contains latitude and longitude.
+	 * @return double[] with double[0] the latitude and double[1] the longitude
+	 */
+	public static double[] latLngToArray(LatLng latLng) {
+		return new double[] {latLng.getLatitude(), latLng.getLongitude()};
+	}
 	/** Returns the bounds per the given center latitude, longitude, 
 	 * view port width, view port height, and zoomLevel.
 	 * 
@@ -112,6 +119,46 @@ public class GmapsUtil {
 		out[3] = ne[1];
 		
 		return out;
+	}
+	/** Returns the bounds per the given center latitude, longitude, 
+	 * view port width, view port height, and zoomLevel.
+	 * 
+	 * @param latLng the center latitude and longitude
+	 * @param width the view port width
+	 * @param height the view port height
+	 * @param zoomLevel the zoom level
+	 * @return bounds of the given center 
+	 */
+	public static LatLngBounds getBounds(LatLng latLng, int width, int height, int zoomLevel) {
+		final int base = 256 << zoomLevel; //zoomLevel 0 -> 256, 1 -> 512
+
+		final int[] centerxy = latlngToXy(latLng.getLatitude(), latLng.getLongitude(), zoomLevel);
+		int westx = centerxy[0] - width / 2;
+		if (westx < 0) westx = 0;
+		int eastx = westx + width;
+		if (eastx > base) eastx = base;
+		int northy = centerxy[1] - height / 2;
+		int southy = northy + height;
+		final double[] sw = xyToLatlng(westx, southy, zoomLevel);
+		final double[] ne = xyToLatlng(eastx, northy, zoomLevel);
+		final double[] out = new double[4];
+		out[0] = sw[0];
+		out[1] = sw[1];
+		out[2] = ne[0];
+		out[3] = ne[1];
+		
+		return new LatLngBounds(new LatLng(sw[0], sw[1]), new LatLng(ne[0], ne[1]));
+	}
+	/** Convert the LatLngBounds class's to Array.
+	 * @param latLng the class contains SouthWest and NorthEast bounds.
+	 * @return double[] of the bounds
+	 */
+	public static double[] boundsToArray(LatLngBounds bounds) {
+		return new double[] {
+				bounds.getSouthWest().getLatitude(),
+				bounds.getSouthWest().getLongitude(),
+				bounds.getNorthEast().getLatitude(),
+				bounds.getNorthEast().getLongitude()};
 	}
 	/**
 	 * Get Geocode Service Response by the given address

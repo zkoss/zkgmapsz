@@ -31,8 +31,7 @@ import org.zkoss.zul.impl.XulElement;
  */
 public class Ginfo extends XulElement implements Mapitem {
 	private static final long serialVersionUID = 200807041526L;
-	protected double _lat = 37.4419;
-	protected double _lng = -122.1419;
+	protected LatLng _anchor = new LatLng(37.4419, -122.1419);
 	private String _content = "";
 	private boolean _open = false;
 
@@ -41,9 +40,12 @@ public class Ginfo extends XulElement implements Mapitem {
 	public Ginfo(String content) {
 		setContent(content);
 	}
-	public Ginfo(String content, double lat, double lng) {
+	public Ginfo(String content, LatLng anchor) {
 		setContent(content);
-		setAnchor(lat, lng);
+		setAnchor(anchor);
+	}
+	public Ginfo(String content, double lat, double lng) {
+		this(content, new LatLng(lat, lng));
 	}
 
 	/** Returns the content of the info window.
@@ -67,48 +69,42 @@ public class Ginfo extends XulElement implements Mapitem {
 	 * @param lng longitude of the anchor point in Google Maps.
 	 */
 	public void setAnchor(double lat, double lng) {
-		boolean update = false;
-		if (lat != _lat) {
-			_lat = lat;
-			update = true;
-		}
-		if (lng != _lng) {
-			_lng = lng;
-			update = true;
-		}
-		if (update) {
-			smartUpdate("anchor", getAnchor());
+		setAnchor(new LatLng(lat, lng));
+	}
+	
+	/** set the anchor point of the info window.
+	 * @param anchor the anchor point in Google Maps.
+	 * @Since 3.0.2
+	 */
+	public void setAnchor(LatLng anchor) {
+		if (!_anchor.equals(anchor)) {
+			_anchor = anchor;
+			smartUpdate("anchor", GmapsUtil.latLngToArray(anchor));
 		}
 	}
 
 	/** set the latitude of the anchor point.
 	 */
 	public void setLat(double lat) {
-		if (lat != _lat) {
-			_lat = lat;
-			smartUpdate("anchor", getAnchor());
-		}
+		setAnchor(new LatLng(lat, _anchor.getLongitude()));
 	}
 	
 	/** get the latitude of the anchor point.
 	 */
 	public double getLat() {
-		return _lat;
+		return _anchor.getLatitude();
 	}
 	
 	/** set the longitude of the anchor point.
 	 */
 	public void setLng(double lng) {
-		if (lng != _lng) {
-			_lng = lng;
-			smartUpdate("anchor", getAnchor());
-		}
+		setAnchor(new LatLng(_anchor.getLatitude(), lng));
 	}
 	
 	/** get the longitude of the anchor point.
 	 */
 	public double getLng() {
-		return _lng;
+		return _anchor.getLongitude();
 	}
 	
 	/** Open this Info */
@@ -137,13 +133,6 @@ public class Ginfo extends XulElement implements Mapitem {
         return _open;
     }
    
-	/** Returns the info anchor point in double[] array where [0] is lat and [1] is lng ; used by component developers
-	 * only.
-	 */
-	private double[] getAnchor() {
-		return new double[] {_lat, _lng};
-	}
-
 	/*package*/ boolean isGinfo() {
 		return true;
 	}
@@ -164,7 +153,7 @@ public class Ginfo extends XulElement implements Mapitem {
 	protected void renderProperties(org.zkoss.zk.ui.sys.ContentRenderer renderer)
 	throws java.io.IOException {
 		super.renderProperties(renderer);
-		render(renderer, "anchor", getAnchor());
+		render(renderer, "anchor", GmapsUtil.latLngToArray(_anchor));
 		render(renderer, "content", getContent());
 		render(renderer, "open", _open);
 	}

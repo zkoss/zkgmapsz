@@ -38,10 +38,7 @@ import org.zkoss.zul.impl.XulElement;
  */
 public class Gimage extends XulElement implements Mapitem {
 	private static final long serialVersionUID = 200801071632L;
-	protected double _swlat = 37.4419;
-	protected double _swlng = -122.1419;
-	protected double _nelat = 37.4419;
-	protected double _nelng = -122.1419;
+	protected LatLngBounds _bounds = new LatLngBounds(new LatLng(37.4419, -122.1419), new LatLng(37.4419, -122.1419));
 
 	/** image source */
 	private String _src;
@@ -51,6 +48,11 @@ public class Gimage extends XulElement implements Mapitem {
 	private int _imgver;
 
 	public Gimage() {
+	}
+	
+	public Gimage(String src, LatLngBounds bounds) {
+		setSrc(src);
+		setBounds(bounds);
 	}
 
 	/** 
@@ -62,11 +64,26 @@ public class Gimage extends XulElement implements Mapitem {
 	 * @param nelng north east longitude to put the image.
 	 */
 	public Gimage(String src, double swlat, double swlng, double nelat, double nelng) {
-		setSrc(src);
-		setSwlat(swlat);
-		setSwlng(swlng);
-		setNelat(nelat);
-		setNelng(nelng);
+		this(src, new LatLngBounds(new LatLng(swlat, swlng), new LatLng(nelat, nelng)));
+	}
+	
+	/**
+	 * Returns the bounded south west latitude.
+	 * @return the bounded south west latitude.
+	 */
+	public void setBounds(LatLngBounds bounds) {
+		if (!_bounds.equals(bounds)) {
+			_bounds = bounds;
+			smartRerender();
+		}
+	}	
+	
+	/**
+	 * Returns the bounded south west latitude.
+	 * @return the bounded south west latitude.
+	 */
+	public LatLngBounds getBounds() {
+		return _bounds;
 	}
 	
 	/**
@@ -74,16 +91,15 @@ public class Gimage extends XulElement implements Mapitem {
 	 * @return the bounded south west latitude.
 	 */
 	public double getSwlat() {
-		return _swlat;
+		return _bounds.getSouthWest().getLatitude();
 	}
 	/**
 	 * Sets the bounded south west latitude.
 	 * @param swlat south west latitude
 	 */
 	public void setSwlat(double swlat) {
-		if (_swlat != swlat) {
-			_swlat = swlat;
-			smartRerender();
+		if (!Objects.equals(_bounds.getSouthWest().getLatitude(), swlat)) {
+			setBounds(new LatLngBounds(new LatLng(swlat, _bounds.getSouthWest().getLongitude()), _bounds.getNorthEast()));
 		}
 	}
 	/**
@@ -91,16 +107,15 @@ public class Gimage extends XulElement implements Mapitem {
 	 * @return the bounded south west longitude.
 	 */
 	public double getSwlng() {
-		return _swlng;
+		return _bounds.getSouthWest().getLongitude();
 	}
 	/**
 	 * Sets the bounded south west longitude.
 	 * @param swlng south west longitude
 	 */
 	public void setSwlng(double swlng) {
-		if (_swlng != swlng) {
-			_swlng = swlng;
-			smartRerender();
+		if (!Objects.equals(_bounds.getSouthWest().getLongitude(), swlng)) {
+			setBounds(new LatLngBounds(new LatLng(_bounds.getSouthWest().setLatitude(), swlng), _bounds.getNorthEast()));
 		}
 	}
 	/**
@@ -108,16 +123,15 @@ public class Gimage extends XulElement implements Mapitem {
 	 * @return the bounded north east latitude.
 	 */
 	public double getNelat() {
-		return _nelat;
+		return _bounds.getNorthEast().getLatitude();
 	}
 	/**
 	 * Sets the bounded north east latitude.
 	 * @param nelat the bounded north east latitude.
 	 */
 	public void setNelat(double nelat) {
-		if (_nelat != nelat) {
-			_nelat = nelat;
-			smartRerender();
+		if (!Objects.equals(_bounds.getNorthEast().getLatitude(), nelat)) {
+			setBounds(new LatLngBounds(_bounds.getSouthWest(), new LatLng(nelat, _bounds.getNorthEast().getLongitude())));
 		}
 	}
 	/**
@@ -125,16 +139,15 @@ public class Gimage extends XulElement implements Mapitem {
 	 * @return the bounded north east longitude.
 	 */
 	public double getNelng() {
-		return _nelng;
+		return _bounds.getNorthEast().getLongitude();
 	}
 	/**
 	 * Sets the bounded north east longitude.
 	 * @param nelng the bounded north east longitude.
 	 */
 	public void setNelng(double nelng) {
-		if (_nelng != nelng) {
-			_nelng = nelng;
-			smartRerender();
+		if (!Objects.equals(_bounds.getNorthEast().getLongitude(), nelng)) {
+			setBounds(new LatLngBounds(_bounds.getSouthWest(), new LatLng(_bounds.getNorthEast().getLatitude(), nelng)));
 		}
 	}
 
@@ -194,10 +207,10 @@ public class Gimage extends XulElement implements Mapitem {
 	throws java.io.IOException {
 		super.renderProperties(renderer);
 		render(renderer, "src", getEncodedURL());
-		render(renderer, "swlat", new Double(getSwlat()));
-		render(renderer, "swlng", new Double(getSwlng()));
-		render(renderer, "nelat", new Double(getNelat()));
-		render(renderer, "nelng", new Double(getNelng()));
+		render(renderer, "swlat", new Double( _bounds.getSouthWest().getLatitude()));
+		render(renderer, "swlng", new Double( _bounds.getSouthWest().getLongitude()));
+		render(renderer, "nelat", new Double( _bounds.getNorthEast().getLatitude()));
+		render(renderer, "nelng", new Double( _bounds.getNorthEast().getLongitude()));
 	}
 	
 	/** Returns the encoded URL of the image (never null).
@@ -230,10 +243,10 @@ public class Gimage extends XulElement implements Mapitem {
 	private void smartRerender() {
 		final Map info = new HashMap();
 		info.put("src", getEncodedURL());
-		info.put("swlat", new Double(_swlat));
-		info.put("swlng", new Double(_swlng));
-		info.put("nelat", new Double(_nelat));
-		info.put("nelng", new Double(_nelng));
+		info.put("swlat", new Double( _bounds.getSouthWest().getLatitude()));
+		info.put("swlng", new Double( _bounds.getSouthWest().getLongitude()));
+		info.put("nelat", new Double( _bounds.getNorthEast().getLatitude()));
+		info.put("nelng", new Double( _bounds.getNorthEast().getLongitude()));
 		
 		smartUpdate("rerender_", info);
 	}

@@ -61,12 +61,14 @@ public class Gmarker extends Ginfo {
 	private int _maxzoom = ZOOM_LIMIT; //visible zoom level default to 19
 	private int _minzoom = 0; //visible zoom level default to 0
 	private boolean _draggingEnabled;
-	private String _tooltiptext; 
 
 	public Gmarker() {
 	}
 	public Gmarker(String content) {
         super(content);
+	}
+	public Gmarker(String content, LatLng anchor) {
+        super(content, anchor);
 	}
 	public Gmarker(String content, double lat, double lng) {
         super(content, lat, lng);
@@ -625,11 +627,8 @@ public class Gmarker extends Ginfo {
 	}
 	
 	/** used by the MarkerDropEvent */
-	/* package */ void setLatByClient(double lat) {
-		_lat = lat;
-	}
-	/* package */ void setLngByClient(double lng) {
-		_lng = lng;
+	/*package*/ protected void setAnchorByClient(LatLng anchor) {
+		_anchor = anchor;
 	}
 	
 	protected void renderProperties(org.zkoss.zk.ui.sys.ContentRenderer renderer)
@@ -701,8 +700,7 @@ public class Gmarker extends Ginfo {
 		final String cmd = request.getCommand();
 		if (cmd.equals("onMapDrop")) {
 			final MapDropEvent evt = MapDropEvent.getMapDropEvent(request);
-			setLatByClient(evt.getLat());
-			setLngByClient(evt.getLng());
+			setAnchorByClient(evt.getLatLng());
 			Events.postEvent(evt);
 		} else
 			super.service(request, everError);

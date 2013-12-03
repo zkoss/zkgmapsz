@@ -25,6 +25,8 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.event.Event;
 
+import org.zkoss.gmaps.LatLng;
+
 /**
  * Represents a Google Maps {@link org.zkoss.gmaps.*} related event which 
  * is triggered whenever the center is moved.
@@ -33,7 +35,7 @@ import org.zkoss.zk.ui.event.Event;
  * @since 3.0.0
  */
 public class CenterChangeEvent extends Event {
-	private final double _lat, _lng, _oldlat, _oldlng;
+	private final LatLng _center, _oldCenter;
 
 	/** Converts an AU request to a event.
 	 * @since 5.0.0
@@ -51,36 +53,56 @@ public class CenterChangeEvent extends Event {
 		final double lng = ((Number)data.get("lng")).doubleValue();
 		final double oldlat = ((Number)data.get("oldlat")).doubleValue();
 		final double oldlng = ((Number)data.get("oldlng")).doubleValue();
-		return new CenterChangeEvent(request.getCommand(), comp, lat, lng, oldlat, oldlng);
+		return new CenterChangeEvent(request.getCommand(), comp, new LatLng(lat, lng), new LatLng(oldlat, oldlng));
+	}
+	
+	/** Constructs a Google Maps center change event.
+	 */
+	public CenterChangeEvent(String name, Component target, LatLng center, LatLng oldCenter) {
+		super(name, target);
+		_center = center;
+		_oldCenter = oldCenter;
 	}
 
 	/** Constructs a Google Maps center change event.
 	 */
 	public CenterChangeEvent(String name, Component target, double lat, double lng, double oldlat, double oldlng) {
-		super(name, target);
-		_lat = lat;
-		_lng = lng;
-		_oldlat = oldlat;
-		_oldlng = oldlng;
+		this(name, target, new LatLng(lat, lng), new LatLng(oldlat, oldlng));
 	}
 	/** Returns the latitude of the center after moved.
+	 * @deprecated As of release 3.0.2, replaced with {@link CenterChangeEvent#getCenter()} instead.
 	 */
 	public double getLat() {
-		return _lat;
+		return _center.getLatitude();
 	}
 	/** Returns the longitude of the center after moved.
+	 * @deprecated As of release 3.0.2, replaced with {@link CenterChangeEvent#getCenter()} instead.
 	 */
 	public double getLng() {
-		return _lng;
+		return _center.getLongitude();
 	}
 	/** Returns the latitude of the center before moved.
+	 * @deprecated As of release 3.0.2, replaced with {@link CenterChangeEvent#getOldCenter()} instead.
 	 */
 	public double getOldLat() {
-		return _oldlat;
+		return _oldCenter.getLatitude();
 	}
 	/** Returns the longitude of the center before moved.
+	 * @deprecated As of release 3.0.2, replaced with {@link CenterChangeEvent#getOldCenter()} instead.
 	 */
 	public double getOldLng() {
-		return _oldlng;
+		return _oldCenter.getLongitude();
+	}
+	/** Returns the center after moved.
+	 *  @since 3.0.2
+	 */
+	public LatLng getCenter() {
+		return _center;
+	}
+	/** Returns the center after moved.
+	 *  @since 3.0.2
+	 */
+	public LatLng getOldCenter() {
+		return _oldCenter;
 	}
 }

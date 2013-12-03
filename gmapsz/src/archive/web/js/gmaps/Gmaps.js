@@ -87,6 +87,23 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			}
 		},
 		/** 
+		 * Returns the viewport to contain the given bounds.
+		 * @return double[]
+		 */
+		/** 
+		 * Sets the viewport to contain the given bounds.
+		 * @param double[] the bounds of this Gmaps.
+		 */
+		bounds: function(b) {
+			var maps = this._gmaps;
+			if (maps) {
+				var bounds = b.length == 4 ? new google.maps.LatLngBounds(
+						new google.maps.LatLng(b[0],b[1]),
+						new google.maps.LatLng(b[2],b[3])) : null;
+				maps.fitBounds(bounds);
+			}
+		},
+		/** 
 		 * Returns the zoom level of this Gmaps.
 		 * @return int
 		 */
@@ -1043,6 +1060,8 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			.setEnableDragging(this._enableDragging, {force:true})
 			.setCenter(this._center, {force:true})
 			.setZoom(this._zoom, {force:true});
+		if (this._bounds)
+			this.setBounds(this._bounds, {force:true});
 	},
 	overrideMarkermanager: function() {
 		var mm = this._mm; //markermanager

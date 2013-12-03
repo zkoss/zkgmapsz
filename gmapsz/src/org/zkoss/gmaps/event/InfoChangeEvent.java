@@ -30,7 +30,7 @@ import org.zkoss.zk.ui.event.Event;
 /**
  * Represents a Google Maps {@link org.zkoss.gmaps.Gmaps} related event which is
  * triggered whenever the currently opened {@link org.zkoss.gmaps.Ginfo} or 
- * {@link org.zkoss.gmaps.Gmarker} is changed.
+ * {@link org.zkoss.gmaps.Gmarker} is changed. 
  * 
  * @author henrichen
  */

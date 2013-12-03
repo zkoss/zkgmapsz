@@ -1,4 +1,4 @@
-/* Gpolyline.java
+/* Gcircle.java
 {{IS_NOTE
 	Purpose:
 		
@@ -18,24 +18,13 @@ Copyright (C) 2012 Potix Corporation. All Rights Reserved.
 
 package org.zkoss.gmaps;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.zkoss.gmaps.event.CenterChangeEvent;
-import org.zkoss.gmaps.event.MapDropEvent;
 import org.zkoss.lang.Objects;
-import org.zkoss.lang.Strings;
-import org.zkoss.util.CollectionsX;
-import org.zkoss.zk.mesg.MZk;
 import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zul.impl.XulElement;
 /**
  * Google Maps support Gcircle.
@@ -45,8 +34,7 @@ import org.zkoss.zul.impl.XulElement;
  */
 public class Gcircle extends XulElement implements Mapitem {
 	private static final long serialVersionUID = 7919622962923909687L;
-	private double _lat;
-	private double _lng;
+	private LatLng _center = new LatLng(0, 0);
 	private boolean _clickable = true; // to match google map default value
 	private boolean _editable;
 	private String _fillColor;
@@ -62,15 +50,14 @@ public class Gcircle extends XulElement implements Mapitem {
 	 * @return double the latitude of the center of the circle.
 	 */
 	public double getLat () {
-		return _lat;
+		return _center.getLatitude();
 	}
 	/** set the latitude of the center of the circle.
 	 * @param lat the latitude of the center of the circle.
 	 */
 	public void setLat (double lat) {
-		if (_lat != lat) {
-			_lat = lat;
-			smartUpdate("center", getCenter());
+		if (!Objects.equals(lat, _center.getLatitude())) {
+			setCenter(new LatLng(lat, _center.getLongitude()));
 		}
 	}
 
@@ -78,22 +65,30 @@ public class Gcircle extends XulElement implements Mapitem {
 	 * @return double the longitude of the center of the circle.
 	 */
 	public double getLng () {
-		return _lng;
+		return _center.getLongitude();
 	}
 	/** set the longitude of the center of the circle.
 	 * @param lng the longitude of the center of the circle.
 	 */
 	public void setLng (double lng) {
-		if (_lng != lng) {
-			_lng = lng;
-			smartUpdate("center", getCenter());
+		if (!Objects.equals(lng, _center.getLongitude())) {
+			setCenter(new LatLng(_center.getLatitude(), lng));
 		}
 	}
-	/** Returns the Circle's center in double[] array where [0] is lat and [1] is lng;
-	 * used by component developers only.
+	
+	/** Sets the Circle's center.
+	 * @param center the center of the circle.
+	 * @Since 3.0.2
 	 */
-	private double[] getCenter() {
-		return new double[] {_lat, _lng};
+	public void setCenter(LatLng center) {
+		if (!_center.equals(center)) {
+			_center = center;
+			smartUpdate("center", GmapsUtil.latLngToArray(center));
+		}
+	}
+	
+	public LatLng getCenter() {
+		return _center;
 	}
 
 	/** Returns whether this Gcircle is clickable.
@@ -282,7 +277,7 @@ public class Gcircle extends XulElement implements Mapitem {
 	throws java.io.IOException {
 		super.renderProperties(renderer);
 
-		renderer.render("center", getCenter());
+		renderer.render("center",  GmapsUtil.latLngToArray(getCenter()));
 		if (!_clickable)
 			renderer.render("clickable", _clickable);
 		render(renderer, "editable", _editable);
@@ -311,8 +306,7 @@ public class Gcircle extends XulElement implements Mapitem {
 		final String cmd = request.getCommand();
 		if (cmd.equals("onCenterChange")) {
 			final CenterChangeEvent evt = CenterChangeEvent.getCenterChangeEvent(request);
-			_lat = evt.getLat();
-			_lng = evt.getLng();
+			_center = evt.getCenter();
 			Events.postEvent(evt);
 		} else if (cmd.equals("onRadiusChange")) {
 			final Map data = request.getData();

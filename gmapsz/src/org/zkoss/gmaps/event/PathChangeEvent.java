@@ -1,4 +1,4 @@
-/* InfoChangeEvent.java
+/* PathChangeEvent.java
 
 {{IS_NOTE
 	Purpose:

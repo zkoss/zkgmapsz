@@ -24,6 +24,7 @@ import org.zkoss.gmaps.Gmaps;
 import org.zkoss.gmaps.Gmarker;
 import org.zkoss.gmaps.Gpolygon;
 import org.zkoss.gmaps.Gpolyline;
+import org.zkoss.gmaps.LatLng;
 import org.zkoss.zk.au.AuRequest;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.UiException;
@@ -38,7 +39,7 @@ import org.zkoss.zk.mesg.MZk;
  */
 public class MapMouseEvent extends MouseEvent {
 	private final Component _ref;
-	private final double _lat, _lng;
+	private final LatLng _latLng;
 
 	/** Converts an AU request to a event.
 	 * @since 5.0.0
@@ -66,7 +67,28 @@ public class MapMouseEvent extends MouseEvent {
 		final int pageX = pxn instanceof Double ? (int) Math.round(((Double)pxn).doubleValue()) : pxn.intValue();
 		final int pageY = pyn instanceof Double ? (int) Math.round(((Double)pyn).doubleValue()) : pyn.intValue();
 		return new MapMouseEvent(request.getCommand(), comp, 
-				ref, lat, lng, x, y, pageX, pageY, AuRequests.parseKeys(data));
+				ref, new LatLng(lat, lng), x, y, pageX, pageY, AuRequests.parseKeys(data));
+	}
+	
+	
+	/**
+	 * Constructs a Google Maps click event.
+	 * @param name the event name
+	 * @param target the event target (should be a Maps component such as {@link Gmaps}.
+	 * @param ref the reference component that triggers this event.
+	 * @param latLng the latitude and longitude clicked on
+	 * @param x the x clicked on related to the Maps.
+	 * @param y the y clicked on related to the Maps.
+	 * @param pageX the x clicked on related to the whole document.
+	 * @param pageY the y clicked on related to the whole document.
+	 * @param keys a combination of {@link #CTRL_KEY}, {@link #SHIFT_KEY}
+	 * and {@link #ALT_KEY}.
+	 */
+	public MapMouseEvent(String name, Component target, Component ref,
+			LatLng latLng, int x, int y, int pageX, int pageY, int keys) {
+		super(name, target, x, y, pageX, pageY, keys);
+		_ref = ref;
+		_latLng = latLng;
 	}
 	
 	/**
@@ -85,10 +107,7 @@ public class MapMouseEvent extends MouseEvent {
 	 */
 	public MapMouseEvent(String name, Component target, Component ref, 
 		double lat, double lng, int x, int y, int pageX, int pageY, int keys) {
-		super(name, target, x, y, pageX, pageY, keys);
-		_ref = ref;
-		_lat = lat;
-		_lng = lng;
+		this(name, target, ref, new LatLng(lat, lng), x, y, pageX, pageY, keys);
 	}
 	
 	/** Returns the clicked Gmarker or null if not click on a Gmarker.
@@ -115,14 +134,24 @@ public class MapMouseEvent extends MouseEvent {
 		return null;
 	}
 	
+	/** Returns the latitude and longitude of the clicked position.
+	 * @Since 3.0.2
+	 */
+	public LatLng getLatLng() {
+		return _latLng;
+	}
+	
 	/** Returns the latitude of the clicked position.
+	 * @deprecated As of release 3.0.2, replaced with {@link MapMouseEvent#getLatLng()} instead.
 	 */
 	public double getLat() {
-		return _lat;
+		return _latLng.getLatitude();
 	}
+	
 	/** Returns the longitude of the clicked position.
+	 * @deprecated As of release 3.0.2, replaced with {@link MapMouseEvent#getLatLng()} instead.
 	 */
 	public double getLng() {
-		return _lng;
+		return _latLng.getLongitude();
 	}
 }
