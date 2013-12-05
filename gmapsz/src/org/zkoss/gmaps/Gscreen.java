@@ -21,6 +21,7 @@ package org.zkoss.gmaps;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.zkoss.gmaps.event.MapDropEvent;
 import org.zkoss.lang.Objects;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.UiException;
@@ -32,6 +33,7 @@ import org.zkoss.zul.impl.XulElement;
  * even you move the maps. It can be used in showing logos, heads-up display, etc.
  * @author henrichen
  * @see Gimage
+ * @deprecated As of release 3.0.2, Google Map v3 do not support GScreenOverlay.
  */
 public class Gscreen extends XulElement implements Mapitem {
 	private static final long serialVersionUID = 200807021855L;
@@ -338,7 +340,7 @@ public class Gscreen extends XulElement implements Mapitem {
 	throws java.io.IOException {
 		super.renderProperties(renderer);
 
-		render(renderer, "src", getEncodedURL());
+		//render(renderer, "src", getEncodedURL());
 		render(renderer, "screenX", getScreenX());
 		render(renderer, "screenY", getScreenY());
 		render(renderer, "offsetX", getOffsetX());
@@ -349,6 +351,7 @@ public class Gscreen extends XulElement implements Mapitem {
 	
 	/** Returns the encoded URL of the image (never null).
 	 */
+	/*
 	private String getEncodedURL() {
 		if (_image != null)
 			return Utils.getDynamicMediaURI( //already encoded
@@ -358,16 +361,15 @@ public class Gscreen extends XulElement implements Mapitem {
 		return dt != null ? dt.getExecution()
 			.encodeURL(_src != null ? _src: "~./img/spacer.gif"): "";
 	}
-
-	private class EncodedURL implements org.zkoss.zk.ui.util.DeferredValue {
+	
+	private class EncodedURL implements org.zkoss.zk.au.DeferredValue {
 		public Object getValue() {
 			return getEncodedURL();
 		}
-	}
-	
+	}*/
 	private void smartRerender() {
 		final Map info = new HashMap();
-		info.put("src", new EncodedURL());
+		//info.put("src", new EncodedURL());
 		info.put("screenX", getScreenX());
 		info.put("screenY", getScreenY());
 		info.put("offsetX", getOffsetX());

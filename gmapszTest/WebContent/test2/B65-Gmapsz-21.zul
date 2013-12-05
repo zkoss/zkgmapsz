@@ -1,5 +1,4 @@
-<zk>
-<window height="300px" width="300px" border="normal">
+<window title="Maker Tooltip" height="350px" width="350px" border="normal">
 	<separator height="20px"/>
 	Hover on the gmarker, should show the tooltip.
 	<separator height="30px"/>
@@ -16,4 +15,3 @@
 	</attribute>
 	<gmaps id="map" width="300px" height="200px" />
 </window>
-</zk>

@@ -24,14 +24,14 @@ Copyright (C) 2009 Potix Corporation. All Rights Reserved.
 gmaps.Gpolyline = zk.$extends(gmaps.Goverlay, {
 	$define: {
 		/**
-		 * Returns the encoded points and levels for this Gpolyline.
-		 * @return String[] info[0] is the encoded points; info[1] is the encoded visible level
+		 * Returns the encoded path for this Gpolyline.
+		 * @return String path is the encoded points.
 		 */
 		/**
-		 * Sets the encoded points and levels for this Gpolyline.
-		 * @param String[] info info[0] is the encoded points; info[1] is the encoded visible level
+		 * Sets the encoded path for this Gpolyline.
+		 * @param String p is the encoded points.
 		 */
-		pointsAndLevels: function(sa) {
+		path: function(p) {
 			this.rebindMapitem_();
 		},
 		/**
@@ -98,7 +98,7 @@ gmaps.Gpolyline = zk.$extends(gmaps.Goverlay, {
 		}
 	},
 	initMapitem_: function() {
-		var decodedPath = google.maps.geometry.encoding.decodePath(this._pointsAndLevels[0]);
+		var decodedPath = google.maps.geometry.encoding.decodePath(this._path);
 
 		var polyOptions = {
 			editable: this._editable,
@@ -119,9 +119,23 @@ gmaps.Gpolyline = zk.$extends(gmaps.Goverlay, {
 		if (gpolyline) {
 			var wgt = this,
 				path = gpolyline.getPath();
-	        google.maps.event.addListener(path, "insert_at", function() {wgt._updatePath();});
-	        google.maps.event.addListener(path, "remove_at", function() {wgt._updatePath();});
-	        google.maps.event.addListener(path, "set_at", function() {wgt._updatePath();});
+	        this._insertAt = google.maps.event.addListener(path, "insert_at", _zkf = function() {wgt._updatePath();});
+	        this._removeAt = google.maps.event.addListener(path, "remove_at", _zkf);
+	        this._setAt = google.maps.event.addListener(path, "set_at", _zkf);
+		}
+	},
+	_clearListeners: function() {
+		if (this._insertAt) {
+			google.maps.event.removeListener(this._insertAt);
+			this._insertAt = null;
+		}
+		if (this._removeAt) {
+			google.maps.event.removeListener(this._removeAt);
+			this._removeAt = null;
+		}
+		if (this._setAt) {
+			google.maps.event.removeListener(this._setAt);
+			this._setAt = null;
 		}
 	},
 	_updatePath: function() {
@@ -129,7 +143,7 @@ gmaps.Gpolyline = zk.$extends(gmaps.Goverlay, {
 			encodePath;
 		if (gpolyline) {
 			encodePath = google.maps.geometry.encoding.encodePath(gpolyline.getPath());
-			this._pointsAndLevels[0] = encodePath;
+			this._path = encodePath;
 			this.fireOnPathChange();
 		}
 	},
@@ -140,10 +154,10 @@ gmaps.Gpolyline = zk.$extends(gmaps.Goverlay, {
 	 * @since 3.0.2
 	 */
 	fireOnPathChange: function (opts) {
-		this.fire('onPathChange', {path: this._pointsAndLevels[0]}, opts);
+		this.fire('onPathChange', {path: this._path}, opts);
 	},
 	prepareRerender_: function(info) {
-		this._pointsAndLevels = info.pointsAndLevels;
+		this._path = info.path;
 		this._numLevelsAndZoomFactor = info.numLevelsAndZoomFactor;
 		this._color = info.color;
 		this._weight = info.weight;

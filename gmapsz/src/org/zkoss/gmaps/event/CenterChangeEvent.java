@@ -28,7 +28,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.gmaps.LatLng;
 
 /**
- * Represents a Google Maps {@link org.zkoss.gmaps.*} related event which 
+ * Represents a Google Maps {@link org.zkoss.gmaps.Gmaps} related event which 
  * is triggered whenever the center is moved.
  * 
  * @author benbai
@@ -69,37 +69,45 @@ public class CenterChangeEvent extends Event {
 	public CenterChangeEvent(String name, Component target, double lat, double lng, double oldlat, double oldlng) {
 		this(name, target, new LatLng(lat, lng), new LatLng(oldlat, oldlng));
 	}
+	
 	/** Returns the latitude of the center after moved.
-	 * @deprecated As of release 3.0.2, replaced with {@link CenterChangeEvent#getCenter()} instead.
+	 * @deprecated As of release 3.0.2, use {@link #getCenter()} instead.
 	 */
 	public double getLat() {
 		return _center.getLatitude();
 	}
+	
 	/** Returns the longitude of the center after moved.
-	 * @deprecated As of release 3.0.2, replaced with {@link CenterChangeEvent#getCenter()} instead.
+	 * @deprecated As of release 3.0.2, use {@link #getCenter()} instead.
 	 */
 	public double getLng() {
 		return _center.getLongitude();
 	}
+	
 	/** Returns the latitude of the center before moved.
-	 * @deprecated As of release 3.0.2, replaced with {@link CenterChangeEvent#getOldCenter()} instead.
+	 * @deprecated As of release 3.0.2, replaced with {@link #getOldCenter()} instead.
 	 */
 	public double getOldLat() {
 		return _oldCenter.getLatitude();
 	}
+	
 	/** Returns the longitude of the center before moved.
-	 * @deprecated As of release 3.0.2, replaced with {@link CenterChangeEvent#getOldCenter()} instead.
+	 * @deprecated As of release 3.0.2, replaced with {@link #getOldCenter()} instead.
 	 */
 	public double getOldLng() {
 		return _oldCenter.getLongitude();
 	}
+	
 	/** Returns the center after moved.
+	 *  @return center the center after moved.
 	 *  @since 3.0.2
 	 */
 	public LatLng getCenter() {
 		return _center;
 	}
-	/** Returns the center after moved.
+	
+	/** Returns the center before moved.
+	 *  @return center the center before moved.
 	 *  @since 3.0.2
 	 */
 	public LatLng getOldCenter() {

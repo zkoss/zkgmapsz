@@ -1,5 +1,11 @@
-<window height="300px" width="500px" border="normal">
-	<gmaps id="map" width="300px" height="200px" client="xx"/>
+<window title="Client ID Attribute" height="300px" width="500px" border="normal" xmlns:w="client">
+	It should show "xx" log.
 	<separator height="20px"/>
-	It should show error of not authorized to use the Google Maps client ID.
+	<gmaps id="map" width="300px" height="200px" client="xx">
+		<attribute w:name="bind_"><![CDATA[
+			function(dt, skipper, after) {
+				zk.log(this._client);
+			}
+		]]></attribute>
+	</gmaps>
 </window>

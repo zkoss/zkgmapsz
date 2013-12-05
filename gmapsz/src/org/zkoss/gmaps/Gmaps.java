@@ -46,7 +46,7 @@ import org.zkoss.zul.impl.XulElement;
 
 /**
  * The component used to represent
- * &lt;a href="http://www.google.com/apis/maps/"&gt;Google Maps&lt;/a&gt;
+ * <a href="http://www.google.com/apis/maps/">Google Maps</a>
  *
  * @author henrichen
  * @version $Revision: 1.6 $ $Date: 2006/03/31 08:38:55 $
@@ -104,16 +104,29 @@ public class Gmaps extends XulElement {
 	public void setCenter(double lat, double lng) {
 		setCenter(new LatLng(lat, lng));
 	}
+	
 	/** Sets the center of the Google Maps.
 	 * @param center the Google Maps center
-	 * @Since 3.0.2
+	 * @since 3.0.2
 	 */
 	public void setCenter(LatLng center) {
-		if (!_center.equals(center)) {
+		if (center == null) {
+			throw new NullPointerException("center");
+		}
+		if (!Objects.equals(_center, center)) {
 			_center = center;
-			smartUpdate("center", GmapsUtil.latLngToArray(center));
+			smartUpdate("center", center);
 		}
 	}
+	
+	/** Returns the current center of the Google Maps.
+	 * @return center the Google Maps center
+	 * @since 3.0.2
+	 */
+	public LatLng getCenter() {
+		return _center;
+	}
+	
 	/** Sets the client ID of the Maps.
 	 * @param client client ID of the Google Maps
 	 * @since 3.0.2
@@ -162,61 +175,131 @@ public class Gmaps extends XulElement {
 	}
 	
 	/** Sets the viewport to contain the given bounds.
-	 * 
-	 * @param bounds the instance represents a rectangle in geographical coordinates.
+	 * @param bounds the current viewport in Google Maps.
 	 * @since 3.0.2
 	 */
 	public void fitBounds(LatLngBounds bounds) {
-		if(!_bounds.equals(bounds)) {
+		if (bounds == null) {
+			throw new NullPointerException("bounds");
+		}
+		if(!Objects.equals(_bounds, bounds)) {
 			_bounds = bounds;
 			syncModel();
-			smartUpdate("bounds", GmapsUtil.boundsToArray(bounds));
+			smartUpdate("bounds", bounds);
 		}
 	}
 	
-	/** Returns the bounds of the Maps center.
-	 * @return bounds the bounds of the Maps center.
+	/** Returns the current bounds of the Google Maps.
+	 * @return bounds the current viewport in Google Maps.
 	 * @since 3.0.2
 	 */
 	public LatLngBounds getBounds() {
 		return _bounds;
 	}
-
+	
 	/**
 	 * Returns the bounded south west latitude.
 	 * @return the bounded south west latitude.
 	 * @since 2.0_8
-	 * @deprecated As of release 3.0.2, replaced with {@link Gmaps#getBounds()} instead.
+	 * @deprecated As of release 3.0.2, replaced with {@link Gmaps#getSwlat()} instead.
 	 */
 	public double getSwLat() {
+		return getSwlat();
+	}
+	
+	/**
+	 * Returns the bounded south west latitude.
+	 * @return the bounded south west latitude.
+	 * @since 3.0.2
+	 */
+	public double getSwlat() {
 		return _bounds.getSouthWest().getLatitude();
 	}
+	
+	/**
+	 * Sets the bounded south west latitude.
+	 * @param swlat south west latitude
+	 * @since 3.0.2
+	 */
+	public void setSwlat(double swlat) {
+		fitBounds(new LatLngBounds(new LatLng(swlat, _bounds.getSouthWest().getLongitude()), _bounds.getNorthEast()));
+	}
+	
 	/**
 	 * Returns the bounded south west longitude.
 	 * @return the bounded south west longitude.
 	 * @since 2.0_8
-	 * @deprecated As of release 3.0.2, replaced with {@link Gmaps#getBounds()} instead.
+	 * @deprecated As of release 3.0.2, replaced with {@link Gmaps#getSwlng()} instead.
 	 */
 	public double getSwLng() {
+		return getSwlng();
+	}
+	
+	/**
+	 * Returns the bounded south west longitude.
+	 * @return the bounded south west longitude.
+	 * @since 3.0.2
+	 */
+	public double getSwlng() {
 		return _bounds.getSouthWest().getLongitude();
+	}
+	/**
+	 * Sets the bounded south west longitude.
+	 * @param swlng south west longitude
+	 * @since 3.0.2
+	 */
+	public void setSwlng(double swlng) {
+		fitBounds(new LatLngBounds(new LatLng(_bounds.getSouthWest().getLatitude(), swlng), _bounds.getNorthEast()));
 	}
 	/**
 	 * Returns the bounded north east latitude.
 	 * @return the bounded north east latitude.
 	 * @since 2.0_8
-	 * @deprecated As of release 3.0.2, replaced with {@link Gmaps#getBounds()} instead.
+	 * @deprecated As of release 3.0.2, replaced with {@link Gmaps#getNelat()} instead.
 	 */
 	public double getNeLat() {
+		return getNelat();
+	}
+	/**
+	 * Returns the bounded north east latitude.
+	 * @return the bounded north east latitude.
+	 * @since 3.0.2
+	 */
+	public double getNelat() {
 		return _bounds.getNorthEast().getLatitude();
+	}
+	/**
+	 * Sets the bounded north east latitude.
+	 * @param nelat the bounded north east latitude.
+	 * @since 3.0.2
+	 */
+	public void setNelat(double nelat) {
+		fitBounds(new LatLngBounds(_bounds.getSouthWest(), new LatLng(nelat, _bounds.getNorthEast().getLongitude())));
 	}
 	/**
 	 * Returns the bounded north east longitude.
 	 * @return the bounded north east longitude.
 	 * @since 2.0_8
-	 * @deprecated As of release 3.0.2, replaced with {@link Gmaps#getBounds()} instead.
+	 * @deprecated As of release 3.0.2, replaced with {@link Gmaps#getNelng()} instead.
 	 */
 	public double getNeLng() {
+		return getNelng();
+	}
+	/**
+	 * Returns the bounded north east longitude.
+	 * @return the bounded north east longitude.
+	 * @since 3.0.2
+	 */
+	public double getNelng() {
 		return _bounds.getNorthEast().getLongitude();
+	}
+	/**
+	 * Sets the bounded north east longitude.
+	 * @param nelng the bounded north east longitude.
+	 * @since 3.0.2
+	 */
+	public void setNelng(double nelng) {
+		fitBounds(new LatLngBounds(_bounds.getSouthWest(), new LatLng(_bounds.getNorthEast().getLatitude(), nelng)));
 	}
 
 	/** Pan to the new center of the Google Maps.
@@ -229,12 +312,12 @@ public class Gmaps extends XulElement {
 	
 	/** Pan to the new center of the Google Maps.
 	 * @param center the Google Maps center
-	 * @Since 3.0.2
+	 * @since 3.0.2
 	 */
 	public void panTo(LatLng center) {
 		if (!_center.equals(center)) {
 			_center = center;
-			smartUpdate("panTo_", GmapsUtil.latLngToArray(center));
+			smartUpdate("panTo_", center);
 		}
 	}
 	
@@ -772,7 +855,7 @@ public class Gmaps extends XulElement {
 
 	/** 
 	 * Set the selected version of google map API v3.
-	 * @param String version.
+	 * @param version the version of google map.
 	 */
 	public void setVersion(String version) {
 		if (!Objects.equals(_version, version)) {
@@ -875,12 +958,12 @@ public class Gmaps extends XulElement {
 	}
 	private void syncModel() {
 		//bounds not initiated yet(do it at server side)
-		if (getSwLat() == 37.418026932311111) { 
+		if (getSwlat() == 37.418026932311111) { 
 			initBounds();
 		}
 		if (_model != null)
 			onMapDataChange(new MapDataEvent(_model, MapDataEvent.BOUNDS_CHANGED, 
-				_model.getItemsIn(getSwLat(), getSwLng(), getNeLat(), getNeLng(), getLat(), getLng(), _zoom)));
+				_model.getItemsIn(getSwlat(), getSwlng(), getNelat(), getNelng(), getLat(), getLng(), _zoom)));
 	}
 	private void initMapDataListener() {
 		if (_dataListener == null) {
@@ -1143,11 +1226,11 @@ public class Gmaps extends XulElement {
 		super.renderProperties(renderer);
 
 		if (!_center.equals(new LatLng(37.4419, -122.1419)))
-			render(renderer, "center", GmapsUtil.latLngToArray(_center));
+			render(renderer, "center", _center);
 		if (!_bounds.equals(new LatLngBounds(
 				new LatLng(37.418026932311111, -122.1933746338),
 				new LatLng(37.4657298516, -122.0903778076))))
-			render(renderer, "bounds", GmapsUtil.boundsToArray(_bounds));
+			render(renderer, "bounds", _bounds);
 		if (_zoom != 13)
 			render(renderer, "zoom", new Integer(getZoom()));
 		if (_large)
@@ -1239,6 +1322,9 @@ public class Gmaps extends XulElement {
 			Events.postEvent(evt);
 		} else if (cmd.equals("onMapDrop")) {
 			final MapDropEvent evt = MapDropEvent.getMapDropEvent(request);
+			final Component dragged = evt.getDragged();
+			if (dragged instanceof Gmarker)
+				((Gmarker) dragged).setAnchor(evt.getLatLng());
 			Events.postEvent(evt);
 		} else
 			super.service(request, everError);

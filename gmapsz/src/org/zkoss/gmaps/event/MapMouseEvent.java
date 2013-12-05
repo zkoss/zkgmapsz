@@ -83,6 +83,7 @@ public class MapMouseEvent extends MouseEvent {
 	 * @param pageY the y clicked on related to the whole document.
 	 * @param keys a combination of {@link #CTRL_KEY}, {@link #SHIFT_KEY}
 	 * and {@link #ALT_KEY}.
+	 * @since 3.0.2
 	 */
 	public MapMouseEvent(String name, Component target, Component ref,
 			LatLng latLng, int x, int y, int pageX, int pageY, int keys) {
@@ -135,21 +136,22 @@ public class MapMouseEvent extends MouseEvent {
 	}
 	
 	/** Returns the latitude and longitude of the clicked position.
-	 * @Since 3.0.2
+	 * @return the latitude and longitude of the clicked position.
+	 * @since 3.0.2
 	 */
 	public LatLng getLatLng() {
 		return _latLng;
 	}
 	
 	/** Returns the latitude of the clicked position.
-	 * @deprecated As of release 3.0.2, replaced with {@link MapMouseEvent#getLatLng()} instead.
+	 * @deprecated As of release 3.0.2, use {@link #getLatLng()} instead.
 	 */
 	public double getLat() {
 		return _latLng.getLatitude();
 	}
 	
 	/** Returns the longitude of the clicked position.
-	 * @deprecated As of release 3.0.2, replaced with {@link MapMouseEvent#getLatLng()} instead.
+	 * @deprecated As of release 3.0.2, use {@link #getLatLng()} instead.
 	 */
 	public double getLng() {
 		return _latLng.getLongitude();

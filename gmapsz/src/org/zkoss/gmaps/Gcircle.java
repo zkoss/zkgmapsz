@@ -56,9 +56,7 @@ public class Gcircle extends XulElement implements Mapitem {
 	 * @param lat the latitude of the center of the circle.
 	 */
 	public void setLat (double lat) {
-		if (!Objects.equals(lat, _center.getLatitude())) {
-			setCenter(new LatLng(lat, _center.getLongitude()));
-		}
+		setCenter(new LatLng(lat, _center.getLongitude()));
 	}
 
 	/** get the longitude of the center of the circle.
@@ -71,22 +69,27 @@ public class Gcircle extends XulElement implements Mapitem {
 	 * @param lng the longitude of the center of the circle.
 	 */
 	public void setLng (double lng) {
-		if (!Objects.equals(lng, _center.getLongitude())) {
-			setCenter(new LatLng(_center.getLatitude(), lng));
-		}
+		setCenter(new LatLng(_center.getLatitude(), lng));
 	}
 	
 	/** Sets the Circle's center.
 	 * @param center the center of the circle.
-	 * @Since 3.0.2
+	 * @since 3.0.2
 	 */
 	public void setCenter(LatLng center) {
-		if (!_center.equals(center)) {
+		if (center == null) {
+			throw new NullPointerException("center");
+		}
+		if (!Objects.equals(_center, center)) {
 			_center = center;
-			smartUpdate("center", GmapsUtil.latLngToArray(center));
+			smartUpdate("center", center);
 		}
 	}
 	
+	/** Gets the Circle's center.
+	 * @return center the center of the circle.
+	 * @since 3.0.2
+	 */
 	public LatLng getCenter() {
 		return _center;
 	}
@@ -235,28 +238,27 @@ public class Gcircle extends XulElement implements Mapitem {
 
 	/** Returns whether this Gcircle is visible.
 	 * @return boolean whether this Gcircle is visible.
+	 * @deprecated As of release 3.0.2, replaced with {@link org.zkoss.zk.ui.Component#isVisible()} instead.
 	 */
 	public boolean isCircleVisible () {
-		return _circleVisible;
+		return isVisible();
 	}
 	/** Sets whether this Gcircle is visible; default to true.
 	 * @param circleVisible whether this Gcircle is visible.
+	 * @deprecated As of release 3.0.2, replaced with {@link org.zkoss.zk.ui.Component#setVisible(boolean)} instead.
 	 */
 	public void setCircleVisible (boolean circleVisible) {
-		if (_circleVisible != circleVisible) {
-			_circleVisible = circleVisible;
-			smartUpdate("circleVisible", _circleVisible);
-		}
+		setVisible(circleVisible);
 	}
 
 	/** Returns the zIndex of this Gcircle.
-	 * @return int the zIndex of this Gcircle.
+	 * @return circleZIndex the zIndex of this Gcircle.
 	 */
 	public int getCircleZIndex() {
 		return _circleZIndex;
 	}
 	/** Sets the zIndex of this Gcircle.
-	 * @param zIndex the zIndex of this Gcircle.
+	 * @param circleZIndex the zIndex of this Gcircle.
 	 */
 	public void setCircleZIndex(int circleZIndex) {
 		if (circleZIndex < 0) {
@@ -277,7 +279,7 @@ public class Gcircle extends XulElement implements Mapitem {
 	throws java.io.IOException {
 		super.renderProperties(renderer);
 
-		renderer.render("center",  GmapsUtil.latLngToArray(getCenter()));
+		renderer.render("center", _center);
 		if (!_clickable)
 			renderer.render("clickable", _clickable);
 		render(renderer, "editable", _editable);

@@ -72,15 +72,25 @@ public class Ginfo extends XulElement implements Mapitem {
 		setAnchor(new LatLng(lat, lng));
 	}
 	
-	/** set the anchor point of the info window.
+	/** Sets the anchor point of the info window.
 	 * @param anchor the anchor point in Google Maps.
-	 * @Since 3.0.2
+	 * @since 3.0.2
 	 */
 	public void setAnchor(LatLng anchor) {
-		if (!_anchor.equals(anchor)) {
-			_anchor = anchor;
-			smartUpdate("anchor", GmapsUtil.latLngToArray(anchor));
+		if (anchor == null) {
+			throw new NullPointerException("anchor");
 		}
+		if (!Objects.equals(_anchor, anchor)) {
+			_anchor = anchor;
+			smartUpdate("anchor", anchor);
+		}
+	}
+	
+	/** Returns the anchor point of the info window.
+	 * @since 3.0.2
+	 */
+	public LatLng getAnchor() {
+		return _anchor;
 	}
 
 	/** set the latitude of the anchor point.
@@ -153,7 +163,7 @@ public class Ginfo extends XulElement implements Mapitem {
 	protected void renderProperties(org.zkoss.zk.ui.sys.ContentRenderer renderer)
 	throws java.io.IOException {
 		super.renderProperties(renderer);
-		render(renderer, "anchor", GmapsUtil.latLngToArray(_anchor));
+		render(renderer, "anchor", _anchor);
 		render(renderer, "content", getContent());
 		render(renderer, "open", _open);
 	}

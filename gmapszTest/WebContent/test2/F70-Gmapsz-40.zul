@@ -1,19 +1,25 @@
 <window title="Gpolygon Editable" border="normal" width="520px">
 	polyline and polygon should be editable.
+	<separator/>
+	<space/>
+	<label id="out"/>
 	<separator bar="true"/>
 	<checkbox label="Togggle it to be editable or uneditable." checked="true">
 		<attribute name="onCheck"><![CDATA[
 			boolean checked = self.isChecked();
 			pl.setEditable(checked);
 			pg.setEditable(checked);
+			gc.setEditable(checked);
 			]]></attribute>
 	</checkbox>
 	<separator bar="true"/>
     <gmaps id="mymap" width="500px" height="300px" showSmallCtrl="true">
         <gpolyline id="pl" points="37.42838786,-122.13998795,3,37.43561240,-122.13277816,3,37.42416187,-122.11441040,3,
-                                       37.42157162,-122.12007522,3,37.41734524,-122.12316513,3,37.42838786,-122.13998795,3" editable="true"
-                                 />
+                                       37.42157162,-122.12007522,3,37.41734524,-122.12316513,3,37.42838786,-122.13998795,3"
+                   editable="true" onPathChange='out.setValue(self.getEncodedPolyline());'/>
         <gpolygon id="pg" points="37.43838786,-122.12998795,3,37.42561240,-122.12277816,3,37.43416187,-122.12441040,3,
-                                       37.43157162,-122.13007522,3,37.42734524,-122.13316513,3" editable="true"/>
+                                       37.43157162,-122.13007522,3,37.42734524,-122.13316513,3"
+                  editable="true" onPathChange='out.setValue(self.getEncodedPolyline());'/>
+		<gcircle id="gc" lat="37.42838787" lng="-122.139988" editable="true" onCenterChange='out.setValue(self.getCenter().toString());'/>
     </gmaps>
 </window>

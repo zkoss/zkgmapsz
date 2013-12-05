@@ -52,12 +52,13 @@ public class PathChangeEvent extends Event {
 	}
 	
 	/** Constructs a Google Maps path change relevant event.
+	 * @param path the encoded path
 	 */
 	public PathChangeEvent(String name, Component target, String path) {
 		super(name, target);
 		_path = path;
 	}
-	/** Returns the changed path of the Google Map.
+	/** Returns the encoded path of the Google Map.
 	 */
 	public final String getPath() {
 		return _path;

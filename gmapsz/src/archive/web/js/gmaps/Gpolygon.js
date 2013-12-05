@@ -67,7 +67,7 @@ gmaps.Gpolygon = zk.$extends(gmaps.Gpolyline, {
 		}
 	},
 	initMapitem_: function() {
-		var decodedPath = google.maps.geometry.encoding.decodePath(this._pointsAndLevels[0]),
+		var decodedPath = google.maps.geometry.encoding.decodePath(this._path),
 			opt = {
 					editable: this._editable,
 					paths: decodedPath,

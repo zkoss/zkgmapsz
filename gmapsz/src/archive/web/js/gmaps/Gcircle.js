@@ -25,18 +25,17 @@ Copyright (C) 2012 Potix Corporation. All Rights Reserved.
 gmaps.Gcircle = zk.$extends(gmaps.Goverlay, {
 	_clickable: true,
 	_radius: 200,
-	_circleVisible: true,
 	$define: {
-		/** Returns the Circle's center in double[] array where [0] is lat and [1] is lng;
+		/** Returns the Circle's center in object contains latitude and longitude;
 		 */
-		/** Sets the Circle's center in double[] array where [0] is lat and [1] is lng;
+		/** Sets the Circle's center in object contains latitude and longitude;
 		 */
 		center: function (c) {
 			var circle = this.mapitem_;
 			if (circle) {
 				// not send event if not changed by drag
 				this._centerChangeByServer = true;
-				circle.setCenter(new google.maps.LatLng(c[0],c[1]));
+				circle.setCenter(new google.maps.LatLng(c.latitude,c.longitude));
 				delete this._centerChangeByServer;
 			}
 		},
@@ -128,10 +127,22 @@ gmaps.Gcircle = zk.$extends(gmaps.Goverlay, {
 		/** Sets whether this Gcircle is visible; default to true.
 		 * @param b whether this Gcircle is visible.
 		 */
-		circleVisible: function (b) {
-			var circle = this.mapitem_;
-			if (circle)
-				circle.setVisible(b);
+		visible: function(b) {
+			var marker = this.mapitem_;
+			if (this.mapitem_) {
+				marker.setVisible(b);
+			}
+		},
+		/** Returns whether this Gcircle is visible.
+		 * @return boolean whether this Gcircle is visible.
+		 * @deprecated As of release 3.0.2, replaced with {@link Gcircle#isVisible()} instead.
+		 */
+		/** Sets whether this Gcircle is visible; default to true.
+		 * @param b whether this Gcircle is visible.
+		 * @deprecated As of release 3.0.2, replaced with {@link Gcircle#isVisible()} instead.
+		 */
+		circleVisible: function(b) {
+			this.setVisible(b);
 		},
 		/** Returns the zIndex of this Gcircle.
 		 * @return int the zIndex of this Gcircle.
@@ -145,12 +156,12 @@ gmaps.Gcircle = zk.$extends(gmaps.Goverlay, {
 	},
 	initMapitem_: function() {
 		var	_center = this._center,
-			latlng = new google.maps.LatLng(_center[0], _center[1]),
+			latlng = new google.maps.LatLng(_center.latitude, _center.longitude),
 			gcircle = new google.maps.Circle(this.getCircleOptions());
 
 		gcircle.setRadius(this._radius);
 		gcircle.setCenter(latlng);
-		gcircle.setVisible(this._circleVisible);
+		gcircle.setVisible(this._visible);
 		gcircle.setEditable(this._editable);
 		gcircle._wgt = this;
 		this.mapitem_ = gcircle;
@@ -210,12 +221,10 @@ gmaps.Gcircle = zk.$extends(gmaps.Goverlay, {
 	},
 	_doCenterChanged: function (center) {
 		var oldCenter = this._center,
-			nlat = center.lat(),
-			nlng = center.lng(),
-			data = {lat:nlat, lng:nlng, oldlat: oldCenter[0], oldlng: oldCenter[1]};
-		// update center after data copied
-		oldCenter[0] = nlat;
-		oldCenter[1] = nlat;
+			newCenter = {latitude: center.lat(), longitude: center.lng()}
+			data = {lat: newCenter.latitude, lng: newCenter.longitude,
+					oldlat: oldCenter.latitude, oldlng: oldCenter.longitude};
+		this._center = newCenter;
 		this.fire('onCenterChange', data, {});
 	},
 	_doRadiusChanged: function (radius) {

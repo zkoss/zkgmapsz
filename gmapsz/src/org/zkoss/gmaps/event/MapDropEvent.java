@@ -27,7 +27,6 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.MouseEvent;
-
 import org.zkoss.gmaps.LatLng;
 
 /**
@@ -40,7 +39,7 @@ import org.zkoss.gmaps.LatLng;
  * @see MapMouseEvent
  */
 public class MapDropEvent extends DropEvent {
-	private final LatLng _latLng;
+	private LatLng _latLng;
 
 	public static final MapDropEvent getMapDropEvent(AuRequest request) {
 		final Component comp = request.getComponent();
@@ -69,17 +68,16 @@ public class MapDropEvent extends DropEvent {
 	}
 	
 	/** Constructs a drop event.
-	 * @param dragged The component being dragged and drop to {@link #getTarget}.
+	 * @param dragged the component being dragged and drop to {@link #getTarget}.
 	 */
-	public MapDropEvent(String name, Component target, Component dragged, 
+	public MapDropEvent(String name, Component target,  Component dragged, 
 		LatLng latLng, int x, int y, int pageX, int pageY, int keys) {
 		super(name, target, dragged, x, y, pageX, pageY, keys);
 		_latLng = latLng;
 	}
 	
-	
 	/** Constructs a drop event.
-	 * @param dragged The component being dragged and drop to {@link #getTarget}.
+	 * @param dragged the component being dragged and drop to {@link #getTarget}.
 	 */
 	public MapDropEvent(String name, Component target, Component dragged, 
 		double lat, double lng, int x, int y, int pageX, int pageY, int keys) {
@@ -87,21 +85,22 @@ public class MapDropEvent extends DropEvent {
 	}
 	
 	/** Returns the latitude and longitude of the clicked position.
-	 * @Since 3.0.2
+	 * @return the latitude and longitude of the clicked position.
+	 * @since 3.0.2
 	 */
 	public LatLng getLatLng() {
 		return _latLng;
 	}
 	
 	/** Returns the latitude of the clicked position.
-	 * @deprecated As of release 3.0.2, replaced with {@link MapDropEvent#getLatLng()} instead.
+	 * @deprecated As of release 3.0.2, use {@link #getLatLng()} instead.
 	 */
 	public double getLat() {
 		return _latLng.getLatitude();
 	}
 	
 	/** Returns the longitude of the clicked position.
-	 * @deprecated As of release 3.0.2, replaced with {@link MapDropEvent#getLatLng()} instead.
+	 * @deprecated As of release 3.0.2, use {@link #getLatLng()} instead.
 	 */
 	public double getLng() {
 		return _latLng.getLongitude();

@@ -38,7 +38,7 @@ import org.zkoss.zul.impl.XulElement;
  */
 public class Gimage extends XulElement implements Mapitem {
 	private static final long serialVersionUID = 200801071632L;
-	protected LatLngBounds _bounds = new LatLngBounds(new LatLng(37.4419, -122.1419), new LatLng(37.4419, -122.1419));
+	private LatLngBounds _bounds = new LatLngBounds(new LatLng(37.4419, -122.1419), new LatLng(37.4419, -122.1419));
 
 	/** image source */
 	private String _src;
@@ -68,19 +68,24 @@ public class Gimage extends XulElement implements Mapitem {
 	}
 	
 	/**
-	 * Returns the bounded south west latitude.
-	 * @return the bounded south west latitude.
+	 * Sets the bounds of Gimage.
+	 * @param bounds the bounds of Gimage.
+	 * @since 3.0.2
 	 */
 	public void setBounds(LatLngBounds bounds) {
-		if (!_bounds.equals(bounds)) {
+		if (bounds == null) {
+			throw new NullPointerException("bounds");
+		}
+		if (!Objects.equals(_bounds, bounds)) {
 			_bounds = bounds;
-			smartRerender();
+			smartUpdate("bounds", _bounds);
 		}
 	}	
 	
 	/**
-	 * Returns the bounded south west latitude.
-	 * @return the bounded south west latitude.
+	 * Returns the bounded of Gimage.
+	 * @return the bounded of Gimage.
+	 * @since 3.0.2
 	 */
 	public LatLngBounds getBounds() {
 		return _bounds;
@@ -98,9 +103,7 @@ public class Gimage extends XulElement implements Mapitem {
 	 * @param swlat south west latitude
 	 */
 	public void setSwlat(double swlat) {
-		if (!Objects.equals(_bounds.getSouthWest().getLatitude(), swlat)) {
-			setBounds(new LatLngBounds(new LatLng(swlat, _bounds.getSouthWest().getLongitude()), _bounds.getNorthEast()));
-		}
+		setBounds(new LatLngBounds(new LatLng(swlat, _bounds.getSouthWest().getLongitude()), _bounds.getNorthEast()));
 	}
 	/**
 	 * Returns the bounded south west longitude.
@@ -114,9 +117,7 @@ public class Gimage extends XulElement implements Mapitem {
 	 * @param swlng south west longitude
 	 */
 	public void setSwlng(double swlng) {
-		if (!Objects.equals(_bounds.getSouthWest().getLongitude(), swlng)) {
-			setBounds(new LatLngBounds(new LatLng(_bounds.getSouthWest().setLatitude(), swlng), _bounds.getNorthEast()));
-		}
+		setBounds(new LatLngBounds(new LatLng(_bounds.getSouthWest().getLatitude(), swlng), _bounds.getNorthEast()));
 	}
 	/**
 	 * Returns the bounded north east latitude.
@@ -130,9 +131,7 @@ public class Gimage extends XulElement implements Mapitem {
 	 * @param nelat the bounded north east latitude.
 	 */
 	public void setNelat(double nelat) {
-		if (!Objects.equals(_bounds.getNorthEast().getLatitude(), nelat)) {
-			setBounds(new LatLngBounds(_bounds.getSouthWest(), new LatLng(nelat, _bounds.getNorthEast().getLongitude())));
-		}
+		setBounds(new LatLngBounds(_bounds.getSouthWest(), new LatLng(nelat, _bounds.getNorthEast().getLongitude())));
 	}
 	/**
 	 * Returns the bounded north east longitude.
@@ -146,9 +145,7 @@ public class Gimage extends XulElement implements Mapitem {
 	 * @param nelng the bounded north east longitude.
 	 */
 	public void setNelng(double nelng) {
-		if (!Objects.equals(_bounds.getNorthEast().getLongitude(), nelng)) {
-			setBounds(new LatLngBounds(_bounds.getSouthWest(), new LatLng(_bounds.getNorthEast().getLatitude(), nelng)));
-		}
+		setBounds(new LatLngBounds(_bounds.getSouthWest(), new LatLng(_bounds.getNorthEast().getLatitude(), nelng)));
 	}
 
 	/** Returns the source URI of the image.
@@ -207,10 +204,7 @@ public class Gimage extends XulElement implements Mapitem {
 	throws java.io.IOException {
 		super.renderProperties(renderer);
 		render(renderer, "src", getEncodedURL());
-		render(renderer, "swlat", new Double( _bounds.getSouthWest().getLatitude()));
-		render(renderer, "swlng", new Double( _bounds.getSouthWest().getLongitude()));
-		render(renderer, "nelat", new Double( _bounds.getNorthEast().getLatitude()));
-		render(renderer, "nelng", new Double( _bounds.getNorthEast().getLongitude()));
+		render(renderer, "bounds", _bounds);
 	}
 	
 	/** Returns the encoded URL of the image (never null).
@@ -243,10 +237,7 @@ public class Gimage extends XulElement implements Mapitem {
 	private void smartRerender() {
 		final Map info = new HashMap();
 		info.put("src", getEncodedURL());
-		info.put("swlat", new Double( _bounds.getSouthWest().getLatitude()));
-		info.put("swlng", new Double( _bounds.getSouthWest().getLongitude()));
-		info.put("nelat", new Double( _bounds.getNorthEast().getLatitude()));
-		info.put("nelng", new Double( _bounds.getNorthEast().getLongitude()));
+		info.put("bounds", _bounds);
 		
 		smartUpdate("rerender_", info);
 	}

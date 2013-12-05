@@ -1,4 +1,6 @@
 <window title="Marker's Max Zoom Level" height="400px" width="400px" border="normal">
+	You should see two markers.
+	<separator bar="true"/>
 	<attribute name="onCreate">
 		map.panTo(48, 10);
 		map.setZoom(20);
@@ -18,5 +20,5 @@
 		gmark3.setLng(10.01);
 		gmark3.setMaxzoom(16);
 	</attribute>
-	<gmaps id="map" width="400px" height="300px"/>
+	<gmaps id="map" width="350px" height="300px"/>
 </window>

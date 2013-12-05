@@ -7,6 +7,7 @@
 			g1.setVisible(checked);
 			g2.setVisible(checked);
 			g3.setVisible(checked);
+			g4.setVisible(checked);
 			]]></attribute>
 	</checkbox>
 	<separator bar="true"/>
@@ -14,5 +15,6 @@
 		<gmarker id="g1" lat="21.99" lng="22" visible="false"/>
         <gpolyline id="g2" points="21.98,22,3,21.985,22,3" visible="false"/>
         <gpolygon id="g3" points="22,22,3,22.01,22,3,22.01,22.01,3" visible="false"/>
+        <gcircle id="g4" lat="22.01" lng="21.99" visible="false"/>
 	</gmaps>
 </window>

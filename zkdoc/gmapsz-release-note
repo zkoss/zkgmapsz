@@ -5,6 +5,7 @@ Gmaps 3.0.2 (work with ZK 5.0+ only)
   Issue 41: Gmarker support visible attribute
   Issue 40: Gpolygon support editable attribute
   Issue 39: Provide fitBounds API
+  Issue 20: Add google.maps.LatLngBounds()
 * Bugs:
   Issue 21: Tooltip not work after ZK6
   Issue 34: Gmarker#isOpen returns wrong value

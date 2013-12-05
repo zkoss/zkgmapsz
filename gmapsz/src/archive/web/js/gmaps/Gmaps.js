@@ -46,7 +46,7 @@ Copyright (C) 2009 Potix Corporation. All Rights Reserved.
  * &lt;a href="http://www.google.com/apis/maps/"&gt;Google Maps&lt;/a&gt;
  */
 gmaps.Gmaps = zk.$extends(zul.Widget, {
-	_center: [37.4419, -122.1419],
+	_center: {latitude: 37.4419, longitude: -122.1419},
 	_zoom: 13,
 	_mapType: 'normal',
 	_normal: true,
@@ -58,7 +58,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	_doubleClickZoom: true,
 	_scrollWheelZoom: true,
 	_enableDragging: true,
-	_version: '3.14',
+	_version: '3.13',
 	_libraries: 'geometry',
 	
 	$define: {
@@ -82,7 +82,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		center: function(c) {
 			var maps = this._gmaps;
 			if (maps) {
-				var latLng = new google.maps.LatLng(c[0],c[1]);
+				var latLng = new google.maps.LatLng(c.latitude,c.longitude);
 				maps.setCenter(latLng);
 			}
 		},
@@ -97,9 +97,9 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		bounds: function(b) {
 			var maps = this._gmaps;
 			if (maps) {
-				var bounds = b.length == 4 ? new google.maps.LatLngBounds(
-						new google.maps.LatLng(b[0],b[1]),
-						new google.maps.LatLng(b[2],b[3])) : null;
+				var bounds = b != null ? new google.maps.LatLngBounds(
+						new google.maps.LatLng(b.southWest.latitude, b.southWest.longitude),
+						new google.maps.LatLng(b.northEast.latitude, b.northEast.longitude)) : null;
 				maps.fitBounds(bounds);
 			}
 		},
@@ -605,7 +605,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		    	info._open = true;
 			} else { //gmaps.Ginfo
 		        var anch = info.getAnchor();
-		        infWin.setPosition(new google.maps.LatLng(anch[0], anch[1]));
+		        infWin.setPosition(new google.maps.LatLng(anch.latitude, anch.longitude));
 		        infWin.open(maps);
 		        info._open = true;
 			}
@@ -619,7 +619,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			if (info._infowindow) {
 				info._infowindow.close();
 				var anch = info.getAnchor();
-				if (info.$instanceof(gmaps.Gmarker) && !maps.getBounds().contains(new google.maps.LatLng(anch[0], anch[1]))) {
+				if (info.$instanceof(gmaps.Gmarker) && !maps.getBounds().contains(new google.maps.LatLng(anch.latitude, anch.longitude))) {
 					// if the info window is bind with a gmarker,
 					// and its out of bounds and we close it,
 					// it will be opened by markermanager after panto its position,
@@ -639,7 +639,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		this._center = c;
 		var maps = this._gmaps;
 		if (maps) {
-			var latLng = new google.maps.LatLng(c[0], c[1]);
+			var latLng = new google.maps.LatLng(c.latitude, c.longitude);
 			maps.panTo(latLng);
 		}
 	},
@@ -691,7 +691,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 						            '&language=', this._language? this._language : '',
 						            '&region=', this._baseDomain? this._baseDomain : '',
 						            '&libraries=', this._libraries? this._libraries : '',
-						            '&client=', this._client? this._client : '',
+						            '&client=', this._client || '',
 						            		].join('');
 						google.load('maps', this._version,
 								{
@@ -818,6 +818,8 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			// keep the data,
 			// will modified by the widget event that triggered by mimicMouseDown_
 			this._onMapClickData = data;
+			// Gmaps do not have dom element in event.
+			evt.domTarget = evt.domTarget || this.$n();
 			// fire event later
 			setTimeout (
 				function () {
@@ -918,9 +920,9 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		// do not get center value from map, just keep default.
 		if (this.isRealVisible()) {
 			var c = maps.getCenter();
-			this._center = [c.lat(), c.lng()];
+			this._center = {latitude: c.lat(), longitude: c.lng()};
 		}
-		this.fireX(new zk.Event(this, 'onMapMove', {lat:this._center[0],lng:this._center[1],swlat:sw.lat(),swlng:sw.lng(),nelat:ne.lat(),nelng:ne.lng()}, {}, null));
+		this.fireX(new zk.Event(this, 'onMapMove', {lat:this._center.latitude,lng:this._center.longitude,swlat:sw.lat(),swlng:sw.lng(),nelat:ne.lat(),nelng:ne.lng()}, {}, null));
 	},
 	_doZoomEnd: function() {
 		var maps = this._gmaps;
@@ -966,7 +968,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	},
 	_changeInfoPosition: function(c, info) {
 		if (info._infowindow) {
-			info._infowindow.setPosition(new google.maps.LatLng(c[0], c[1]));
+			info._infowindow.setPosition(new google.maps.LatLng(c.latitude, c.longitude));
 		}
 	},
 	_changeInfoContent: function(s, info) {
@@ -994,7 +996,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			
 			if (shallRestoreCenter) {
 				//@see #_doMoveEnd
-				var latLng = new google.maps.LatLng(this._center[0],this._center[1]);
+				var latLng = new google.maps.LatLng(this._center.latitude,this._center.longitude);
 				maps.setCenter(latLng);
 				this._centerRestored = true;
 			} else {

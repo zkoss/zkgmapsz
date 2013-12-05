@@ -83,13 +83,6 @@ public class GmapsUtil {
 		
 		return out;
 	}
-	/** Convert the LatLng class's latitude and longitude to Array.
-	 * @param latLng the class contains latitude and longitude.
-	 * @return double[] with double[0] the latitude and double[1] the longitude
-	 */
-	public static double[] latLngToArray(LatLng latLng) {
-		return new double[] {latLng.getLatitude(), latLng.getLongitude()};
-	}
 	/** Returns the bounds per the given center latitude, longitude, 
 	 * view port width, view port height, and zoomLevel.
 	 * 
@@ -148,17 +141,6 @@ public class GmapsUtil {
 		out[3] = ne[1];
 		
 		return new LatLngBounds(new LatLng(sw[0], sw[1]), new LatLng(ne[0], ne[1]));
-	}
-	/** Convert the LatLngBounds class's to Array.
-	 * @param latLng the class contains SouthWest and NorthEast bounds.
-	 * @return double[] of the bounds
-	 */
-	public static double[] boundsToArray(LatLngBounds bounds) {
-		return new double[] {
-				bounds.getSouthWest().getLatitude(),
-				bounds.getSouthWest().getLongitude(),
-				bounds.getNorthEast().getLatitude(),
-				bounds.getNorthEast().getLongitude()};
 	}
 	/**
 	 * Get Geocode Service Response by the given address

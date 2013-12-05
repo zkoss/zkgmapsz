@@ -77,28 +77,28 @@ public class MapMoveEvent extends Event {
 	}
 	
 	/** Returns the latitude and longitude of the Google Map center after moved.
-	 * @Since 3.0.2
+	 * @since 3.0.2
 	 */
 	public LatLng getLatLng() {
 		return _latLng;
 	}
 	
 	/** Returns the latitude of the Google Map center after moved.
-	 * @deprecated As of release 3.0.2, replaced with {@link MapMoveEvent#getLatLng()} instead.
+	 * @deprecated As of release 3.0.2, use {@link #getLatLng()} instead.
 	 */
 	public double getLat() {
 		return _latLng.getLatitude();
 	}
 	
 	/** Returns the longitude of the Google Map center after moved.
-	 * @deprecated As of release 3.0.2, replaced with {@link MapMoveEvent#getLatLng()} instead.
+	 * @deprecated As of release 3.0.2, use {@link #getLatLng()} instead.
 	 */
 	public double getLng() {
 		return _latLng.getLongitude();
 	}
 	
-	/** Returns the latitude and longitude bounds of the Google Map center after moved.
-	 * @Since 3.0.2
+	/** Returns the bounds of the Google Map after moved.
+	 * @since 3.0.2
 	 */
 	public LatLngBounds getBounds() {
 		return _bounds;
@@ -108,7 +108,7 @@ public class MapMoveEvent extends Event {
 	 * Returns the bounded south west latitude after moved.
 	 * @return the bounded south west latitude after moved.
 	 * @since 2.0_8
-	 * @deprecated As of release 3.0.2, replaced with {@link MapMoveEvent#getBounds()} instead.
+	 * @deprecated As of release 3.0.2, use {@link #getBounds()} instead.
 	 */
 	public double getSwLat() {
 		return _bounds.getSouthWest().getLatitude();
@@ -117,7 +117,7 @@ public class MapMoveEvent extends Event {
 	 * Returns the bounded south west longitude after moved.
 	 * @return the bounded south west longitude after moved.
 	 * @since 2.0_8
-	 * @deprecated As of release 3.0.2, replaced with {@link MapMoveEvent#getBounds()} instead.
+	 * @deprecated As of release 3.0.2, use {@link #getBounds()} instead.
 	 */
 	public double getSwLng() {
 		return _bounds.getSouthWest().getLongitude();
@@ -126,7 +126,7 @@ public class MapMoveEvent extends Event {
 	 * Returns the bounded north east latitude after moved.
 	 * @return the bounded north east latitude after moved.
 	 * @since 2.0_8
-	 * @deprecated As of release 3.0.2, replaced with {@link MapMoveEvent#getBounds()} instead.
+	 * @deprecated As of release 3.0.2, use {@link #getBounds()} instead.
 	 */
 	public double getNeLat() {
 		return _bounds.getNorthEast().getLatitude();
@@ -135,7 +135,7 @@ public class MapMoveEvent extends Event {
 	 * Returns the bounded north east longitude after moved.
 	 * @return the bounded north east longitude after moved.
 	 * @since 2.0_8
-	 * @deprecated As of release 3.0.2, replaced with {@link MapMoveEvent#getBounds()} instead.
+	 * @deprecated As of release 3.0.2, use {@link #getBounds()} instead.
 	 */
 	public double getNeLng() {
 		return _bounds.getNorthEast().getLongitude();

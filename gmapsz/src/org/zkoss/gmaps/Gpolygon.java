@@ -19,7 +19,6 @@ Copyright (C) 2007 Potix Corporation. All Rights Reserved.
 
 package org.zkoss.gmaps;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -124,14 +123,14 @@ public class Gpolygon extends Gpolyline {
 		if (_encodedPolyline == null) {
 			int lat = 0;
 			int lng = 0;
-			final StringBuffer sb = new StringBuffer(_points.size()*4);
+			final StringBuffer sb = new StringBuffer(_path.size()*4);
 			int lat0 = 0;
 			int lng0 = 0;
 			int j = 0;
-			for(final Iterator it = _points.iterator(); it.hasNext(); ++j) {
-				Tuple tuple = (Tuple) it.next();
-				final int tlat = e5(tuple.lat);
-				final int tlng = e5(tuple.lng);
+			for(final Iterator it = _path.iterator(); it.hasNext(); ++j) {
+				LatLng latLng = (LatLng) it.next();
+				final int tlat = e5(latLng.getLatitude());
+				final int tlng = e5(latLng.getLongitude());
 				if (j == 0) {
 					lat0 = tlat;
 					lng0 = tlng;
@@ -149,42 +148,10 @@ public class Gpolygon extends Gpolyline {
 		return _encodedPolyline;
 	}
 	
-	public String getEncodedLevels() {
-		if (_encodedLevels == null) {
-			final StringBuffer sb = new StringBuffer(_points.size()*2);
-			int lat0 = 0;
-			int lng0 = 0;
-			int lvl0 = 0;
-			int lat = 0;
-			int lng = 0;
-			int j = 0;
-			for(final Iterator it = _points.iterator(); it.hasNext(); ++j) {
-				Tuple tuple = (Tuple) it.next();
-				final int tlat = e5(tuple.lat);
-				final int tlng = e5(tuple.lng);
-				if (j == 0) {
-					lat0 = tlat;
-					lng0 = tlng;
-					lvl0 = tuple.level;
-				}
-				sb.append(encodeInt(tuple.level));
-				lat = tlat;
-				lng = tlng;
-			}
-			//there is at least one point and last point is not the first point
-			if (j > 0 && (lat != lat0 || lng != lng0)) {
-				sb.append(encodeInt(lvl0));
-			}
-			_encodedLevels = (j == 0) ? "?" : sb.toString();
-		}
-		return _encodedLevels;
-	}
-	
 	protected void renderProperties(org.zkoss.zk.ui.sys.ContentRenderer renderer)
 	throws java.io.IOException {
 		super.renderProperties(renderer);
-		
-		render(renderer, "editable", isEditable());
+
 		render(renderer, "fill", isFill());
 		render(renderer, "outline", isOutline());
 		render(renderer, "fillColor", getFillColor());
@@ -194,7 +161,6 @@ public class Gpolygon extends Gpolyline {
 	protected void prepareRerender(Map info) {
 		super.prepareRerender(info);
 		
-		info.put("editable", isEditable());
 		info.put("fill", Boolean.valueOf(isFill()));
 		info.put("outline", Boolean.valueOf(isOutline()));
 		info.put("fillColor", getFillColor());

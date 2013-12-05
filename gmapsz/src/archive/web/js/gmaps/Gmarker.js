@@ -32,7 +32,7 @@ gmaps.Gmarker = zk.$extends(gmaps.Ginfo, {
 		anchor: function(c) {
 			if (this.mapitem_) {
 				var oldPoint = this.mapitem_.getPosition(),
-					newPoint = new google.maps.LatLng(c[0], c[1]);
+					newPoint = new google.maps.LatLng(c.latitude, c.longitude);
 				this.mapitem_.setPosition(newPoint);
 				if (this.parent) {
 					this.parent._mm.onMarkerMoved_(this.mapitem_, oldPoint, newPoint); 
@@ -330,7 +330,7 @@ gmaps.Gmarker = zk.$extends(gmaps.Ginfo, {
 			tooltiptext = this._tooltiptext,
 			visible = this._visible,
 			opts = {};
-		if(anch) opts.position = new google.maps.LatLng(anch[0], anch[1]);
+		if(anch) opts.position = new google.maps.LatLng(anch.latitude, anch.longitude);
 		if (iimg) {
 			var markerImage = new google.maps.MarkerImage(iimg,
 				null,
@@ -356,7 +356,7 @@ gmaps.Gmarker = zk.$extends(gmaps.Ginfo, {
 		var gmarker = new google.maps.Marker(opts);
 		gmarker._wgt = this;
 		this.mapitem_ = gmarker;
-		this._initDraggable();
+		this._initDraggable();  
 
 	},
 	unbindMapitem_: function() {
