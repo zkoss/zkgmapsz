@@ -1,0 +1,14 @@
+<window title="Open Info" xmlns:w="client" border="normal" width="500px" height="450px">
+	<label multiline="true">
+		1. Close the info.
+		2. Click the marker, the info should show up.
+	</label>
+	<gmaps width="400px" height="400px">
+		<attribute name="onMapClick">
+			if (event.getReference() instanceof org.zkoss.gmaps.Gmarker) {
+				event.getReference().setOpen(true);
+			}
+		</attribute>
+		<gmarker lat="37.4410" lng="-122.1490" open="true" content="It's info."/>
+	</gmaps>
+</window>
