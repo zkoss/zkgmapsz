@@ -1,0 +1,15 @@
+debug
+codegen
+*.local
+*.class
+javadoc
+Thumbs.db
+.project
+dist/lib/z*.jar
+dist/lib/z*.war
+dist/lib/osgi
+gmapsz/target/*
+*.classpath
+*/.settings/*.prefs
+*/.settings/*.component
+*/.settings/*.xml
