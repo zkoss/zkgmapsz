@@ -1,7 +1,7 @@
 zkgmapsz
 ========
 
-The component used to represent [Google Map API][3].
+The component used to represent [Google Map API](https://developers.google.com/maps/documentation/javascript/?csw=1).
 
 Google Map API is a popular javascript library that lets you embed Google Maps in your own web pages.
 
