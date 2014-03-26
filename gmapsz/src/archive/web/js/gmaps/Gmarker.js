@@ -547,6 +547,9 @@ gmaps.Gmarker = zk.$extends(gmaps.Ginfo, {
 		
 		this.rebindMapitem_();
 	},
+	removeHTML_: function (n) {
+		// B70-Gmapsz-44: do nothing, no dom element here.
+	},
 	// B65-Gmapsz-36: Returns gmaps dom element.
 	$n: function (subId) {
 		var maps = this.gmaps();

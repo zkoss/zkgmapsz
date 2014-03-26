@@ -63,6 +63,10 @@ gmaps.Ginfo = zk.$extends(gmaps.Goverlay, {
 	clearOpen_: function() {
 		this._open = false;
 	},
+	removeHTML_: function (n) {
+		if (this._open && this._infowindow)
+			this._infowindow.close();
+	},
 	bindMapitem_: function() {
 		if (this.parent && this._open)
 			this.parent.openInfo(this);
