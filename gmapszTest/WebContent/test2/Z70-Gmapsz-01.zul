@@ -14,7 +14,7 @@
 	       <attribute name="onMapClick">
 	           Gmarker gmarker = event.getGmarker();
 	           if (gmarker != null) {
-	               gmarker.setOpen(true);
+	               gmarker.setOpen(!gmarker.isOpen());
 	           }
 	       </attribute>
 			<gimage src="/img/Globe-128x128.png" swlat="37.44215478" swlng="-122.14273453" nelat="37.45033195" nelng="-122.13191986"/>
