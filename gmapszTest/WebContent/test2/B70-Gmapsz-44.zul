@@ -4,7 +4,6 @@
 		2. All the overlays should be removed.
 	</label>
 	<button id="clearBtn" label="Clear" onClick="map.getChildren().clear()"/>
-	<button id="showBtn" label="Show" onClick="myinfo.setOpen(true)"/>
 	<gmaps id="map" height="400px" width="75%" showZoomCtrl="false">
        <ginfo id="myinfo" open="true" lat="37.4200" lng="-122.1490">
            <![CDATA[
