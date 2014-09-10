@@ -134,13 +134,17 @@ public class Gpolyline extends XulElement implements Mapitem {
 	 * @deprecated As of release 3.0.2, replaced with {@link #setPath(String)} instead.
 	 */
 	public void setPoints(String points) {
-		String[] arr = points.split(",");
-		int length = arr.length;
-		final StringBuffer sb = new StringBuffer();
-		for(int i = 0; i < length; sb.append(","), i += 3) {
-			sb.append(arr[i]).append(",").append(arr[i+1]);
+		if (points == null || points.isEmpty()) {
+			setPath("");
+		} else {
+			String[] arr = points.split(",");
+			int length = arr.length;
+			final StringBuffer sb = new StringBuffer();
+			for(int i = 0; i < length; sb.append(","), i += 3) {
+				sb.append(arr[i]).append(",").append(arr[i+1]);
+			}
+			setPath(sb.toString());
 		}
-		setPath(sb.toString());
 	}
 	
 	/**
