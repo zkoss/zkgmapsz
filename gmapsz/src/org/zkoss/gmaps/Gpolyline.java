@@ -28,8 +28,8 @@ import java.util.Map;
 
 import org.zkoss.gmaps.event.PathChangeEvent;
 import org.zkoss.lang.Objects;
+import org.zkoss.lang.Strings;
 import org.zkoss.util.CollectionsX;
-import org.zkoss.xel.fn.StringFns;
 import org.zkoss.zk.au.AuRequest;
 import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.event.Events;
@@ -134,7 +134,7 @@ public class Gpolyline extends XulElement implements Mapitem {
 	 * @deprecated As of release 3.0.2, replaced with {@link #setPath(String)} instead.
 	 */
 	public void setPoints(String points) {
-		if (points == null || points.isEmpty()) {
+		if (Strings.isEmpty(points)) {
 			setPath("");
 		} else {
 			String[] arr = points.split(",");
