@@ -62,9 +62,17 @@ gmaps.Goverlay = zk.$extends(zul.Widget, {
 	},
 	bind_: function(dt, skipper, after) {
 		this.$supers(gmaps.Goverlay, 'bind_', arguments);
-		this.bindMapitem_();
-		if (!this.$instanceof(gmaps.Gmarker))
-			this._initListeners();
+		var opts = [];
+		//#3: applied as callback function
+		var wgt = this;
+		opts['condition'] = function() { return wgt.parent._mmLoaded; };
+		opts['callback'] = function() {
+			wgt.bindMapitem_();
+			if (!wgt.$instanceof(gmaps.Gmarker))
+				wgt._initListeners();
+		};
+
+		gmapsGapi.waitUntil(wgt, opts);
 	},
 	unbind_: function() { //server invalidate()
 		this.$supers(gmaps.Goverlay, 'unbind_', arguments);

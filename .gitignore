@@ -13,3 +13,5 @@ gmapsz/target/*
 */.settings/*.prefs
 */.settings/*.component
 */.settings/*.xml
+*.bk
+.gitignore

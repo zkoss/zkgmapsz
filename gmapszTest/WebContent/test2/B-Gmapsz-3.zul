@@ -1,0 +1,105 @@
+<zk>
+<zscript><![CDATA[
+import org.zkoss.gmaps.Gmaps;
+import org.zkoss.gmaps.Gmarker;
+import org.zkoss.zul.Tab;
+import org.zkoss.zul.Window;
+
+public class GmapsIssue extends Window {
+
+    public void onCreate() {
+        defaultMapData();
+    }
+
+    public void defaultMapData() {
+        Gmaps map = (Gmaps) this.getFellow("map");
+        map.setLat(52.439496);
+        map.setLng(-1.647637);
+        map.setZoom(12);
+        map.panTo(52.439496, -1.647637); 
+    }
+
+    public void onInitLocationPrevious() {
+        Tab tab = (Tab) this.getFellow("mapTab");
+        tab.setDisabled(false);
+        tab.setSelected(true);
+
+        tab = (Tab) this.getFellow("initLocationTab");
+        tab.setDisabled(true);
+    }
+
+    public void onInitLocationNext() {
+        defaultMapData();
+
+        Tab mapTab = (Tab) this.getFellow("mapTab");
+        mapTab.setDisabled(false);
+        mapTab.setSelected(true);
+
+        renderLatitudeAndLongitude(55.9571839665758, -3.19778918054362);
+    }
+
+    public void onMapPrevious() {
+        Tab initLocationTab = (Tab) this.getFellow("initLocationTab");
+        initLocationTab.setDisabled(false);
+        initLocationTab.setSelected(true);
+
+        Tab mapTab = (Tab) this.getFellow("mapTab");
+        mapTab.setDisabled(true);
+    }
+
+    public void onMapNext() {
+    }
+
+
+    private void renderLatitudeAndLongitude(double latitude, double longitude) {
+        Gmarker marker = null;
+        Gmaps map = (Gmaps) this.getFellow("map");
+
+        
+        if (map.getChildren().size() > 0) {
+            map.getChildren().clear();
+        }
+        
+        
+        marker = new Gmarker("gmarker", latitude, longitude);
+        marker.setDraggingEnabled(true);
+        marker.setOpen(true);
+        marker.setParent(map);
+        
+        map.panTo(latitude, longitude);
+        map.setVisible(true);
+    }
+
+}
+]]>
+</zscript>
+<label multiline="true">
+	1. click next button inside tabpanel
+	2. you should see the center is located in Edinburgh with gmarker
+</label>
+<window id="genWin" height="98%" width="98%" use="GmapsIssue" position="center, top">
+    <tabbox>
+        <tabs>
+            <tab id="initLocationTab" label="Init Location" />
+            <tab id="mapTab" label="map" />
+        </tabs>
+        <tabpanels>
+            <tabpanel>
+                <toolbar>
+                    <toolbarbutton label="Previous" forward="onInitLocationPrevious" />
+                    <toolbarbutton label="Next" forward="onInitLocationNext" />
+                </toolbar>
+            </tabpanel>
+            <tabpanel>
+                <vlayout vflex="1">
+                    <toolbar>
+                        <toolbarbutton label="Previous" forward="onMapPrevious"/>
+                        <toolbarbutton label="Next" forward="onMapNext"/>
+                    </toolbar>
+                    <gmaps id="map" height="400px" width="75%" showZoomCtrl="false" />
+                </vlayout>
+            </tabpanel>
+        </tabpanels>
+    </tabbox>
+</window>
+</zk>

@@ -645,6 +645,9 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	},
 	bind_: function(dt, skipper, after) {
 		var wgt = this;
+		//#3: call $supers first to keep consistency of zk's life cycle
+		//but notice that all goverlay render should be called as callback function
+		wgt.$supers(gmaps.Gmaps, 'bind_', arguments); //calling down kid widgets to do binding
 
 		this._maskOpts = gmapsGapi.initMask(this, {message: 'Loading Google Maps APIs'});
 		if (!window.google || !window.google.maps)
@@ -721,7 +724,6 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	_realBind: function(dt, skipper, after) {
 		var n = jq(this.uuid, zk)[0],
 			maskOpts,
-			bindArguments = arguments;
 		if (maskOpts = this._maskOpts) {
 			if (maskOpts._mask && maskOpts._mask._opts) {
 				maskOpts._mask._opts.anchor = this;
@@ -773,8 +775,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			wgt.overrideMarkermanager();
 			//init listeners
 			wgt._initListeners(n);
-			// Issue 29: Use the saved arguments.
-			wgt.$supers(gmaps.Gmaps, 'bind_', bindArguments); //calling down kid widgets to do binding
+			
 			//bug #2929253 map canvas partly broken when map was invisible
 			//watch the global event onSize/onShow (must after $supers(gmaps.Gmaps, 'bind_', arguments)) 
 			zWatch.listen({onSize: wgt, onShow: wgt});

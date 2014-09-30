@@ -26,6 +26,7 @@ Gmaps 3.0.2 (work with ZK 5.0+ only)
   Issue 28: Incorrect max zoom level
   Issue 27: Impossible to reopen a gmark that has been closed
   Issue #2: Gpolygon#setPoints not work with empty string
+  Issue #3: Gmap does not update its state under client render on demand
 
 * Upgrade Notes:
   
