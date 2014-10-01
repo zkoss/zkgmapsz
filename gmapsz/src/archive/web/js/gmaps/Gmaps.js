@@ -723,7 +723,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	},
 	_realBind: function(dt, skipper, after) {
 		var n = jq(this.uuid, zk)[0],
-			maskOpts,
+			maskOpts;
 		if (maskOpts = this._maskOpts) {
 			if (maskOpts._mask && maskOpts._mask._opts) {
 				maskOpts._mask._opts.anchor = this;
