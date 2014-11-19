@@ -20,3 +20,6 @@ Component References:
  - [Gmarker](http://books.zkoss.org/wiki/ZK_Component_Reference/Diagrams_and_Reports/Gmaps/Gmarker)
  - [Gpolyline](http://books.zkoss.org/wiki/ZK_Component_Reference/Diagrams_and_Reports/Gmaps/Gpolyline)
  - [Gpolygon](http://books.zkoss.org/wiki/ZK_Component_Reference/Diagrams_and_Reports/Gmaps/Gpolygon)
+
+### Issues
+ Now we've transferred issues to [jira issue tracker](http://tracker.zkoss.org/browse/ZKGMAPS)
