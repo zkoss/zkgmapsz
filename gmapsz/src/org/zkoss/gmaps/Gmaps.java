@@ -1344,8 +1344,8 @@ public class Gmaps extends XulElement {
 
 	//register the Gmaps related event
 	static {
-		addClientEvent(Gmaps.class, "onMapMove", CE_DUPLICATE_IGNORE);
-		addClientEvent(Gmaps.class, "onMapZoom", CE_DUPLICATE_IGNORE);
+		addClientEvent(Gmaps.class, "onMapMove", CE_DUPLICATE_IGNORE | CE_IMPORTANT | CE_NON_DEFERRABLE);
+		addClientEvent(Gmaps.class, "onMapZoom", CE_DUPLICATE_IGNORE | CE_IMPORTANT | CE_NON_DEFERRABLE);
 		addClientEvent(Gmaps.class, "onInfoChange", CE_DUPLICATE_IGNORE | CE_IMPORTANT | CE_NON_DEFERRABLE);
 		addClientEvent(Gmaps.class, "onMapClick", CE_DUPLICATE_IGNORE);
 		addClientEvent(Gmaps.class, "onMapDoubleClick", CE_DUPLICATE_IGNORE);

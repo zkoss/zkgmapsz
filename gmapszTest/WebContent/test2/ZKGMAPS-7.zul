@@ -1,0 +1,25 @@
+<zk>
+	<window title="zoom/position issues when using MapItemRenderer" height="600px" border="normal">
+		<label multiline="true">1. zoom out the map (reduce zoom level)
+			2. click the button
+			3. the map should zoom back to level 15
+		</label>
+		<separator bar="true"/>
+		<button label="set Zoom Level back to default 15" onClick="zoom()"/>
+		<div>
+			<gmaps id="gm" version="3.9"  width="520px" height="400px"  showOverviewCtrl="false" >
+				<ginfo id="info" open="true"
+					content="Hello, &lt;a href=&quot;http://www.zkoss.org\&quot;&gt;ZK&lt;/a&gt;." />
+				<gmarker id="marker" lat="37.4410" lng="-122.1490"
+					content="Hello, &lt;a href=&quot;http://www.zkoss.org&quot;&gt;ZK&lt;/a&gt; on top of Gmarker." />
+			</gmaps>
+			<zscript><![CDATA[
+				gm.setZoom(15);
+				public void zoom(){
+					gm.setZoom(15);
+				}
+					]]>
+			</zscript>
+		</div>
+	</window>
+</zk>

@@ -4,6 +4,7 @@ Gmaps 3.0.4 (work with ZK 5.0+ only)
 
 * Bugs:
   ZKGMAPS-6: zoom/position issues when using MapItemRenderer
+  ZKGMAPS-7: gmaps doesn't synchromize zoom level if no listener registered for onMapZoom event
 
 * Upgrade Notes:
 
