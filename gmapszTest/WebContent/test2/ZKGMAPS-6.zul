@@ -1,0 +1,45 @@
+<zk>
+	<window title="zoom/position issues when using MapItemRenderer" height="500px" border="normal">
+		when using MapitemRenderer in combination with a MapModel(List), the zoom, and initial center position should equals others		
+		<separator bar="true"/>
+		<hlayout>
+			(static)
+			<gmaps width="300px" height="400px" lat="40" lng="0" zoom="5">
+				<gmarker lat="40" lng="0" content="position"/>
+			</gmaps>
+		
+			(dynamic)
+			<gmaps id="dynGmaps" width="300px" height="400px" />
+		
+			(model/renderer)
+			<gmaps id="modelGmaps" width="300px" height="400px" />
+		</hlayout>
+	
+		<zscript><![CDATA[
+			dynGmaps.appendChild(new org.zkoss.gmaps.Gmarker("position", 40, 0));
+			dynGmaps.setCenter(40, 0);
+			dynGmaps.setZoom(5);
+		]]></zscript>
+		
+		<zscript><![CDATA[
+		    import org.zkoss.gmaps.*;
+		                  
+			class MyMapitemRenderer implements MapitemRenderer {
+				public Mapitem newMapitem(Object data) {
+					return new Gmarker((String) data, 40, 0);
+				}
+			}
+			
+			//modelGmaps.setCenter(40, 0); doing that before adding the itemRenderer, and model helps a little
+			//modelGmaps.setZoom(5); zoom is still not at the expected level
+			MapModelList mapModel = new MapModelList();
+			modelGmaps.setItemRenderer(new MyMapitemRenderer());
+			mapModel.add("position");
+			modelGmaps.setModel(mapModel);
+			modelGmaps.setCenter(40, 0);
+			modelGmaps.setZoom(5);
+	
+			
+		]]></zscript>
+	</window>
+</zk>

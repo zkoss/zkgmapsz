@@ -919,6 +919,13 @@ public class Gmaps extends XulElement {
 				if (_model != null) {
 					_model.removeMapDataListener(_dataListener);
 				}
+				//reset attributes
+				_center = new LatLng(37.4419, -122.1419);
+				_bounds = new LatLngBounds(
+						new LatLng(37.418026932311111, -122.1933746338),
+						new LatLng(37.4657298516, -122.0903778076));
+				_zoom = 13;
+
 				_model = model;
 				initMapDataListener();
 			}
@@ -942,6 +949,9 @@ public class Gmaps extends XulElement {
 		private static final long serialVersionUID = 200808261207L;
 
 		public void onEvent(Event evt) {
+			//bounds not initiated yet(do it at server side)
+			if (getSwlat() == 37.418026932311111)
+				initBounds();
 			syncModel();
 		}
 	}
@@ -957,10 +967,12 @@ public class Gmaps extends XulElement {
 		}
 	}
 	private void syncModel() {
+		/*
 		//bounds not initiated yet(do it at server side)
 		if (getSwlat() == 37.418026932311111) { 
 			initBounds();
 		}
+		*/
 		if (_model != null)
 			onMapDataChange(new MapDataEvent(_model, MapDataEvent.BOUNDS_CHANGED, 
 				_model.getItemsIn(getSwlat(), getSwlng(), getNelat(), getNelng(), getLat(), getLng(), _zoom)));

@@ -1,4 +1,13 @@
   --------
+Gmaps 3.0.4 (work with ZK 5.0+ only)
+* Features:
+
+* Bugs:
+  ZKGMAPS-6: zoom/position issues when using MapItemRenderer
+
+* Upgrade Notes:
+
+  --------
 Gmaps 3.0.3 (work with ZK 5.0+ only)
 * Features:
 
