@@ -973,12 +973,6 @@ public class Gmaps extends XulElement {
 		}
 	}
 	private void syncModel() {
-		/*
-		//bounds not initiated yet(do it at server side)
-		if (getSwlat() == 37.418026932311111) { 
-			initBounds();
-		}
-		*/
 		if (_model != null)
 			onMapDataChange(new MapDataEvent(_model, MapDataEvent.BOUNDS_CHANGED, 
 				_model.getItemsIn(getSwlat(), getSwlng(), getNelat(), getNelng(), getLat(), getLng(), _zoom)));
