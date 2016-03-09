@@ -883,8 +883,14 @@ public class Gmaps extends XulElement {
     /** Close the currently opened info window.
      */
     public void closeInfo() {
+    	closeInfo(null);
+    }
+    
+    /** Close the currently opened info window.
+     */
+    public void closeInfo(Ginfo info) {
     	_info = null;
-        smartUpdate("closeInfo_", "");
+        smartUpdate("closeInfo_", info.getUuid());
     }
     
 	/** Returns the currently opened info window of this Google Maps (might be Gmarker or Ginfo).

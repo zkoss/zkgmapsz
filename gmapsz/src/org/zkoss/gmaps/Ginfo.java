@@ -125,9 +125,10 @@ public class Ginfo extends XulElement implements Mapitem {
 				if (b) {
 					gmaps.openInfo(this);
 				} else {
-					smartUpdate("open", b);
+					gmaps.closeInfo(this);
 				}
 			}
+			smartUpdate("open", b);
 			_open = b;
 		}
 	}

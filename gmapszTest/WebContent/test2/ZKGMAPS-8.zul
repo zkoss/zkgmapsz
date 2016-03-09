@@ -1,0 +1,18 @@
+<zk>
+	<window	apply="org.zkoss.gmapstest.test2.ZKGMAPS_8_MyGmapsTestComposer">
+		<label multiline="true">1.Use the center button to center on the gmarkers.
+			2.Click the hide button to close all markers, should close all GInfo.
+			3.Click the show button to open all markers, should open all GInfo.
+		</label>
+		<separator bar="true"/>
+		<vlayout>
+			<gmaps id="myGmaps"></gmaps>
+			<hlayout>
+				<button id="btnCenter" label="center"/>
+				<button id="btnHide" label="hide"/>
+				<button id="btnShow" label="show"/>
+			</hlayout>
+		</vlayout>
+
+	</window>
+</zk>

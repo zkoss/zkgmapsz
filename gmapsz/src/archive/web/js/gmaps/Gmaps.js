@@ -613,6 +613,9 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		}
 	},
 	setCloseInfo_: function(info) {
+		if (typeof info == 'string') {
+			info = zk.Widget.$(info);
+		}
 		var maps = this._gmaps;
 		if (maps && info) {
 			info._open = false;
