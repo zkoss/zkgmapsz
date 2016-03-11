@@ -54,6 +54,7 @@ import org.zkoss.zul.impl.XulElement;
 public class Gmaps extends XulElement {
 	private static final long serialVersionUID = 200807040842L;
 	private transient Ginfo _oneinfo; //the only one Ginfo child of this Gmaps.
+    //TODO: GMap should support multiple GInfo in the future.
 	private transient Ginfo _info; //current opened info window, null means none is open.
 
 	private LatLng _center = new LatLng(37.4419, -122.1419);
