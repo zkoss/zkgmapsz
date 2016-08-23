@@ -8,6 +8,7 @@ Gmaps 3.0.4 (work with ZK 5.0+ only)
   ZKGMAPS-8: Ginfo setOpen() response targets gmaps on true and ginfo on false
   ZKGMAPS-9: Initial defaults causing reset of zoom level/center
   ZKGMAPS-10: Gmaps dynamic rendering issue
+  ZKGMAPS-11: Gmaps effect.mask causes JS exception after ZK 8.0.2
 
 * Upgrade Notes:
 

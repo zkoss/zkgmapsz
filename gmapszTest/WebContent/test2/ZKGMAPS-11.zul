@@ -1,0 +1,13 @@
+<!--may not running on localhost while api-key was missing-->
+<zk>
+	<div>
+		<label multiline="true">
+			1.click "show map" button
+			2.it should not appear any js error
+		</label>
+		<div id="hidden" visible="false">
+			<gmaps width="400px" height="300px"/>
+		</div>
+		<button label="show map" onClick="hidden.setVisible(true)"/>
+	</div>
+</zk>

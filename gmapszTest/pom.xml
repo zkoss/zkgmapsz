@@ -16,7 +16,7 @@
 		<poi.version>3.7</poi.version>
 		<gmapsz.version>3.0.4-FL</gmapsz.version>
 	</properties>
-	<version>7.0.2-Eval</version>
+	<version>8.0.2-Eval</version>
 	<packaging>war</packaging>
 	<licenses>
 		<license>
