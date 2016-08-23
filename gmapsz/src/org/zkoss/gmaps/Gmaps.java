@@ -926,13 +926,6 @@ public class Gmaps extends XulElement {
 				if (_model != null) {
 					_model.removeMapDataListener(_dataListener);
 				}
-				//reset attributes
-				_center = new LatLng(37.4419, -122.1419);
-				_bounds = new LatLngBounds(
-						new LatLng(37.418026932311111, -122.1933746338),
-						new LatLng(37.4657298516, -122.0903778076));
-				_zoom = 13;
-
 				_model = model;
 				initMapDataListener();
 			}

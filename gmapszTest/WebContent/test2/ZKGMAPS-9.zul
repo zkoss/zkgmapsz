@@ -1,0 +1,16 @@
+<zk>
+	<label multiline="true">
+		1.load this page
+		2.the location should at Huston
+	</label>
+	<gmaps id="gmap" width="400px" height="400px" protocol="https"/>
+	<zscript><![CDATA[
+		import org.zkoss.gmaps.*;
+		MapModelList model = new MapModelList();
+		model.add(new Gmarker("Houston", 29.75,-95.37));
+		//gmap.setModel(model); //setting the model before works
+		gmap.setZoom(10);
+		gmap.setCenter(29.75,-95.37); //Houston, We've Got a Problem (seem's we'll have to land in Palo Alto)
+		gmap.setModel(model); //setting the model after zoom/center resets the zoom/center to default
+	]]></zscript>
+</zk>
