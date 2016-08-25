@@ -656,9 +656,8 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		if (!window.google || !window.google.maps)
 			gmapsGapi.loadAPIs(wgt, function() {wgt._tryBind(dt, skipper, after)}, 'Loading Google Ajax APIs');
 		else {
-			var wgt = this,
-				opts1 = [];
-			opts1['condition'] = function() {return window.MarkerManager;};
+			var opts1 = [];
+			opts1['condition'] = function() {return window.MarkerManager && wgt.$n().offsetHeight;};
 			opts1['callback'] = function() {wgt._realBind(dt, skipper, after);};
 			gmapsGapi.waitUntil(wgt, opts1);
 		}

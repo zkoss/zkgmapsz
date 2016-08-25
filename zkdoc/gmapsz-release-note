@@ -7,6 +7,7 @@ Gmaps 3.0.4 (work with ZK 5.0+ only)
   ZKGMAPS-7: gmaps doesn't synchromize zoom level if no listener registered for onMapZoom event
   ZKGMAPS-8: Ginfo setOpen() response targets gmaps on true and ginfo on false
   ZKGMAPS-9: Initial defaults causing reset of zoom level/center
+  ZKGMAPS-10: Gmaps dynamic rendering issue
 
 * Upgrade Notes:
 
