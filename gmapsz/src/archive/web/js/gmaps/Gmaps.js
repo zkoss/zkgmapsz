@@ -691,12 +691,11 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 				if (!gmaps.Gmaps.LOADING) { //avoid double loading Google Maps APIs
 					gmaps.Gmaps.LOADING = true;
 					if (!opts0.condition()) {
-						var opts = ['sensor=',
-						            this._sensor? this._sensor : 'false',
+						var opts = [
 						            '&language=', this._language? this._language : '',
 						            '&region=', this._baseDomain? this._baseDomain : '',
 						            '&libraries=', this._libraries? this._libraries : '',
-						            '&client=', this._client || '',
+						            '&key=', zk.googleAPIkey || ''
 						            		].join('');
 						google.load('maps', this._version,
 								{
