@@ -19,28 +19,6 @@ Copyright (C) 2009 Potix Corporation. All Rights Reserved.
 }}IS_RIGHT
 */
 (function() {
-	gmapsGapi.loadAPIs = function(wgt, callback, msg, timeout, opts) {
-		if (!opts) opts = {};
-		opts['condition'] = function() {return window.google && window.google.load};
-		opts['callback'] = function() {
-			callback(); delete gmapsGapi.LOADING;
-		};
-		if (!opts.condition()) {
-			gmapsGapi.waitUntil(wgt, opts);
-			if (!gmapsGapi.LOADING) { //avoid double loading Google Ajax APIs
-				gmapsGapi.LOADING = true;
-				if (!opts.condition()) {
-					var protocol = (wgt._protocol == 'https')? 'https' : 'http';
-					if (!zk.googleAPIkey)
-						zk.loadScript(protocol + '://www.google.com/jsapi');
-					else 
-						zk.loadScript(protocol + '://www.google.com/jsapi?key='+zk.googleAPIkey);
-				}
-			}
-		} else {
-			callback();
-		}
-	};
 /**
  * The component used to represent
  * &lt;a href="http://www.google.com/apis/maps/"&gt;Google Maps&lt;/a&gt;

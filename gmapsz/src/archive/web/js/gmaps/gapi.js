@@ -33,13 +33,12 @@ gmapsGapi.loadAPIs = function(wgt, callback, msg, timeout) {
 	var opts = {};
 	opts['condition'] = function() {return window.google && window.google.load};
 	opts['callback'] = function() {callback(); delete gmapsGapi.LOADING;}
-
 	if (!opts.condition()) {
 		gmapsGapi.waitUntil(wgt, opts);
 		if (!gmapsGapi.LOADING) { //avoid double loading Google Ajax APIs
 			gmapsGapi.LOADING = true;
 			if (!opts.condition())
-				zk.loadScript('http://www.google.com/jsapi?key='+zk.googleAPIkey);
+				zk.loadScript('https://www.google.com/jsapi');
 		}
 	} else
 		callback();
