@@ -695,7 +695,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 						            '&language=', this._language? this._language : '',
 						            '&region=', this._baseDomain? this._baseDomain : '',
 						            '&libraries=', this._libraries? this._libraries : '',
-						            '&key=', zk.googleAPIkey || ''
+						            this._client ? '&client=' + this._client : zk.googleAPIkey ? '&key=' + zk.googleAPIkey : ''
 						            		].join('');
 						google.load('maps', this._version,
 								{
