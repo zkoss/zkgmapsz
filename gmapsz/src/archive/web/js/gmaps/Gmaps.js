@@ -36,8 +36,10 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	_doubleClickZoom: true,
 	_scrollWheelZoom: true,
 	_enableDragging: true,
-	_version: '3.13',
-	_libraries: 'geometry',
+	_version: '3',
+	_gmapsApiConfigParams: {
+		libraries: 'geometry'
+	},
 	
 	$define: {
 		/** 
@@ -380,71 +382,18 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		 * @since 3.0.0
 		 */
 		protocol: null,
-	    /**
-	     * Returns whether your application is using a sensor (such as a GPS locator) 
-	     * to determine the user's location. This is especially important for mobile 
-	     * devices; default is false.
-	     * @return boolean
-	     */
-	    /**
-	     * Sets whether your application is using a sensor (such as a GPS locator) 
-	     * to determine the user's location. This is especially important for mobile 
-	     * devices; default is false.
-	     * @param boolean sensor whether using a sensor to determine the user's location.
-	     */
-		sensor: null,
+		
 		/**
-		 * Returns the preferred language code; default to null and means using
-		 * browser's preferred language. You can check language code 
-		 * <a href="http://spreadsheets.google.com/pub?key=p9pdwsai2hDMsLkXsoM05KQ&gid=1">here</a> 
-		 * <p>By default Gmaps uses the browser's preferred language setting when 
-		 * displaying textual information such as control names, copyright, and so
-		 * one. Sets language code will make Gmaps to always use the specified
-		 * language and ignore the browser's language setting.
-		 * 
-		 * @return String
+		 * Returns the google maps API parmeter configuration map.
+		 * @return object containing the parameters load the Maps API with.
+		 * @since 3.0.5
 		 */
 		/**
-		 * Sets the preferred language code; default to null and means using
-		 * browser's preferred language. You can check language code 
-		 * <a href="http://spreadsheets.google.com/pub?key=p9pdwsai2hDMsLkXsoM05KQ&gid=1">here</a> 
-		 * <p>By default Gmaps uses the browser's preferred language setting when 
-		 * displaying textual information such as control names, copyright, and so
-		 * one. Sets language code will make Gmaps to always use the specified
-		 * language and ignore the browser's language setting.
-		 * 
-		 * @param String language the preferred language code
+		 * Set the google maps API parmeter configuration map.
+		 * @param protocol the protocol to load the Maps API
+		 * @since 3.0.5
 		 */
-		language: null,
-		/**
-		 * Returns the libraries to load; default to geometry and means
-		 * load geometry library only, you can check libraries
-		 * <a href="http://code.google.com/intl/zh-TW/apis/maps/documentation/javascript/libraries.html">here</a>
-		 * <p> Use comma to separate different library
-		 * 
-		 * 
-		 * @return the libraries to load.
-		 * @since 3.0.0
-		 */
-		/**
-		 * Sets the libraries to load; default to geometry and means using
-		 * load geometry library only, you can check libraries
-		 * <a href="http://code.google.com/intl/zh-TW/apis/maps/documentation/javascript/libraries.html">here</a>
-		 * <p> Use comma to separate different library
-		 * 
-		 * @param libraries the libraries to load
-		 * @since 3.0.0
-		 */
-		libraries:null,
-		/** Returns the client ID of the Maps.
-		 * @return client client ID of the Google Maps
-		 * @since 3.0.2
-		 */
-		/** Sets the client ID of the Maps.
-		 * @param client client ID of the Google Maps
-		 * @since 3.0.2
-		 */
-		client:null
+		gmapsApiConfigParams: null 
 	},
 	/**
 	 * Add supported map type into this Gmaps("normal", "satellite", "hybrid", "physical").
@@ -669,21 +618,21 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 				if (!gmaps.Gmaps.LOADING) { //avoid double loading Google Maps APIs
 					gmaps.Gmaps.LOADING = true;
 					if (!opts0.condition()) {
-						var opts = [
-						            '&language=', this._language? this._language : '',
-						            '&region=', this._baseDomain? this._baseDomain : '',
-						            '&libraries=', this._libraries? this._libraries : '',
-						            this._client ? '&client=' + this._client : zk.googleAPIkey ? '&key=' + zk.googleAPIkey : ''
-						            		].join('');
-						google.load('maps', this._version,
-								{
-									other_params: opts,
-									callback: function(){// load marker manager after map api loaded
-										zk.loadScript(zk.ajaxURI('/web/js/gmaps/ext/markermanager.js', {desktop : this.desktop,au : true}));
-										wgt._realBind(dt, skipper, after);
-									}
-								}
-						); // load the maps api
+						if(!this._gmapsApiConfigParams.client && !this._gmapsApiConfigParams.key && zk.googleAPIkey) {
+							this._gmapsApiConfigParams.key = zk.googleAPIkey;
+						}
+						var otherParams = jq.param(this._gmapsApiConfigParams);
+						var optionalSettings = {
+							other_params: otherParams,
+							callback: function() {// load marker manager after map api loaded
+								zk.loadScript(zk.ajaxURI('/web/js/gmaps/ext/markermanager.js', {desktop : this.desktop,au : true}));
+								wgt._realBind(dt, skipper, after);
+							}
+						};
+						if(this._baseDomain) {
+							optionalSettings.base_domain = this._baseDomain;
+						}
+						google.load('maps', this._version, optionalSettings); // load the maps api
 					}
 				}
 			} else {

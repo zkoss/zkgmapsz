@@ -18,6 +18,7 @@ Copyright (C) 2006 Potix Corporation. All Rights Reserved.
 */
 package org.zkoss.gmaps;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -32,6 +33,7 @@ import org.zkoss.gmaps.event.MapMouseEvent;
 import org.zkoss.gmaps.event.MapMoveEvent;
 import org.zkoss.gmaps.event.MapTypeChangeEvent;
 import org.zkoss.gmaps.event.MapZoomEvent;
+import org.zkoss.json.JSONObject;
 import org.zkoss.lang.Objects;
 import org.zkoss.lang.Strings;
 import org.zkoss.zk.ui.Component;
@@ -39,20 +41,26 @@ import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.event.Express;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zul.impl.XulElement;
 
 
 /**
- * The component used to represent
- * <a href="http://www.google.com/apis/maps/">Google Maps</a>
+ * The component used to represent Maps based on the
+ * <a href="https://developers.google.com/maps/documentation/javascript/">Google Maps JS API</a>
  *
  * @author henrichen
  * @version $Revision: 1.6 $ $Date: 2006/03/31 08:38:55 $
  */
 public class Gmaps extends XulElement {
 	private static final long serialVersionUID = 200807040842L;
+	private static final String KEY = "key";
+	private static final String CLIENT = "client";
+	private static final String CHANNEL = "channel";
+	private static final String LIBRARIES = "libraries";
+	private static final String LANGUAGE = "language";
+	private static final String SENSOR = "sensor";
+	private static final String REGION = "region";
 	private transient Ginfo _oneinfo; //the only one Ginfo child of this Gmaps.
     //TODO: GMap should support multiple GInfo in the future.
 	private transient Ginfo _info; //current opened info window, null means none is open.
@@ -81,19 +89,18 @@ public class Gmaps extends XulElement {
 	private boolean _doubleClickZoom = true;
 	private boolean _scrollWheelZoom = true;
 	private boolean _enableGoogleBar;
-	
-	private boolean _sensor;
 	private String _baseDomain;
-	private String _client;
-	private String _language;
-	private String _libraries = "geometry";
+	private JSONObject _gmapsApiConfigParams = new JSONObject(); 
+	{
+		_gmapsApiConfigParams.put(LIBRARIES, "geometry");
+	}
 	private String _protocol;
 	
 	private MapModel _model;
 	private MapitemRenderer _renderer;
 	private MapDataListener _dataListener;
-	private EventListener _moveListener; //used by MapModel live data
-	private Map _dataMap = new HashMap(64); //data object -> Mapitem
+	private EventListener<Event> _moveListener; //used by MapModel live data
+	private Map<Object, Mapitem> _dataMap = new HashMap<Object, Mapitem>(64); //data object -> Mapitem
 	private Component _selected;
 
 	private String _version = "3";
@@ -128,25 +135,81 @@ public class Gmaps extends XulElement {
 		return _center;
 	}
 	
-	/** Sets the client ID of the Maps.
+	/** Sets the <a href="https://developers.google.com/maps/documentation/javascript/get-api-key#client-id">'client ID' Gmaps API parameter</a>.
 	 * @param client client ID of the Google Maps
 	 * @since 3.0.2
 	 */
 	public void setClient(String client) {
-		if (!Objects.equals(_client, client)) {
-			this._client = client;
-			smartUpdate("client", client);
-		}
+		setGmapsApiConfigParam(CLIENT, client);
 	}
 	
-	/** Returns the client of the Maps.
-	 * @return client client of the Google Maps
-	 * @since 3.0.2
+	/** Returns the <a href="https://developers.google.com/maps/documentation/javascript/get-api-key#client-id">'channel' Gmaps API parameter</a>.
+	 * @return channel of the Google Maps API
+	 * @since 3.0.5
 	 */
 	public String getClient() {
-		return _client;
+		return getGmapsApiConfigParam(CLIENT);
+	}
+	
+	/** Returns the <a href="https://developers.google.com/maps/documentation/javascript/get-api-key#clientID-features">'client ID' Gmaps API parameter</a>.
+	 * @return client ID of the Google Maps API
+	 * @since 3.0.2
+	 */
+	public String getChannel() {
+		return getGmapsApiConfigParam(CHANNEL);
 	}
 
+	/** Sets the <a href="https://developers.google.com/maps/documentation/javascript/get-api-key#clientID-features">'channel' Gmaps API parameter</a>.
+	 * @param channel channel parameter of Google Maps API
+	 * @since 3.0.5
+	 */
+	public void setChannel(String channel) {
+		setGmapsApiConfigParam(CHANNEL, channel);
+	}
+	
+	/** 
+	 * Sets the <a href="https://developers.google.com/maps/documentation/javascript/get-api-key">Gmaps 'API key' parameter</a>.
+	 * Alternatively you can set the <a href="https://www.zkoss.org/wiki/ZK_Component_Reference/Diagrams_and_Reports/Gmaps#Example">global JS variable 'zk.googleAPIkey'</a>
+	 * @param key Gmaps API key of the Google Maps
+	 * @since 3.0.5
+	 */
+	public void setKey(String key) {
+		setGmapsApiConfigParam(KEY, key);
+	}
+	
+	/** 
+	 * Get the <a href="https://developers.google.com/maps/documentation/javascript/get-api-key">Gmaps 'API key' parameter</a>.
+	 * Alternatively you can set the <a href="https://www.zkoss.org/wiki/ZK_Component_Reference/Diagrams_and_Reports/Gmaps#Example">global JS variable 'zk.googleAPIkey'</a>
+	 * @return Gmaps API key of the Google Maps
+	 * @since 3.0.5
+	 */
+	public String getKey() {
+		return getGmapsApiConfigParam(KEY);
+	}
+
+	/**
+	 * Sets an arbitrary additional url parameter/value to the request downloading the google maps api (https://maps.googleapis.com/maps/api/js?...).
+	 * The purpose of this method is to support future introduced API parameters by google, not yet supported by ZK's gmaps java api.
+	 * @param param
+	 * @param value
+	 */
+	public void setGmapsApiConfigParam(String param, Object value) {
+		if (!Objects.equals(getGmapsApiConfigParam(param), value)) {
+			this._gmapsApiConfigParams.put(param, value);
+			smartUpdate("gmapsApiConfig", this._gmapsApiConfigParams);
+		}
+	}
+
+	/**
+	 * Get the current value of a Gmaps API parameter set by {@link Gmaps#setGmapsApiConfigParam(String, Object)} 
+	 * @param param 
+	 * @return the value of the key
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T getGmapsApiConfigParam(String param) {
+		return (T)this._gmapsApiConfigParams.get(param);
+	}
+	
 	/** Sets the current latitude of the Maps center.
 	 * @param lat latitude of the Google Maps center
 	 */
@@ -718,29 +781,34 @@ public class Gmaps extends XulElement {
      * devices; default is false.
 	 * @return whether your application is using a sensor.
 	 * @since 2.0_50
+	 * @deprecated As of 3.0.5 : see <a href="https://developers.google.com/maps/documentation/javascript/error-messages#sensor-not-required">SensorNotRequired</a>
 	 */
+	@Deprecated
     public boolean isSensor() {
-		return _sensor;
+		return getGmapsApiConfigParam(SENSOR);
 	}
 
     /**
      * Sets whether your application is using a sensor (such as a GPS locator) 
      * to determine the user's location. This is especially important for mobile 
      * devices; default is false.
-     * @param sensor whether using a sensor to determin the user's location.
+     * @param sensor whether using a sensor to determine the user's location.
 	 * @since 2.0_50
+	 * @deprecated As of 3.0.5 : see <a href="https://developers.google.com/maps/documentation/javascript/error-messages#sensor-not-required">SensorNotRequired</a>
      */
+	@Deprecated
 	public void setSensor(boolean sensor) {
-		if (_sensor != sensor) {
-			this._sensor = sensor;
-			smartUpdate("sensor", sensor);
-		}
+		setGmapsApiConfigParam(SENSOR, sensor);
 	}
 
 	/**
 	 * Returns the base domain from which to load the Maps API. For example, 
-	 * you could load from "ditu.google.cn" with the "maps" module to get 
-	 * the Chinese version of the Maps API; null to use the default domain.
+	 * you could load from "maps.google.cn " with the "maps" module to get 
+	 * the Chinese version of the Maps API; null to use the default domain.<br/>
+	 * <br/>
+	 * As an alternative consider using the {@link Gmaps#setRegion(String)} for geocoding purposes
+	 * (refer to: <a href="https://developers.google.com/maps/premium/faq#ssl_base_domain">FAQ SSL and Base Domain</a>).<br/>
+	 * 
 	 * @return the user specified base domain from which to load the Maps API.
 	 * @since 2.0_50
 	 */
@@ -750,8 +818,12 @@ public class Gmaps extends XulElement {
 
 	/**
 	 * Sets the base domain from which to load the Maps API. For example, 
-	 * you could load from "ditu.google.cn" with the "maps" module to get 
-	 * the Chinese version of the Maps API; null to use the default domain.
+	 * you could load from "maps.google.cn" with the "maps" module to get 
+	 * the Chinese version of the Maps API; null to use the default domain.<br/>
+	 * <br/>
+	 * As an alternative consider using the {@link Gmaps#setRegion(String)} for geocoding purposes
+	 * (refer to: <a href="https://developers.google.com/maps/premium/faq#ssl_base_domain">FAQ SSL and Base Domain</a>).<br/>
+	 * 
 	 * @param baseDomain the base domain from which to load the Maps API
 	 * @since 2.0_50
 	 */
@@ -760,6 +832,25 @@ public class Gmaps extends XulElement {
 			this._baseDomain = baseDomain;
 			smartUpdate("baseDomain", baseDomain);
 		}
+	}	
+	
+	/**
+	 * Get the <a href="https://developers.google.com/maps/documentation/javascript/localization#Region">gmaps api region parameter</a>
+	 * @return the region parameter load the Gmaps API with
+	 * @since 3.0.5
+	 */
+	public String getRegion() {
+		return getGmapsApiConfigParam(REGION);
+	}
+	
+	
+	/**
+	 * Set the <a href="https://developers.google.com/maps/documentation/javascript/localization#Region">Gmaps API region parameter</a>
+	 * @param region the region parameter load the Gmaps API with
+	 * @since 3.0.5
+	 */
+	public void setRegion(String region) {
+		setGmapsApiConfigParam(REGION, region);
 	}
 
 	/**
@@ -788,21 +879,23 @@ public class Gmaps extends XulElement {
 	}
 
 	/**
-	 * Returns the preferred language code; default to null and means using
+	 * Returns the preferred language code
+	 * (<a href="https://developers.google.com/maps/documentation/javascript/localization#Language">gmaps 
+	 * API language parameter</a>); default to null and means using
 	 * browser's preferred language. You can check language code 
-	 * <a href="http://spreadsheets.google.com/pub?key=p9pdwsai2hDMsLkXsoM05KQ&gid=1">here</a>
 	 * 
 	 * @return the preferred language code specified developer.
 	 * @since 2.0_50
 	 */
 	public String getLanguage() {
-		return _language;
+		return getGmapsApiConfigParam(LANGUAGE);
 	}
 
 	/**
-	 * Sets the preferred language code; default to null and means using
-	 * browser's preferred language. You can check language code 
-	 * <a href="http://spreadsheets.google.com/pub?key=p9pdwsai2hDMsLkXsoM05KQ&gid=1">here</a> 
+	 * Sets the preferred language code 
+	 * (<a href="https://developers.google.com/maps/documentation/javascript/localization#Language">gmaps
+	 * API language parameter</a>); default to null and means using
+	 * browser's preferred language. 
 	 * <p>By default Gmaps uses the browser's preferred language setting when 
 	 * displaying textual information such as control names, copyright, and so
 	 * one. Sets language code will make Gmaps to always use the specified
@@ -812,38 +905,31 @@ public class Gmaps extends XulElement {
 	 * @since 2.0_50
 	 */
 	public void setLanguage(String language) {
-		if (!Objects.equals(_language, language)) {
-			this._language = language;
-			smartUpdate("language", language);
-		}
+		setGmapsApiConfigParam(LANGUAGE, language);
 	}
 	/**
-	 * Returns the libraries to load; default to geometry and means
+	 * Returns the libraries to load; defaults to 'geometry' and means
 	 * load geometry library only, you can check libraries
-	 * <a href="http://code.google.com/intl/zh-TW/apis/maps/documentation/javascript/libraries.html">here</a>
+	 * <a href="https://developers.google.com/maps/documentation/javascript/libraries">here</a>
 	 * <p> Use comma to separate different library
-	 * 
 	 * 
 	 * @return the libraries to load.
 	 * @since 3.0.0
 	 */
 	public String getLibraries () {
-		return _libraries;
+		return getGmapsApiConfigParam(LIBRARIES);
 	}
 	/**
-	 * Sets the libraries to load; default to geometry and means using
+	 * Sets the libraries to load; defaults to 'geometry' and means using
 	 * load geometry library only, you can check libraries
-	 * <a href="http://code.google.com/intl/zh-TW/apis/maps/documentation/javascript/libraries.html">here</a>
+	 * <a href="https://developers.google.com/maps/documentation/javascript/libraries">here</a>
 	 * <p> Use comma to separate different library
 	 * 
-	 * @param libraries the libraries to load
+	 * @param libraries comma separated String of libraries to load
 	 * @since 3.0.0
 	 */
 	public void setLibraries (String libraries) {
-		if (!Objects.equals(_libraries, libraries)) {
-			this._libraries = libraries;
-			smartUpdate("libraries", libraries);
-		}
+		setGmapsApiConfigParam(LIBRARIES, libraries);
 	}
 
 	/** 
@@ -945,7 +1031,7 @@ public class Gmaps extends XulElement {
 			_model = null;
 		}
 	}
-	private class UpdateBoundsListener implements EventListener, Express, java.io.Serializable {
+	private class UpdateBoundsListener implements EventListener<Event>, java.io.Serializable {
 		private static final long serialVersionUID = 200808261207L;
 
 		public void onEvent(Event evt) {
@@ -958,7 +1044,7 @@ public class Gmaps extends XulElement {
 	private void addOnMapMove() {
 		if (_moveListener == null) {
 			_moveListener = new UpdateBoundsListener();
-			addEventListener("onMapMove", _moveListener);
+			addEventListener(1000, "onMapMove", _moveListener);
 		}
 	}
 	private void removeOnMapMove() {
@@ -1273,21 +1359,17 @@ public class Gmaps extends XulElement {
 			renderer.render("physical", isPhysical());
 		if (!_normal)
 			renderer.render("normal", isNormal());
-		if (_sensor)
-			renderer.render("sensor", true);
 		if (!"3".equals(_version))
 			renderer.render("version", _version);
 		if (!Strings.isBlank(_baseDomain))
 			renderer.render("baseDomain", _baseDomain);
 		if (!Strings.isBlank(_protocol))
 			renderer.render("protocol", _protocol);
-		if (!Strings.isBlank(_language))
-			renderer.render("language", _language);
-		if (_libraries != null)
-			renderer.render("libraries", _libraries);
-		if (_client != null)
-			renderer.render("client", _client);
+		if(!Objects.equals(_gmapsApiConfigParams, Collections.singletonMap(LIBRARIES, "geometry"))) {
+			renderer.render("gmapsApiConfigParams", _gmapsApiConfigParams);
+		}
 	}
+
 	/** Processes an AU request.
 	 *
 	 * <p>Default: in addition to what are handled by {@link XulElement#service},
