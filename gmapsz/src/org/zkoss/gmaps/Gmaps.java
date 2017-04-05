@@ -99,8 +99,8 @@ public class Gmaps extends XulElement {
 	private MapModel _model;
 	private MapitemRenderer _renderer;
 	private MapDataListener _dataListener;
-	private EventListener<Event> _moveListener; //used by MapModel live data
-	private Map<Object, Mapitem> _dataMap = new HashMap<Object, Mapitem>(64); //data object -> Mapitem
+	private EventListener _moveListener; //used by MapModel live data
+	private Map _dataMap = new HashMap(64); //data object -> Mapitem
 	private Component _selected;
 
 	private String _version = "3";
@@ -148,7 +148,7 @@ public class Gmaps extends XulElement {
 	 * @since 3.0.5
 	 */
 	public String getClient() {
-		return getGmapsApiConfigParam(CLIENT);
+		return (String) getGmapsApiConfigParam(CLIENT);
 	}
 	
 	/** Returns the <a href="https://developers.google.com/maps/documentation/javascript/get-api-key#clientID-features">'client ID' Gmaps API parameter</a>.
@@ -156,7 +156,7 @@ public class Gmaps extends XulElement {
 	 * @since 3.0.2
 	 */
 	public String getChannel() {
-		return getGmapsApiConfigParam(CHANNEL);
+		return (String) getGmapsApiConfigParam(CHANNEL);
 	}
 
 	/** Sets the <a href="https://developers.google.com/maps/documentation/javascript/get-api-key#clientID-features">'channel' Gmaps API parameter</a>.
@@ -184,7 +184,7 @@ public class Gmaps extends XulElement {
 	 * @since 3.0.5
 	 */
 	public String getKey() {
-		return getGmapsApiConfigParam(KEY);
+		return (String) getGmapsApiConfigParam(KEY);
 	}
 
 	/**
@@ -205,9 +205,8 @@ public class Gmaps extends XulElement {
 	 * @param param 
 	 * @return the value of the key
 	 */
-	@SuppressWarnings("unchecked")
-	public <T> T getGmapsApiConfigParam(String param) {
-		return (T)this._gmapsApiConfigParams.get(param);
+	public Object getGmapsApiConfigParam(String param) {
+		return this._gmapsApiConfigParams.get(param);
 	}
 	
 	/** Sets the current latitude of the Maps center.
@@ -783,9 +782,9 @@ public class Gmaps extends XulElement {
 	 * @since 2.0_50
 	 * @deprecated As of 3.0.5 : see <a href="https://developers.google.com/maps/documentation/javascript/error-messages#sensor-not-required">SensorNotRequired</a>
 	 */
-	@Deprecated
+	/*@Deprecated*/
     public boolean isSensor() {
-		return getGmapsApiConfigParam(SENSOR);
+		return ((Boolean) getGmapsApiConfigParam(SENSOR)).booleanValue();
 	}
 
     /**
@@ -796,9 +795,9 @@ public class Gmaps extends XulElement {
 	 * @since 2.0_50
 	 * @deprecated As of 3.0.5 : see <a href="https://developers.google.com/maps/documentation/javascript/error-messages#sensor-not-required">SensorNotRequired</a>
      */
-	@Deprecated
+	/*@Deprecated*/
 	public void setSensor(boolean sensor) {
-		setGmapsApiConfigParam(SENSOR, sensor);
+		setGmapsApiConfigParam(SENSOR, Boolean.valueOf(sensor));
 	}
 
 	/**
@@ -840,7 +839,7 @@ public class Gmaps extends XulElement {
 	 * @since 3.0.5
 	 */
 	public String getRegion() {
-		return getGmapsApiConfigParam(REGION);
+		return (String) getGmapsApiConfigParam(REGION);
 	}
 	
 	
@@ -888,7 +887,7 @@ public class Gmaps extends XulElement {
 	 * @since 2.0_50
 	 */
 	public String getLanguage() {
-		return getGmapsApiConfigParam(LANGUAGE);
+		return (String) getGmapsApiConfigParam(LANGUAGE);
 	}
 
 	/**
@@ -917,7 +916,7 @@ public class Gmaps extends XulElement {
 	 * @since 3.0.0
 	 */
 	public String getLibraries () {
-		return getGmapsApiConfigParam(LIBRARIES);
+		return (String) getGmapsApiConfigParam(LIBRARIES);
 	}
 	/**
 	 * Sets the libraries to load; defaults to 'geometry' and means using
@@ -1031,7 +1030,7 @@ public class Gmaps extends XulElement {
 			_model = null;
 		}
 	}
-	private class UpdateBoundsListener implements EventListener<Event>, java.io.Serializable {
+	private class UpdateBoundsListener implements EventListener, java.io.Serializable {
 		private static final long serialVersionUID = 200808261207L;
 
 		public void onEvent(Event evt) {
