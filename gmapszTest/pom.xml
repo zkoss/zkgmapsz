@@ -14,7 +14,7 @@
 		<jetty.version>6.1.16</jetty.version>
 		<js.version>1.7R1</js.version>
 		<poi.version>3.7</poi.version>
-		<gmapsz.version>3.0.5-SNAPSHOT</gmapsz.version>
+		<gmapsz.version>3.0.5-FL</gmapsz.version>
 	</properties>
 	<version>8.0.2-Eval</version>
 	<packaging>war</packaging>
