@@ -1,4 +1,13 @@
   --------
+Gmaps 3.0.5 (work with ZK 5.0+ only)
+* Features:
+
+* Bugs:
+   ZKGMAPS-19: Gmaps effect.mask causes JS exception after ZK 8.0.2
+
+* Upgrade Notes:
+
+  --------
 Gmaps 3.0.4 (work with ZK 5.0+ only)
 * Features:
   ZKGMAPS-12: Update Gmap loader to match current API
