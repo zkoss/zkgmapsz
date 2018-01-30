@@ -3,7 +3,7 @@ Gmaps 3.0.5 (work with ZK 5.0+ only)
 * Features:
 
 * Bugs:
-   ZKGMAPS-19: Gmaps effect.mask causes JS exception after ZK 8.0.2
+   ZKGMAPS-19: No marker events  due to race condition between overrideMarkerManager and readbind
 
 * Upgrade Notes:
 
