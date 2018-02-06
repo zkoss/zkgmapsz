@@ -65,7 +65,7 @@ gmaps.Goverlay = zk.$extends(zul.Widget, {
 		var opts = [];
 		//#3: applied as callback function
 		var wgt = this;
-		opts['condition'] = function() { return wgt.parent._mmLoaded; };
+		opts['condition'] = function() { return wgt.parent._mmLoaded && wgt.parent.overlayOverride; };
 		opts['callback'] = function() {
 			wgt.bindMapitem_();
 			if (!wgt.$instanceof(gmaps.Gmarker))
