@@ -1027,6 +1027,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		    mm.shownMarkers_--;
 		    markerwgt._clearListeners();
 		}
+		this.overlayOverride = true;
 	},
 	_clearGmaps: function() {
 		this._clearListeners();
