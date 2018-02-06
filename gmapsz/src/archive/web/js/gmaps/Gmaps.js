@@ -584,8 +584,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			gmapsGapi.loadAPIs(wgt, function() {wgt._tryBind(dt, skipper, after)}, 'Loading Google Ajax APIs');
 		else {
 			var opts1 = [];
-			//wgt.overlayOverride: wait for overrideMarkermanager to patch the MM before binding
-			opts1['condition'] = function() {return window.MarkerManager && wgt.overlayOverride && wgt.$n().offsetHeight;};
+			opts1['condition'] = function() {return window.MarkerManager && wgt.$n().offsetHeight;};
 			opts1['callback'] = function() {wgt._realBind(dt, skipper, after);};
 			gmapsGapi.waitUntil(wgt, opts1);
 		}
@@ -1028,8 +1027,6 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		    mm.shownMarkers_--;
 		    markerwgt._clearListeners();
 		}
-		//flag for realbind, override is finished,can proceed with realbind
-		this.overlayOverride = true;
 	},
 	_clearGmaps: function() {
 		this._clearListeners();
