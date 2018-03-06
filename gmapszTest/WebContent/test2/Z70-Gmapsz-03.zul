@@ -1,9 +1,0 @@
-<window title="Google Maps" xmlns:w="client">
-	<separator bar="true"/>
-	<space/><label id="out"/>
-	<separator bar="true"/>
-	<gmaps id="mymap" width="500px" height="300px" showSmallCtrl="true" onMapDrop='out.setValue(mark.getAnchor().toString());'>
-		<gmarker id="mark" lat="37.4410" lng="-122.1490" draggingEnabled="true" onMapDrop='out.setValue(self.getAnchor().toString());' >
-		</gmarker>
-	</gmaps>
-</window>

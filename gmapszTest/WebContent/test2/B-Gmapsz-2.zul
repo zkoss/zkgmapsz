@@ -1,8 +1,0 @@
-<window title="Notification Map Selection" border="normal" height="100%" apply="org.zkoss.bind.BindComposer" 
-	viewModel="@id('vm') @init('org.zkoss.gmapstest.bind.B_GMAPSZ_2VM')">
-	Should not see any exception.
-	<gmaps id="gmapsEdit" width="100%" vflex="1"
-		lat="@load(vm.centerLatitude)" lng="@load(vm.centerLongtitude)" >
-		<gpolygon points="@load(vm.geoPoints)"></gpolygon>
-	</gmaps>
-</window>

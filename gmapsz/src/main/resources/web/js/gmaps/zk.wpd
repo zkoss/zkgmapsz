@@ -1,0 +1,12 @@
+<package name="gmaps" language="xul/html" depends="zul">
+	<script src="gapi.js"/>
+	<widget name="Gmaps"/>
+	<script src="Goverlay.js"/>
+	<widget name="Ginfo"/>
+	<widget name="Gmarker"/>
+	<widget name="Gpolyline"/>
+	<widget name="Gpolygon"/>
+	<widget name="Gimage"/>
+	<widget name="Gscreen"/>
+	<widget name="Gcircle"/>
+</package>

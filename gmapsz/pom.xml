@@ -8,6 +8,8 @@
   <packaging>jar</packaging>
   <properties>
 	<zk.version>6.5.0</zk.version>
+    <maven.compiler.source>1.5</maven.compiler.source>
+    <maven.compiler.target>1.5</maven.compiler.target>
   </properties>
   <name>The Google Maps Component for ZK</name>
   <url>http://www.zkoss.org</url>
@@ -17,25 +19,25 @@
       <groupId>org.zkoss.common</groupId>
       <artifactId>zcommon</artifactId>
       <version>${zk.version}</version>
-      <optional>true</optional>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.zkoss.common</groupId>
       <artifactId>zweb</artifactId>
       <version>${zk.version}</version>
-      <optional>true</optional>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.zkoss.zk</groupId>
       <artifactId>zk</artifactId>
       <version>${zk.version}</version>
-      <optional>true</optional>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.zkoss.zk</groupId>
       <artifactId>zul</artifactId>
       <version>${zk.version}</version>
-      <optional>true</optional>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 </project> 

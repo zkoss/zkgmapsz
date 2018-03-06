@@ -1,0 +1,12 @@
+<zk>
+	ID: <label value="@load(vm.infovm.id)" /><div></div>
+	<checkbox checked="@bind(vm.infovm.open)" label="open" /><div></div>
+	Lat: <doublespinner value="@bind(vm.infovm.lat)" step="0.001" /><div></div>
+	Lng: <doublespinner value="@bind(vm.infovm.lng)" step="0.001" /><div></div>
+	Content: <combobox value="@bind(vm.infovm.content)">
+		<comboitem>
+			<attribute name="label"><![CDATA[Hello, <a href="http://www.zkoss.org">ZK</a>.]]></attribute>
+		</comboitem>
+		<comboitem label="another content" />
+	</combobox>
+</zk>
