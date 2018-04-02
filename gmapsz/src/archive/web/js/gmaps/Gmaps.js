@@ -579,7 +579,6 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		//but notice that all goverlay render should be called as callback function
 		wgt.$supers(gmaps.Gmaps, 'bind_', arguments); //calling down kid widgets to do binding
 
-		this._maskOpts = gmapsGapi.initMask(this, {message: 'Loading Google Maps APIs'});
 		if (!window.google || !window.google.maps)
 			gmapsGapi.loadAPIs(wgt, function() {wgt._tryBind(dt, skipper, after)}, 'Loading Google Ajax APIs');
 		else {
@@ -599,12 +598,14 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 				gmapsGapi.clearMask(this, maskOpts);
 				this._maskOpts = gmapsGapi.initMask(this, {message: 'Loading Google Maps APIs'});
 			}
+		} else {
+			this._maskOpts = gmapsGapi.initMask(this, {message: 'Loading Google Maps APIs'});
 		}
 
 		if (!window.google || !window.google.maps) {
 			if (window.google && (!window.google.load  || window.google.loader.LoadFailure)) {
 				var n = jq(this.uuid, zk)[0];
-				n.innerHTML = gmaps.Gmaps.errormsg; 
+				n.innerHTML = gmaps.Gmaps.errormsg;
 				return;  //failed to load the Google AJAX APIs
 			}
 			var wgt = this,
@@ -660,6 +661,8 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 				gmapsGapi.clearMask(this, maskOpts);
 				this._maskOpts = gmapsGapi.initMask(this, {message: 'Loading Google Maps APIs'});
 			}
+		} else {
+			this._maskOpts = gmapsGapi.initMask(this, {message: 'Loading Google Maps APIs'});
 		}
 		if ( (window.google == null) || (window.google.maps == null) ) {
 			n.innerHTML = gmaps.Gmaps.errormsg;
