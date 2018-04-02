@@ -1,0 +1,29 @@
+apply plugin: "java"
+apply plugin: "maven"
+
+group = "org.zkoss.zkforge"
+version = "3.0.5-FL"
+
+description = """The Google Maps Component for ZK"""
+
+sourceCompatibility = 1.5
+targetCompatibility = 1.5
+
+tasks.withType(JavaCompile) {
+	options.encoding = "UTF-8"
+}
+
+repositories {
+     maven { url "http://mavensync.zkoss.org/maven2" }
+     maven { url "http://repo.maven.apache.org/maven2" }
+}
+
+dependencies {
+    compile group: "org.zkoss.common", name: "zcommon", version:"6.5.0"
+    compile group: "org.zkoss.common", name: "zweb", version:"6.5.0"
+    compile group: "org.zkoss.zk", name: "zk", version:"6.5.0"
+    compile group: "org.zkoss.zk", name: "zul", version:"6.5.0"
+}
+
+
+apply from: 'sub-build.gradle'

@@ -1,0 +1,179 @@
+def zipnm = "zk-"
+switch ( project.name ) {
+    case "gmapsz":
+        zipnm += "Gmaps"
+        break
+    case "ckez":
+    	zipnm += "CKEditor"
+        break
+}
+def buildUri = "${buildDir}".substring(("${buildDir}".indexOf("/" + project.name + "/")) + project.name.length() + 2)
+def fldate = "official" != (project.hasProperty("target") ? project.getProperty("target") : "") ? new Date().format("yyyy-MM-dd") : ""
+def jsSource = "src/archive/web/js/${project.name}"
+
+sourceSets {
+    main {
+        java.srcDirs = ['build/generated/src/java']
+    }
+}
+
+import org.apache.tools.ant.filters.ReplaceTokens
+task sourcesForRelease(type: Copy) {
+    from "src/main/java"
+    into "${buildDir}/generated/src/java/"
+    filter(ReplaceTokens, tokens: ['projectVersion': version])
+}
+
+compileJava {
+	dependsOn(sourcesForRelease)
+	source += sourceSets.main.java
+}
+
+javadoc {
+	options.addStringOption("Xdoclint:none", "--allow-script-in-comments")
+	options.bottom("Copyright &amp;copy; 2005-2018 Potix Corporation. All Rights Reserved.")
+	source = sourceSets.main.allJava
+}
+
+jar {
+	archiveName project.name + ".jar"
+	dependsOn 'copyLangAddon'
+	dependsOn 'javadoc'
+	dependsOn 'deleteFiles'
+	dependsOn 'putBackExcludedFiles'
+}
+
+build {
+	dependsOn 'sourceJar'
+	dependsOn 'makeBinZip'
+	dependsOn 'makeSrcZip'
+}
+
+task preserveExcludedFiles() {
+	doLast {
+		println 'preserveExcludedFiles 1'
+		jsCompressExcludedFiles.each { each ->
+			//copy excluded files to a temporary folder
+			copy {
+				from jsSource
+				include each
+				into "${buildDir}/excludedFiles"
+			}
+			//delete the excluded files brfore compressing files
+			delete fileTree(jsSource) {
+		        include each
+		    }
+		}
+		//restore included files inside excluded folders
+		jsCompressIncludedFiles.each { each ->
+			copy {
+				from "${buildDir}/excludedFiles"
+				include each
+				into jsSource
+			}
+			delete fileTree("${buildDir}/excludedFiles") {
+		        include each
+		    }
+		}
+	}
+}
+
+task compressJs(type: JavaExec, dependsOn: preserveExcludedFiles) {
+	main = "ZipJS"
+	args("src/archive/web/js", "${buildDir}/resources/main/web/js", true)
+	jvmArgs("-Xss1024k")
+	classpath("dist/lib/ext/zkjszips.jar", "dist/lib/ext/yuicompressor.jar", "dist/lib/ext/commons-io.jar", "dist/lib/ext/closure-compiler.jar")
+}
+
+task zipJs(type: JavaExec, dependsOn: compressJs) {
+	main = "ZipJS"
+	args("src/archive/web/js", "${buildDir}/resources/main/web/js")
+	jvmArgs("-Xss1024k")
+	classpath("dist/lib/ext/zkjszips.jar", "dist/lib/ext/yuicompressor.jar", "dist/lib/ext/commons-io.jar", "dist/lib/ext/closure-compiler.jar")
+}
+
+task putBackExcludedFiles(dependsOn: zipJs) {
+	doLast {
+		copy {
+			println 'putBackExcludedFiles 1'
+			from "${buildDir}/excludedFiles"
+			into "${buildDir}/resources/main/web/js/${project.name}"
+		}
+		copy {
+			from "${buildDir}/excludedFiles"
+			into jsSource
+		}
+	}
+}
+
+task deleteFiles(dependsOn: zipJs) {
+	doLast {
+	    delete {
+	    	delete fileTree("${buildDir}/resources") {
+		        include "**/*.js.map"
+		    }
+	    }
+	}
+}
+
+task copyLangAddon() {
+	doFirst {
+		copy {
+			from "src/archive/metainfo"
+			into "${buildDir}/resources/main/metainfo"
+		}
+	}
+}
+
+task sourceJar(type: Jar) {
+	doFirst {
+		from sourceSets.main.java
+		archiveName project.name + "-sources.jar"
+	}
+}
+
+task prepareFiles(dependsOn: jar) {
+	doFirst {
+		def name = project.name
+		copy {
+			from "${buildDir}/libs/" + name + "-sources.jar"
+			into "${buildDir}/binzip/dist/src"
+		}
+		copy {
+			from "${buildDir}/libs/" + name + ".jar"
+			into "${buildDir}/binzip/dist/lib"
+		}
+		copy {
+			from "../zkdoc"
+			into "${buildDir}/binzip/doc"
+		}
+		copy {
+			from "${buildDir}/docs"
+			into "${buildDir}/binzip"
+		}
+		copy {
+			from ("../${project.name}/") {
+				exclude(buildUri)
+			}
+			into "${buildDir}/srczip/${project.name}/"
+		}
+		copy {
+			from "../zkdoc"
+			into "${buildDir}/srczip/doc"
+		}
+	}
+}
+
+task makeBinZip(type: Zip, dependsOn: prepareFiles) {
+	appendix "bin"
+	baseName zipnm
+	classifier fldate
+	from("${buildDir}/binzip/")
+}
+
+task makeSrcZip(type: Zip, dependsOn: prepareFiles) {
+	appendix "src"
+	baseName zipnm
+	classifier fldate
+	from("${buildDir}/srczip/")
+}

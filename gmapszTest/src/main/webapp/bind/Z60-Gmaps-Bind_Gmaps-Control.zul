@@ -1,0 +1,117 @@
+<zk>
+	<hbox>
+		Change map type: 
+				<radiogroup
+					onCheck="@command('changeMapType')">
+					<hlayout>
+						<radio label="normal" value="normal" checked="@bind(vm.mapsvm.isNormal)" />
+						<radio label="satellite" value="satellite" checked="@bind(vm.mapsvm.isSatellite)" />
+						<radio label="hybrid" value="hybrid" checked="@bind(vm.mapsvm.isHybrid)" />
+						<radio label="physical" value="physical" checked="@bind(vm.mapsvm.isPhysical)" />
+					</hlayout>
+				</radiogroup>
+				<button label="pan to marker">
+					<attribute name="onClick">
+						theMap.panTo(23.0,121.0);
+					</attribute>
+				</button>
+				<button label="pan to polyline">
+					<attribute name="onClick">
+						theMap.panTo(37.42838786, -122.13998795);
+					</attribute>
+				</button>
+	</hbox>
+	<vbox>
+		maps position:
+		<hbox>
+			lat: <doublespinner id="mapsLat" width="70px" value="@bind(vm.mapsvm.lat)" step="0.1" />
+			lng: <doublespinner id="mapsLng" width="70px" value="@bind(vm.mapsvm.lng)" step="0.1" />
+			zoom: <spinner id="mapsZoom" width="50px" value="@bind(vm.mapsvm.zoom)" />
+		</hbox>
+		Bounds Info:
+		<hbox>
+			NE Lat: <textbox id="mveNelat" value="@load(vm.mapsvm.neLat)" />
+			NE Lng: <textbox id="mveNelng" value="@load(vm.mapsvm.neLng)" />
+		</hbox>
+		<hbox>
+			SW Lat: <textbox id="mveSwlat" value="@load(vm.mapsvm.swLat)" />
+			SW Lng: <textbox id="mveSwlng" value="@load(vm.mapsvm.swLng)" />
+		</hbox>
+		<hbox>
+			Center Lat <textbox id="mveLat" value="@load(vm.mapsvm.lat)" />
+			Center Lng: <textbox id="mveLng" value="@load(vm.mapsvm.lng)" />
+		</hbox>
+		Selected Item:
+		<hbox>
+			<textbox id="selItem" value="@load(vm.mapsvm.selectedItem)" />
+		</hbox>
+	</vbox>
+	<hbox>
+		Controls
+		<checkbox label="doubleclick zoom" checked="@bind(vm.mapsvm.doubleClickZoom)" />
+		<checkbox label="scroll wheel zoom" checked="@bind(vm.mapsvm.scrollWheelZoom)" />
+		<checkbox label="dragable" checked="@bind(vm.mapsvm.enableDragging)" />
+	</hbox>
+	<hbox>
+		_________
+		<checkbox label="zoom control" checked="@bind(vm.mapsvm.showZoomCtrl)" />
+		<checkbox label="scale control" checked="@bind(vm.mapsvm.showScaleCtrl)" />
+		<checkbox label="overview control" checked="@bind(vm.mapsvm.showOverviewCtrl)" />
+		<checkbox label="type control" checked="@bind(vm.mapsvm.showTypeCtrl)" />
+	</hbox>
+	<hbox>
+		Add / Remove Map Types
+		<checkbox label="normal" checked="@bind(vm.mapsvm.normalEnabled)" />
+		<checkbox label="hybrid" checked="@bind(vm.mapsvm.hybridEnabled)" />
+		<checkbox label="satellite" checked="@bind(vm.mapsvm.satelliteEnabled)" />
+		<checkbox label="physical" checked="@bind(vm.mapsvm.physicalEnabled)" />
+	</hbox>
+	<vbox>
+		MapMouseEvent Info:
+		<hbox>
+			Event Name: <textbox id="mmeName" value="@load(vm.mmeData.mmeName)" />
+			Keys: <textbox id="mmeKeys" value="@load(vm.mmeData.mmeKeys)" />
+			Reference: <textbox id="mmeRef" value="@load(vm.mmeData.mmeRef)" />
+			Lat: <textbox id="mmeLat" value="@load(vm.mmeData.mmeLat)" />
+			Lng: <textbox id="mmeLng" value="@load(vm.mmeData.mmeLng)" />
+		</hbox>
+		<hbox>
+			X: <textbox id="mmeX" value="@load(vm.mmeData.mmeX)" />
+			Y: <textbox id="mmeY" value="@load(vm.mmeData.mmeY)" />
+			PageX: <textbox id="mmePageX" value="@load(vm.mmeData.mmePageX)" />
+			PageY: <textbox id="mmePageY" value="@load(vm.mmeData.mmePageY)" />
+			Target: <textbox id="mmeTarget" value="@load(vm.mmeData.mmeTarget)" />
+		</hbox>
+	</vbox>
+	<vbox>
+		MapDropEvent Info:
+		<hbox>
+			Event Name: <textbox id="mdeName" value="@load(vm.mdeData.mdeName)" />
+			Keys: <textbox id="mdeKeys" value="@load(vm.mdeData.mdeKeys)" />
+			Droped Lat: <textbox id="mdeLat" value="@load(vm.mdeData.mdeLat)" />
+			Droped Lng: <textbox id="mdeLng" value="@load(vm.mdeData.mdeLng)" />
+		</hbox>
+		<hbox>
+			X: <textbox id="mdeX" value="@load(vm.mdeData.mdeX)" />
+			Y: <textbox id="mdeY" value="@load(vm.mdeData.mdeY)" />
+			PageX: <textbox id="mdePageX" value="@load(vm.mdeData.mdePageX)" />
+			PageY: <textbox id="mdePageY" value="@load(vm.mdeData.mdePageY)" />
+			Target: <textbox id="mdeTarget" value="@load(vm.mdeData.mdeTarget)" />
+		</hbox>
+	</vbox>
+	<vbox>
+		MapZoomEvent Info:
+		<hbox>
+			Event Name: <textbox id="mzeName" value="@load(vm.mzeData.mzeName)" />
+			Zoom: <textbox id="mzeZoom" value="@load(vm.mzeData.mzeZoom)" />
+			Target: <textbox id="mzeTarget" value="@load(vm.mzeData.mzeTarget)" />
+		</hbox>
+	</vbox>
+	<vbox>
+		OnInfoChange Info:
+		<hbox>
+			Event Name: <textbox id="miceName" value="@load(vm.miceData.miceName)" />
+			Target: <textbox id="miceTarget" value="@load(vm.miceData.miceTarget)" />
+		</hbox>
+	</vbox>
+</zk>

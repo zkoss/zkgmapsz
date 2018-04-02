@@ -15,3 +15,5 @@ gmapsz/target/*
 */.settings/*.xml
 *.bk
 .gitignore
+gmapsz/.gradle/*
+gmapsz/build/*

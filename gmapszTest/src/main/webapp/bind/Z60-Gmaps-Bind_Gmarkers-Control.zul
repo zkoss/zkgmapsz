@@ -1,0 +1,51 @@
+<zk>
+	firstMarker Info:
+	<hbox>
+		id: <label id="fmiId" value="@load(vm.firstMarkersvm.id)" />
+		lat: <doublespinner id="fmiLat" width="70px" value="@bind(vm.firstMarkersvm.lat)" step="0.1" />
+		lng: <doublespinner id="fmiLng" width="70px" value="@bind(vm.firstMarkersvm.lng)" step="0.1" />
+		minzoom: <spinner id="fmiMinzoom" width="50px" value="@bind(vm.firstMarkersvm.minzoom)" />
+		maxzoom: <spinner id="fmiMaxzoom" width="50px" value="@bind(vm.firstMarkersvm.maxzoom)" />
+	</hbox>
+	<checkbox id="fmiOpen" checked="@bind(vm.firstMarkersvm.open)" label="open" /><div></div>
+	<checkbox id="fmiDraggingEnabled" checked="@bind(vm.firstMarkersvm.draggingEnabled)" label="draggingEnabled" />
+	<hbox>
+		content: <combobox id="fmiContent" value="@bind(vm.firstMarkersvm.content)">
+						<comboitem label="test test one"/>
+						<comboitem label="test test two"/>
+						<comboitem label="test test three"/>
+					</combobox>
+	</hbox>
+	<hbox>
+		iconAnchorX: <spinner id="fmiIconAhchorX" width="50px" value="@bind(vm.firstMarkersvm.iconAnchorX)" />
+		iconAnchorY: <spinner id="fmiIconAhchorY" width="50px" value="@bind(vm.firstMarkersvm.iconAnchorY)" />
+		iconHeight: <spinner id="fmiIconHeight" width="50px" value="@bind(vm.firstMarkersvm.iconHeight)" />
+		iconWidth: <spinner id="fmiIconWidth" width="50px" value="@bind(vm.firstMarkersvm.iconWidth)" />
+		iconImage: <combobox id="fmiIconImage" value="@bind(vm.firstMarkersvm.iconImage)">
+						<comboitem label="/img/Briefcase-16x16.png"/>
+						<comboitem label="/img/QuestionmarkButton-16x16.png"/>
+					</combobox>
+	</hbox>
+	<hbox>
+		iconShadowHeight: <spinner id="fmiIconShadowHeight" width="50px" value="@bind(vm.firstMarkersvm.iconShadowHeight)" />
+		iconShadowWidth: <spinner id="fmiIconShadowWidth" width="50px" value="@bind(vm.firstMarkersvm.iconShadowWidth)" />
+		iconShadow: <combobox id="fmiIconShadow" value="@bind(vm.firstMarkersvm.iconShadow)">
+						<comboitem label="/img/Briefcase-16x16.png"/>
+						<comboitem label="/img/QuestionmarkButton-16x16.png"/>
+					</combobox>
+	</hbox>
+	<div height="25px"></div>
+	secondMarker Info:<div></div>
+	<checkbox id="smiOpen" checked="@bind(vm.secondMarkersvm.open)" label="open" /><div></div>
+	<checkbox id="smiDraggingEnabled" checked="@bind(vm.secondMarkersvm.draggingEnabled)" label="draggingEnabled" />
+	<hbox>
+		id: <label id="smiId" value="@load(vm.secondMarkersvm.id)" />
+		lat: <doublespinner id="smiLat" width="70px" value="@bind(vm.secondMarkersvm.lat)" step="0.1" />
+		lng: <doublespinner id="smiLng" width="70px" value="@bind(vm.secondMarkersvm.lng)" step="0.1" />
+		content: <combobox id="smiContent" value="@bind(vm.secondMarkersvm.content)">
+						<comboitem label="test test second marker one"/>
+						<comboitem label="test test second marker two"/>
+						<comboitem label="test test second marker three"/>
+					</combobox>
+	</hbox>
+</zk>

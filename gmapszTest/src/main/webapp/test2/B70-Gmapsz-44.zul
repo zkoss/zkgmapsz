@@ -1,0 +1,24 @@
+<window>
+	<label multiline="true">
+		1. Click "Clear" button
+		2. All the overlays should be removed.
+	</label>
+	<button id="clearBtn" label="Clear" onClick="map.getChildren().clear()"/>
+	<gmaps id="map" height="400px" width="75%" showZoomCtrl="false">
+       <ginfo id="myinfo" open="true" lat="37.4200" lng="-122.1490">
+           <![CDATA[
+               Hello, <a href="http://www.zkoss.org">ZK</a>.
+           ]]>
+       </ginfo>
+       <gmarker id="mymark" lat="37.4300" lng="-122.1490">
+           <![CDATA[
+               Hello, <a href="http://www.zkoss.org">ZK</a> on top of Gmarker.
+           ]]>
+       </gmarker>
+		<gimage src="/img/Globe-128x128.png" swlat="37.44215478" swlng="-122.14273453" nelat="37.45033195" nelng="-122.13191986"/>
+        <gpolyline points="37.42838786,-122.13998795,3,37.43561240,-122.13277816,3,37.42416187,-122.11441040,3,
+                                       37.42157162,-122.12007522,3,37.41734524,-122.12316513,3,37.42838786,-122.13998795,3"/>
+        <gpolygon points="37.43838786,-122.12998795,3,37.42561240,-122.12277816,3,37.43416187,-122.12441040,3,
+                                       37.43157162,-122.13007522,3,37.42734524,-122.13316513,3"/>
+   </gmaps>
+</window>

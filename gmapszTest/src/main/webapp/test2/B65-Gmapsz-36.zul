@@ -1,0 +1,22 @@
+<window title="Maker Tooltip + Popup" height="500px" width="500px" border="normal">
+	<popup id="ap">
+		<button label="at_pointer" onClick='Clients.showNotification("button clicked")' />
+	</popup>
+	<popup id="fp">
+		<button label="after_pointer" onClick='Clients.showNotification("button clicked")' />
+	</popup>
+	<popup id="eb">
+		<button label="end_before" onClick='Clients.showNotification("button clicked")' />
+	</popup>
+	<popup id="xy">
+		<button label="x=100, y=100" onClick='Clients.showNotification("button clicked")' />
+	</popup>
+	Move to the gmarker, should see the popup.
+	<separator bar="true"/>
+	<gmaps id="map" lat="22" lng="22" width="400px" height="350px">
+		<gmarker lat="21.99" lng="22" tooltip="xy, x=100, y=100, delay=0"/>
+		<gmarker lat="22" lng="22" tooltip="eb, end_before, delay=0"/>
+		<gmarker lat="22.01" lng="22" tooltip="fp, after_pointer, delay=0"/>
+		<gmarker lat="22.02" lng="22" tooltip="ap, at_pointer, delay=0"/>
+	</gmaps>
+</window>

@@ -1,0 +1,105 @@
+<zk>
+	<window id="win" apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('org.zkoss.gmapstest.bind.GmapszViewModels')">
+	<hbox>
+		<!-- map types: normal / satellite / hybrid / physical /  -->
+		<gmaps id="@load(vm.mapsvm.mapId)" selectedItem="@bind(vm.mapsvm.selectedItem)"
+			language="@load(vm.mapsvm.mapLang)" baseDomain="@load(vm.mapsvm.baseDomain)"
+			width="@load(vm.mapsvm.mapWidth)" height="@load(vm.mapsvm.mapHeight)"
+			lat="@bind(vm.mapsvm.lat)" lng="@bind(vm.mapsvm.lng)"
+			neLat="@save(vm.mapsvm.neLat)" neLng="@save(vm.mapsvm.neLng)"
+			swLat="@save(vm.mapsvm.swLat)" swLng="@save(vm.mapsvm.swLng)"
+			zoom="@bind(vm.mapsvm.zoom)" mapType="@bind(vm.mapsvm.mapType)"
+			normal="@load(vm.mapsvm.normalEnabled)" hybrid="@load(vm.mapsvm.hybridEnabled)"
+			physical="@load(vm.mapsvm.physicalEnabled)" satellite="@load(vm.mapsvm.satelliteEnabled)"
+			sensor="@load(vm.mapsvm.sensorEnabled)"
+			doubleClickZoom="@load(vm.mapsvm.doubleClickZoom)" enableDragging="@bind(vm.mapsvm.enableDragging)"
+			scrollWheelZoom="@load(vm.mapsvm.scrollWheelZoom)"
+			showZoomCtrl="@load(vm.mapsvm.showZoomCtrl)" showTypeCtrl="@load(vm.mapsvm.showTypeCtrl)"
+			showOverviewCtrl="@load(vm.mapsvm.showOverviewCtrl)" showScaleCtrl="@load(vm.mapsvm.showScaleCtrl)"
+			onMapClick="@command('mapMouseEvent')"
+			onMapDoubleClick="@command('mapMouseEvent')"
+			onMapRightClick="@command('mapMouseEvent')"
+			onMapDrop="@command('mapDropEvent')"
+			onMapZoom="@command('mapZoomEvent')"
+			onInfoChange="@command('infoChangeEvent')"
+			onMapTypeChange="@command('changeMapType')">
+			<gmarker id="@load(vm.firstMarkersvm.id)" lat="@bind(vm.firstMarkersvm.lat)" lng="@bind(vm.firstMarkersvm.lng)"
+				minzoom="@bind(vm.firstMarkersvm.minzoom)" maxzoom="@bind(vm.firstMarkersvm.maxzoom)"
+				iconAnchorX="@bind(vm.firstMarkersvm.iconAnchorX)" iconAnchorY="@bind(vm.firstMarkersvm.iconAnchorY)"
+				open="@bind(vm.firstMarkersvm.open)"
+				iconHeight="@bind(vm.firstMarkersvm.iconHeight)" iconWidth="@bind(vm.firstMarkersvm.iconWidth)"
+				iconShadowHeight="@bind(vm.firstMarkersvm.iconShadowHeight)" iconShadowWidth="@bind(vm.firstMarkersvm.iconShadowWidth)"
+				iconImage="@bind(vm.firstMarkersvm.iconImage)"
+				iconShadow="@bind(vm.firstMarkersvm.iconShadow)"
+				content="@bind(vm.firstMarkersvm.content)" draggingEnabled="@bind(vm.firstMarkersvm.draggingEnabled)" />
+			<gmarker id="@load(vm.secondMarkersvm.id)" lat="@bind(vm.secondMarkersvm.lat)" lng="@bind(vm.secondMarkersvm.lng)"
+				content="@bind(vm.secondMarkersvm.content)" open="@bind(vm.secondMarkersvm.open)" 
+				draggingEnabled="@bind(vm.secondMarkersvm.draggingEnabled)" />
+			<gpolyline id="@load(vm.polylinevm.id)" color="@bind(vm.polylinevm.color)"
+				opacity="@bind(vm.polylinevm.opacity)" weight="@bind(vm.polylinevm.weight)"
+				points="@bind(vm.polylinevm.points)" />
+			<gpolygon id="@load(vm.polygonvm.id)" color="@bind(vm.polygonvm.color)"
+				opacity="@bind(vm.polygonvm.opacity)" weight="@bind(vm.polygonvm.weight)"
+				fill="@bind(vm.polygonvm.fill)" outline="@bind(vm.polygonvm.outline)"
+				fillColor="@bind(vm.polygonvm.fillColor)" fillOpacity="@bind(vm.polygonvm.fillOpacity)"
+				points="@bind(vm.polygonvm.points)"/>
+			<ginfo id="@load(vm.infovm.id)" lat="@load(vm.infovm.lat)" lng="@load(vm.infovm.lng)"
+				content="@load(vm.infovm.content)" open="@bind(vm.infovm.open)" />
+			<gimage id="@load(vm.imagevm.id)" src="@load(vm.imagevm.src)"
+				swlat="@load(vm.imagevm.swlat)" swlng="@load(vm.imagevm.swlng)"
+				nelat="@load(vm.imagevm.nelat)" nelng="@load(vm.imagevm.nelng)"/>
+			<gcircle id="@load(vm.circlevm.id)" clickable="@load(vm.circlevm.clickable)"
+				editable="@load(vm.circlevm.editable)" fillColor="@load(vm.circlevm.fillColor)"
+				fillOpacity="@load(vm.circlevm.fillOpacity)" radius="@bind(vm.circlevm.radius)"
+				strokeColor="@load(vm.circlevm.strokeColor)" strokeOpacity="@load(vm.circlevm.strokeOpacity)"
+				strokeWeight="@load(vm.circlevm.strokeWeight)" circleZIndex="@load(vm.circlevm.circleZIndex)"
+				lat="@bind(vm.circlevm.lat)" lng="@bind(vm.circlevm.lng)"
+				circleVisible="@load(vm.circlevm.circleVisible)" />
+		</gmaps>
+		<!-- Controls of Gmap -->
+		<vbox>
+			<label value="select controls target" style="color: red;"/>
+			<radiogroup>
+				<radio label="maps control" checked="@bind(vm.controlvisibleOne)" />
+				<radio label="marker control" checked="@bind(vm.controlvisibleTwo)" />
+				<radio label="polyline control" checked="@bind(vm.controlvisibleThree)" />
+				<radio label="polygon control" checked="@bind(vm.controlvisibleFour)" />
+				<radio label="info control" checked="@bind(vm.controlvisibleFive)" />
+				<radio label="image control" checked="@bind(vm.controlvisibleSix)" />
+				<radio label="circle control" checked="@bind(vm.controlvisibleSeven)" />
+			</radiogroup>
+			<vbox>
+				<div height="50px"/>
+			</vbox>
+			<vbox id="mapsControl" visible="@load(vm.controlvisibleOne)">
+				<include src="Z60-Gmaps-Bind_Gmaps-Control.zul" />
+			</vbox>
+			<!-- controls of gmarker -->
+			<vbox id="markersControl" visible="@load(vm.controlvisibleTwo)">
+				<include src="Z60-Gmaps-Bind_Gmarkers-Control.zul" />
+			</vbox>
+			<!-- controls of polyline -->
+			<vbox id="polylinesControl" visible="@load(vm.controlvisibleThree)">
+				<include src="Z60-Gmaps-Bind_Gpolyline-Control.zul" />
+			</vbox>
+			<!-- controls of polygon -->
+			<vbox id="polygonsControl" visible="@load(vm.controlvisibleFour)">
+				<include src="Z60-Gmaps-Bind_Gpolygon-Control.zul" />
+			</vbox>
+			<!-- controls of info -->
+			<vbox id="infosControl" visible="@load(vm.controlvisibleFive)">
+				<include src="Z60-Gmaps-Bind_Ginfo-Control.zul" />
+			</vbox>
+			<!-- controls of image -->
+			<vbox id="imagesControl" visible="@load(vm.controlvisibleSix)">
+				<include src="Z60-Gmaps-Bind_Gimage-Control.zul" />
+			</vbox>
+			<!-- controls of circle -->
+			<vbox id="circlesControl" visible="@load(vm.controlvisibleSeven)">
+				<include src="Z60-Gmaps-Bind_Gcircle-Control.zul" />
+			</vbox>
+		</vbox>
+	</hbox>
+	</window>
+</zk>

@@ -1,0 +1,20 @@
+<window title="Marker Status" height="300px" width="500px" border="normal">
+	<label multiline="true">
+		1. Click cross sign of info window to close it.
+		2. Click marker should see "false".
+	</label>
+	<space/>
+	<label id="out"/>
+<separator bar="true"/>
+	<gmaps lat="22" lng="22" width="500px" height="200px" version="3.9">
+		<gmarker id="marker" lat="22" lng="22" content="marker content" open="true" />
+		<attribute name="onMapClick"><![CDATA[
+			import org.zkoss.gmaps.Gmarker;
+			Component target = event.getReference();
+			if (target instanceof Gmarker) {
+				Gmarker m = (Gmarker)target;
+				out.setValue(m.isOpen() + "");
+			}
+		]]></attribute>
+	</gmaps>
+</window>
