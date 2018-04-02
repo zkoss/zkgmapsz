@@ -14,9 +14,7 @@ Copyright (C) 2006 Potix Corporation. All Rights Reserved.
 <language-addon>
 	<!-- The name of this addon. It must be unique -->
 	<addon-name>gmapsz</addon-name>
-	<!-- Specifies what other addon this depends
-	<depends></depends>
-	-->
+	<depends>zul</depends>
 
 	<version>
 		<version-class>org.zkoss.gmaps.Version</version-class>

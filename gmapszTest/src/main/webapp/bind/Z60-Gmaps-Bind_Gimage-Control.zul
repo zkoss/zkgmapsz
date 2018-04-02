@@ -1,0 +1,11 @@
+<zk>
+	id: <label value="@load(vm.imagevm.id)" /><div></div>
+	src: <combobox value="@bind(vm.imagevm.src)">
+		<comboitem label="/img/newIcon.png" />
+		<comboitem label="/img/QuestionmarkButton-16x16.png" />
+	</combobox><div></div>
+	nelat: <doublespinner value="@bind(vm.imagevm.nelat)" step="0.001" /><div></div>
+	nelng: <doublespinner value="@bind(vm.imagevm.nelng)" step="0.001" /><div></div>
+	swlat: <doublespinner value="@bind(vm.imagevm.swlat)" step="0.001" /><div></div>
+	swlng: <doublespinner value="@bind(vm.imagevm.swlng)" step="0.001" /><div></div>
+</zk>
