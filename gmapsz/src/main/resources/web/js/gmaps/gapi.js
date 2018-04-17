@@ -63,7 +63,7 @@ function waitUntil(wgt, opts) {
 		opts.callback();
 }
 gmapsGapi.initMask = function (wgt, opts) {
-	if (wgt.desktop && wgt.isRealVisible(true)) {
+	if (wgt.desktop && wgt.isRealVisible(true) && zk(wgt.$n()).isRealVisible()) {
 		var opt = {};
 		opt['anchor'] = wgt;
 		// Issue 42: Give mask an unique id for each map.
