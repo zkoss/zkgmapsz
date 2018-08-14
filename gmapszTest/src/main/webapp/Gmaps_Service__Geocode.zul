@@ -10,15 +10,15 @@
 	<textbox id="jsonByAddress" rows="6" width="1000px" />
 	<zscript><![CDATA[
 		import org.zkoss.gmaps.*;
-		double[] location = GmapsUtil.getLatlngByAddress("Wall St, ニューヨーク 10005 アメリカ合衆国", true, "en");
-		double[] bounds = GmapsUtil.getBoundsByAddress("Wall St, ニューヨーク 10005 アメリカ合衆国", true, "en");
+		double[] location = GmapsUtil.getLatlngByAddress("Wall St, ニューヨーク 10005 アメリカ合衆国", true, "en", null);
+		double[] bounds = GmapsUtil.getBoundsByAddress("Wall St, ニューヨーク 10005 アメリカ合衆国", true, "en", null);
 		latlng.setValue("Location: lat = "+location[0]+", lng = " + location[1]);
 		bnds.setValue("Bounds: swlat = "+bounds[0]
 					+ ", swlng = "+bounds[1]
 					+ ", nelat = "+bounds[2]
 					+ ", nelng = "+bounds[3]);
-		address.setValue("Address: " + GmapsUtil.getAddressByLatlng(40.70615360000001, -74.0092164, true, "ja"));
-		jsonByLatlng.setValue(GmapsUtil.getGeocodeJsonResult("Wall St, ニューヨーク 10005 アメリカ合衆国", true, "en").toString());
-		jsonByAddress.setValue(GmapsUtil.getGeocodeJsonResult(40.70615360000001, -74.0092164, true, "ja").toString());
+		address.setValue("Address: " + GmapsUtil.getAddressByLatlng(40.70615360000001, -74.0092164, true, "ja", null));
+		jsonByLatlng.setValue(GmapsUtil.getGeocodeJsonResult("Wall St, ニューヨーク 10005 アメリカ合衆国", true, "en", null).toString());
+		jsonByAddress.setValue(GmapsUtil.getGeocodeJsonResult(40.70615360000001, -74.0092164, true, "ja", null).toString());
 	]]></zscript>
 </zk>
