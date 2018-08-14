@@ -1,10 +1,11 @@
   --------
-Gmaps 3.0.5 (work with ZK 5.0+ only)
+Gmaps 3.0.5
 * Features:
 
 * Bugs:
    ZKGMAPS-19: No marker events  due to race condition between overrideMarkerManager and readbind
    ZKGMAPS-18: Loading Mask causes JS Error
+   ZKGMAPS-20: Add apiKey parameter to GmapsUtil methods + HTTPS
 
 * Upgrade Notes:
 
