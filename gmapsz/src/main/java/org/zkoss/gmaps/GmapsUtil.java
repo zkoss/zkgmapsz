@@ -35,7 +35,7 @@ import org.zkoss.zk.ui.UiException;
  * @since 2.0_10
  */
 public class GmapsUtil {
-	private static String GOOGLE_WEB_SERVICE_GEOCODE_JSON = "http://maps.googleapis.com/maps/api/geocode/json?";
+	private static String GOOGLE_WEB_SERVICE_GEOCODE_JSON = "https://maps.googleapis.com/maps/api/geocode/json?";
 	/** Convert the latitude and longitude to x, y pixels. This is based on the Mercator 
 	 * Projection (check http://en.wikipedia.org/wiki/Mercator_projection) as used
 	 * in Google Maps
@@ -147,6 +147,7 @@ public class GmapsUtil {
 	 * @param address String, the given address
 	 * @param sensor boolean, the value of Google Map sensor property
 	 * @param language String, the language code
+	 * @param apiKey Google Api Key
 	 * @return StringBuilder, contains the response content
 	 * @throws ParseException
 	 * @throws UnsupportedEncodingException
@@ -154,13 +155,14 @@ public class GmapsUtil {
 	 * @throws IOException
 	 * @since 3.0.0
 	 */
-	public static StringBuilder getGeocodeJsonResult (String address, boolean sensor, String language)
+	public static StringBuilder getGeocodeJsonResult(String address, boolean sensor, String language, String apiKey)
 		throws ParseException, UnsupportedEncodingException, MalformedURLException, IOException {
 		// build the url path for request
 		String path = GOOGLE_WEB_SERVICE_GEOCODE_JSON
 				+ "address="+java.net.URLEncoder.encode(address, "UTF-8")
-		        + "&sensor="+sensor
-		        + "&language="+language;
+				+ "&sensor="+sensor
+				+ "&language="+language
+				+ (apiKey != null ? ("&key=" + apiKey) : "");
 		StringBuilder sb = getResponse(path);
 		return sb;
 	}
@@ -170,6 +172,7 @@ public class GmapsUtil {
 	 * @param lng double, the given longitude
 	 * @param sensor boolean, the value of Google Map sensor property
 	 * @param language String, the language code
+	 * @param apiKey Google Api Key
 	 * @return StringBuilder, contains the response content
 	 * @throws ParseException
 	 * @throws UnsupportedEncodingException
@@ -177,13 +180,14 @@ public class GmapsUtil {
 	 * @throws IOException
 	 * @since 3.0.0
 	 */
-	public static StringBuilder getGeocodeJsonResult (double lat, double lng, boolean sensor, String language)
+	public static StringBuilder getGeocodeJsonResult(double lat, double lng, boolean sensor, String language, String apiKey)
 		throws ParseException, UnsupportedEncodingException, MalformedURLException, IOException {
 		// build the url path for request
 		String path = GOOGLE_WEB_SERVICE_GEOCODE_JSON
 				+"latlng="+lat+","+lng
 				+"&sensor="+sensor
-				+"&language="+language;
+				+"&language="+language
+				+ (apiKey != null ? ("&key=" + apiKey) : "");
 		StringBuilder sb = getResponse(path);
 		return sb;
 	}
@@ -192,16 +196,17 @@ public class GmapsUtil {
 	 * @param address String, the given address
 	 * @param sensor boolean, the value of Google Map sensor property
 	 * @param language String, the language code
-	 * @return latlng double array, latlng[0] contains the Latitude, latlng[1] contains the Longitude 
+	 * @param apiKey Google Api Key
+	 * @return latlng double array, latlng[0] contains the Latitude, latlng[1] contains the Longitude
 	 * @throws ParseException
 	 * @throws UnsupportedEncodingException
 	 * @throws MalformedURLException
 	 * @throws IOException
 	 * @since 3.0.0
 	 */
-	public static double[] getLatlngByAddress (String address, boolean sensor, String language)
+	public static double[] getLatlngByAddress(String address, boolean sensor, String language, String apiKey)
 		throws ParseException, UnsupportedEncodingException, MalformedURLException, IOException {
-		StringBuilder sb = getGeocodeJsonResult(address, sensor, language);
+		StringBuilder sb = getGeocodeJsonResult(address, sensor, language, apiKey);
 		double[] latlng = new double[2];
 
 		JSONArray results = (JSONArray)((JSONObject)new JSONParser().parse(sb.toString())).get("results");
@@ -215,16 +220,17 @@ public class GmapsUtil {
 	 * @param address String, the given address
 	 * @param sensor boolean, the value of Google Map sensor property
 	 * @param language String, the language code
-	 * @return double[] with double[0] swlat, double[1] swlng, double[2] nelat, double[3] nelng 
+	 * @param apiKey Google Api Key
+	 * @return double[] with double[0] swlat, double[1] swlng, double[2] nelat, double[3] nelng
 	 * @throws ParseException
 	 * @throws UnsupportedEncodingException
 	 * @throws MalformedURLException
 	 * @throws IOException
 	 * @since 3.0.0
 	 */
-	public static double[] getBoundsByAddress (String address, boolean sensor, String language)
+	public static double[] getBoundsByAddress(String address, boolean sensor, String language, String apiKey)
 		throws ParseException, UnsupportedEncodingException, MalformedURLException, IOException {
-		StringBuilder sb = getGeocodeJsonResult(address, sensor, language);
+		StringBuilder sb = getGeocodeJsonResult(address, sensor, language, apiKey);
 		double[] bounds = new double[4];
 	
 		JSONArray results = (JSONArray)((JSONObject)new JSONParser().parse(sb.toString())).get("results");
@@ -242,6 +248,7 @@ public class GmapsUtil {
 	 * @param lng double, the given longitude
 	 * @param sensor boolean, the value of Google Map sensor property
 	 * @param language String, the language code
+	 * @param apiKey Google Api Key
 	 * @return String, the address
 	 * @throws ParseException
 	 * @throws UnsupportedEncodingException
@@ -249,9 +256,9 @@ public class GmapsUtil {
 	 * @throws IOException
 	 * @since 3.0.0
 	 */
-	public static String getAddressByLatlng (double lat, double lng, boolean sensor, String language)
+	public static String getAddressByLatlng(double lat, double lng, boolean sensor, String language, String apiKey)
 		throws ParseException, UnsupportedEncodingException, MalformedURLException, IOException {
-		StringBuilder sb = getGeocodeJsonResult(lat, lng, sensor, language);
+		StringBuilder sb = getGeocodeJsonResult(lat, lng, sensor, language, apiKey);
 		String address = null;
 		
 		JSONArray results = (JSONArray)((JSONObject)new JSONParser().parse(sb.toString())).get("results");
