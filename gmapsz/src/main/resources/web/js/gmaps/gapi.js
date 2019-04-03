@@ -23,7 +23,7 @@
 
 Copyright (C) 2009 Potix Corporation. All Rights Reserved.
 
-This program is distributed under LGPL Version 2.1 in the hope that
+This program is distributed under GPL Version 2.0 in the hope that
 it will be useful, but WITHOUT ANY WARRANTY.
 */
 (function() {
@@ -32,7 +32,7 @@ gmapsGapi.GOOGLE_API_LOADING_TIMEOUT = 10000; //default to ten seconds
 gmapsGapi.loadAPIs = function(wgt, callback, msg, timeout) {
 	var opts = {};
 	opts['condition'] = function() {return window.google && window.google.load};
-	opts['callback'] = function() {callback(); delete gmapsGapi.LOADING;}
+	opts['callback'] = function() {callback(); delete gmapsGapi.LOADING;};
 	if (!opts.condition()) {
 		gmapsGapi.waitUntil(wgt, opts);
 		if (!gmapsGapi.LOADING) { //avoid double loading Google Ajax APIs

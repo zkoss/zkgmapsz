@@ -8,7 +8,7 @@ Google Map API is a popular javascript library that lets you embed Google Maps i
 zk gmapsz components wrap the Google Map API and very easy to use.
 
 ### License
- * [LGPL](http://www.gnu.org/licenses/lgpl.html)
+ * [GPL 2.0](https://www.gnu.org/licenses/gpl-2.0.html)
  
 ### Documentation
 
