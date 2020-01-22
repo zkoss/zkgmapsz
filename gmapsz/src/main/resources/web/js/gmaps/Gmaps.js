@@ -36,6 +36,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	_doubleClickZoom: true,
 	_scrollWheelZoom: true,
 	_enableDragging: true,
+	_extraMapOptions: null,
 	_version: '3',
 	_gmapsApiConfigParams: {
 		libraries: 'geometry'
@@ -355,14 +356,35 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			// currently not supported in v3
 		},
 		/**
-		 * Returns the base domain from which to load the Maps API. For example, 
-		 * you could load from "ditu.google.cn" with the "maps" module to get 
+		 * @return Object the last value provided by setExtraMapOptions
+		 * @see #setExtraMapOptions
+		 * @since 3.1.0
+		 */
+		 /**
+		 * Set additional map options for which no dedicated getter/setter exists (e.g. tilt, fullscreenControl ...)
+		 * Adds/replaces mapOption properties of the provided object into the current mapOptions.
+		 * It does not remove missing properties, instead you have to set null, [], {} or false respectively.
+		 * The behavior is undefined if used with mapOptions which already have a dedicated getter/setter.
+		 * @param Object extraOpts the map options to set/replace
+		 * @since 3.1.0
+		 */
+		extraMapOptions: function(extraOpts) {
+			var maps = this._gmaps;
+			if (maps) {
+				var opts = this.getMapOptions();
+				zk.copy(opts, extraOpts);
+				maps.setOptions(opts);
+			}
+		},
+		/**
+		 * Returns the base domain from which to load the Maps API. For example,
+		 * you could load from "ditu.google.cn" with the "maps" module to get
 		 * the Chinese version of the Maps API; null to use the default domain.
 		 * @return String
 		 */
 		/**
-		 * Sets the base domain from which to load the Maps API. For example, 
-		 * you could load from "ditu.google.cn" with the "maps" module to get 
+		 * Sets the base domain from which to load the Maps API. For example,
+		 * you could load from "ditu.google.cn" with the "maps" module to get
 		 * the Chinese version of the Maps API; null to use the default domain.
 		 * @param String baseDomain the base domain from which to load the Maps API
 		 */
@@ -524,19 +546,19 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 				info._closeListener = null;
 			}
 
-		    if (info.$instanceof(gmaps.Gmarker)) { //gmaps.Gmarker
-		    	// icon info anchor, have not process it 
-		    	var iinfanch = info.getIconInfoAnchor();
-		    	// markermanager will handle panto as need, no more panto
-		    	infWin.open(maps, info.mapitem_);
-		    	info._open = true;
+			if (info.$instanceof(gmaps.Gmarker)) { //gmaps.Gmarker
+				// icon info anchor, have not process it
+				var iinfanch = info.getIconInfoAnchor();
+				// markermanager will handle panto as need, no more panto
+				infWin.open(maps, info.mapitem_);
+				info._open = true;
 			} else { //gmaps.Ginfo
-		        var anch = info.getAnchor();
-		        infWin.setPosition(new google.maps.LatLng(anch.latitude, anch.longitude));
-		        infWin.open(maps);
-		        info._open = true;
+				var anch = info.getAnchor();
+				infWin.setPosition(new google.maps.LatLng(anch.latitude, anch.longitude));
+				infWin.open(maps);
+				info._open = true;
 			}
-		    this._opening = false;
+			this._opening = false;
 		}
 	},
 	setCloseInfo_: function(info) {
@@ -692,7 +714,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			wgt._mm = new MarkerManager(maps, {trackMarkers: true, maxZoom: mapsMaxZoom});
 			google.maps.event.addListener(wgt._mm, 'loaded', function(){
 				wgt._mmLoaded = true;
-	        });}, 0);
+			});}, 0);
 		};
 		
 		gmapsGapi.waitUntil(wgt, opts0);
@@ -911,11 +933,11 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			//bug 2099729: in IE, gmap's container div height will not resize automatically
 			var n = jq(this.uuid, zk)[0];
 			if (zk.ie) { 
-			    var hgh = n.style.height;
-			    if (hgh.indexOf('%') >= 0) {
-			    	n.style.height="";
-			    	n.style.height=hgh;
-			    }
+				var hgh = n.style.height;
+				if (hgh.indexOf('%') >= 0) {
+					n.style.height="";
+					n.style.height=hgh;
+				}
 			}
 			
 			//Still has to restore the center if onSize event fired first
@@ -979,11 +1001,11 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			// default not support contain map type
 			var mtids = [];
 			this._mapOptions = {
-	            // used to be {type: G_PHYSICAL_MAP}
-	            mapTypeControlOptions: {mapTypeIds: mtids}
-	        };
+				// used to be {type: G_PHYSICAL_MAP}
+				mapTypeControlOptions: {mapTypeIds: mtids}
+			};
 		}
-			return this._mapOptions;
+		return this._mapOptions;
 	},
 	_initGmaps: function(n) {
 		var maps = new google.maps.Map(n, this.getMapOptions());
@@ -1005,7 +1027,8 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			.setScrollWheelZoom(this._scrollWheelZoom, {force:true})
 			.setEnableDragging(this._enableDragging, {force:true})
 			.setCenter(this._center, {force:true})
-			.setZoom(this._zoom, {force:true});
+			.setZoom(this._zoom, {force:true})
+			.setExtraMapOptions(this._extraMapOptions, {force:true});
 		if (this._bounds)
 			this.setBounds(this._bounds, {force:true});
 	},
@@ -1024,8 +1047,8 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			var markerwgt = marker._wgt; //Gmarker widget
 
 			marker.setMap(null);
-		    mm.shownMarkers_--;
-		    markerwgt._clearListeners();
+			mm.shownMarkers_--;
+			markerwgt._clearListeners();
 		}
 		this.overlayOverride = true;
 	},
@@ -1049,29 +1072,29 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		return [x - orgxy[0], y - orgxy[1]]; 
 	},
 	//given Gmaps, relative xy, return pageXY as [pageX, pageY]
-  	xyToPageXY: function(gmaps, x, y) {
-  		var orgxy = zk(gmaps).revisedOffset();
-  		return [x + orgxy[0], y + orgxy[1]]; 
-  	},
-  	// given Gmaps widget, latlng, return xy as [x, y]
-  	latlngToXY: function (wgt, latlng) {
-  		var gmaps = wgt._gmaps,
-  			zoom = gmaps.getZoom(),
-  			bounds = gmaps.getBounds(),
-  			nwLatlng = new google.maps.LatLng(bounds.getNorthEast().lat(),
-  							bounds.getSouthWest().lng()),
-  			projection = wgt._mm.projection_,
-  			nwXY = projection.fromLatLngToDivPixel(nwLatlng, zoom), // X, Y of North West of bounds
-  			evtXY = projection.fromLatLngToDivPixel(latlng, zoom); // X, Y of clicked point
+	xyToPageXY: function(gmaps, x, y) {
+		var orgxy = zk(gmaps).revisedOffset();
+		return [x + orgxy[0], y + orgxy[1]];
+	},
+	// given Gmaps widget, latlng, return xy as [x, y]
+	latlngToXY: function (wgt, latlng) {
+		var gmaps = wgt._gmaps,
+			zoom = gmaps.getZoom(),
+			bounds = gmaps.getBounds(),
+			nwLatlng = new google.maps.LatLng(bounds.getNorthEast().lat(),
+							bounds.getSouthWest().lng()),
+			projection = wgt._mm.projection_,
+			nwXY = projection.fromLatLngToDivPixel(nwLatlng, zoom), // X, Y of North West of bounds
+			evtXY = projection.fromLatLngToDivPixel(latlng, zoom); // X, Y of clicked point
 
-  		return {x: evtXY.x-nwXY.x, y: evtXY.y-nwXY.y};
-  	},
-  	errormsg: '<p>To use <code>&lt;gmaps&gt;</code>, you have to specify the following statement in your page:</p>'
+		return {x: evtXY.x-nwXY.x, y: evtXY.y-nwXY.y};
+	},
+	errormsg: '<p>To use <code>&lt;gmaps&gt;</code>, you have to specify the following statement in your page:</p>'
 		+'<code>&lt;script content="zk.googleAPIkey='+"'key-assigned-by-google'"+'" /></code>' 
 });
 //register to be called when window.onunload. 
 //jq(function(...)) tells to do this until html document is ready.
 jq(function() {jq(window).unload(function(){/** 
- 	* Issue 9: Javascript Error: GUnload is not defined
- 	* TODO unload maps if unload API avaliable*/})});
+	* Issue 9: Javascript Error: GUnload is not defined
+	* TODO unload maps if unload API avaliable*/})});
 })();

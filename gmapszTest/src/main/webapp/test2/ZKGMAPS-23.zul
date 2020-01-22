@@ -1,0 +1,14 @@
+<zk>
+	<zscript><![CDATA[
+		boolean enableFullscreen = false;
+		Map extraOpts = new HashMap();
+		extraOpts.put("fullscreenControl", enableFullscreen);
+	]]></zscript>
+	<gmaps id="gm" width="400px" height="300px" extraMapOptions="${extraOpts}"/>
+	<button label="toggle fullscreen">
+		<attribute name="onClick"><![CDATA[
+			enableFullscreen = !enableFullscreen;
+			gm.setExtraMapOptions(Collections.singletonMap("fullscreenControl", enableFullscreen));
+		]]></attribute>
+	</button>
+</zk>

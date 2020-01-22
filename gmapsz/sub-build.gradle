@@ -46,7 +46,7 @@ compileJava {
 
 javadoc {
 	options.addStringOption("Xdoclint:none", "--allow-script-in-comments")
-	options.bottom("Copyright &amp;copy; 2005-2018 Potix Corporation. All Rights Reserved.")
+	options.bottom("Copyright &amp;copy; 2005-2020 Potix Corporation. All Rights Reserved.")
 	source = sourceSets.main.allJava
 }
 
