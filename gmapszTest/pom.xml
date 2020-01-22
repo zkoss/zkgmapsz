@@ -44,29 +44,6 @@
 			<url>https://mavensync.zkoss.org/zk/ee-eval</url>
 		</repository>		
 	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>zkmaven</id>
-			<name>ZK Maven Plugin Repository</name>
-			<url>https://mavensync.zkoss.org/maven2</url>
-		</pluginRepository>
-		<pluginRepository>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<id>snapshots</id>
-			<name>Maven Central Plugins Development Repository</name>
-			<url>https://snapshots.maven.codehaus.org/maven2</url>
-		</pluginRepository>
-		<pluginRepository>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<id>central</id>
-			<name>Maven Plugin Repository</name>
-			<url>https://repo1.maven.org/maven2</url>
-		</pluginRepository>
-	</pluginRepositories>
 	<dependencies>
 		<dependency>
 			<groupId>javax.servlet</groupId>
