@@ -27,5 +27,5 @@ package org.zkoss.gmaps;
 public class Version {
 	/** Returns the version UID.
 	 */
-	public static final String UID = "@projectVersion@";
+	public static final String UID = "3.1.0";
 }
