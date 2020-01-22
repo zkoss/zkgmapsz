@@ -1,15 +1,14 @@
-<!--may not running on localhost while api-key was missing-->
-<zk xmlns:n="native">
-	<div>
-		<label multiline="true">
-			1.paste your google api key form https://console.developers.google.com/flows/enableapi?apiid=maps_backend
-			2.click "show map" button
-			3.it should not appear any js error
-		</label>
-		<n:input type="text" placeholder="paste your google api key here" onblur="zk.googleAPIkey = this.value" size="50"/>
-		<div id="hidden" visible="false">
-			<gmaps width="400px" height="300px"/>
-		</div>
-		<button label="show map" onClick="hidden.setVisible(true)"/>
-	</div>
+<zk>
+	<zscript><![CDATA[
+		boolean enableFullscreen = false;
+		Map extraOpts = new HashMap();
+		extraOpts.put("fullscreenControl", enableFullscreen);
+	]]></zscript>
+	<gmaps id="gm" width="400px" height="300px" extraMapOptions="${extraOpts}"/>
+	<button label="toggle fullscreen">
+		<attribute name="onClick"><![CDATA[
+			enableFullscreen = !enableFullscreen;
+			gm.setExtraMapOptions(Collections.singletonMap("fullscreenControl", enableFullscreen));
+		]]></attribute>
+	</button>
 </zk>
