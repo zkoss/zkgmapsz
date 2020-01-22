@@ -89,6 +89,7 @@ public class Gmaps extends XulElement {
 	private boolean _doubleClickZoom = true;
 	private boolean _scrollWheelZoom = true;
 	private boolean _enableGoogleBar;
+	private Map<String, ?> _extraMapOptions;
 	private String _baseDomain;
 	private JSONObject _gmapsApiConfigParams = new JSONObject(); 
 	{
@@ -923,7 +924,7 @@ public class Gmaps extends XulElement {
 	 * load geometry library only, you can check libraries
 	 * <a href="https://developers.google.com/maps/documentation/javascript/libraries">here</a>
 	 * <p> Use comma to separate different library
-	 * 
+	 *
 	 * @param libraries comma separated String of libraries to load
 	 * @since 3.0.0
 	 */
@@ -931,7 +932,33 @@ public class Gmaps extends XulElement {
 		setGmapsApiConfigParam(LIBRARIES, libraries);
 	}
 
-	/** 
+	/**
+	 * Returns the last value provided to setExtraMapOptions
+	 * @return unmodifiable Map (never null)
+	 * @since 3.1.0
+	 */
+	public Map<String, ?> getExtraMapOptions() {
+		return _extraMapOptions == null ? Collections.<String, Object>emptyMap()
+				: Collections.unmodifiableMap(_extraMapOptions);
+	}
+
+	/**
+	 * Set additional <a href="https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions">mapOptions</a>
+	 * for new API features without dedicated zk component getter/setter (e.g. tilt, fullscreenControl, rotationControl, ...)
+	 * Adding a mapOption for an existing getter/setter (e.g. {@link #setCenter(LatLng)}) results in undefined behavior.
+	 * Map options provided will merge into the existing mapOptions additively. No mapOptions are removed.
+	 * Instead you have to set: undefined, null, false, empty list ([]) or map ({}) as needed.
+	 * @param extraMapOptions
+	 * @since 3.1.0
+	 */
+	public void setExtraMapOptions(Map<String, ?> extraMapOptions) {
+		if (!Objects.equals(_extraMapOptions, extraMapOptions)) {
+			this._extraMapOptions = extraMapOptions;
+			smartUpdate("extraMapOptions", extraMapOptions);
+		}
+	}
+
+	/**
 	 * Returns the selected version of google map API v3.
 	 * @return String
 	 */
@@ -1358,6 +1385,8 @@ public class Gmaps extends XulElement {
 			renderer.render("physical", isPhysical());
 		if (!_normal)
 			renderer.render("normal", isNormal());
+		if (_extraMapOptions != null)
+			renderer.render("extraMapOptions", getExtraMapOptions());
 		if (!"3".equals(_version))
 			renderer.render("version", _version);
 		if (!Strings.isBlank(_baseDomain))
