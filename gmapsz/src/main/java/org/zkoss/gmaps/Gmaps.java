@@ -934,11 +934,12 @@ public class Gmaps extends XulElement {
 
 	/**
 	 * Returns the last value provided to setExtraMapOptions
-	 * @return unmodifiable Map
+	 * @return unmodifiable Map (never null)
 	 * @since 3.1.0
 	 */
 	public Map<String, ?> getExtraMapOptions() {
-		return Collections.unmodifiableMap(_extraMapOptions);
+		return _extraMapOptions == null ? Collections.<String, Object>emptyMap()
+				: Collections.unmodifiableMap(_extraMapOptions);
 	}
 
 	/**
