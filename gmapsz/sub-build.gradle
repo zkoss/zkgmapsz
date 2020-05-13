@@ -10,137 +10,39 @@ switch ( project.name ) {
 println project.name
 def buildUri = "${buildDir}".substring(("${buildDir}".indexOf("/" + project.name + "/")) + project.name.length() + 2)
 def isOfficial = project.hasProperty("target") && "official" == project.getProperty("target") ? true : ""
-def fldate = isOfficial ? "" : new Date().format("yyyy-MM-dd")
 version = isOfficial && version.contains("-FL") ? version.substring(0, version.indexOf("-FL")) : version
-println isOfficial ? "official" : "FL" + " version: " + version + fldate ? "-" + fldate : ""
-def jsSource = "src/main/resources/web/js/${project.name}"
+def fldate = isOfficial ? "" : new Date().format("yyyy-MM-dd")
+def versionString = isOfficial ? version : "${version}-${fldate}"
+println ((isOfficial ? "official" : "FL") + " version: " + versionString)
 
-sourceSets {
-    main {
-        java.srcDirs = ['build/generated/src/java']
-    }
-}
-
-import org.apache.tools.ant.filters.ReplaceTokens
-task sourcesForRelease() {
-	doFirst {
-		copy {
-		    from "src/main/java"
-		    into "${buildDir}/generated/src/java/"
-		    filter(ReplaceTokens, tokens: ['projectVersion': version])
-		}
-		copy {
-			from ("${project.projectDir}") {
-				include "pom.xml"
-			}
-			into "${buildDir}/maven"
-			filter(ReplaceTokens, tokens: ['projectVersion': version])
-		}
-	}
-}
-
-compileJava {
-	dependsOn(sourcesForRelease)
-	source += sourceSets.main.java
+processResources {
+	exclude '**/web/js' // Handled by zipJs
 }
 
 javadoc {
 	options.addStringOption("Xdoclint:none", "--allow-script-in-comments")
-	options.bottom("Copyright &amp;copy; 2005-2020 Potix Corporation. All Rights Reserved.")
-	source = sourceSets.main.allJava
+	options.bottom("Copyright &amp;copy; 2005-${new Date().format("yyyy")} Potix Corporation. All Rights Reserved.")
 }
 
 jar {
 	archiveName project.name + ".jar"
-	dependsOn 'copyLangAddon'
-	dependsOn 'javadoc'
-	dependsOn 'deleteFiles'
-	dependsOn 'putBackExcludedFiles'
+	dependsOn 'zipJs'
 }
 
 build {
 	dependsOn 'sourceJar'
 	dependsOn 'makeBinZip'
 	dependsOn 'makeSrcZip'
-	dependsOn 'zipOfficialBundle'
+	dependsOn 'makeBundle'
 }
 
-task preserveExcludedFiles() {
-	doLast {
-		jsCompressExcludedFiles.each { each ->
-			//copy excluded files to a temporary folder
-			copy {
-				from jsSource
-				include each
-				into "${buildDir}/excludedFiles"
-			}
-			//delete the excluded files brfore compressing files
-			delete fileTree(jsSource) {
-		        include each
-		    }
-		}
-		//restore included files inside excluded folders
-		jsCompressIncludedFiles.each { each ->
-			copy {
-				from "${buildDir}/excludedFiles"
-				include each
-				into jsSource
-			}
-			delete fileTree("${buildDir}/excludedFiles") {
-		        include each
-		    }
-		}
-	}
-}
-
-task compressJs(type: JavaExec, dependsOn: preserveExcludedFiles) {
-	main = "ZipJS"
-	args("src/main/resources/web/js", "${buildDir}/resources/main/web/js", true)
-	jvmArgs("-Xss1024k")
-	classpath("dist/lib/ext/zkjszips.jar", "dist/lib/ext/yuicompressor.jar", "dist/lib/ext/commons-io.jar", "dist/lib/ext/closure-compiler.jar")
-}
-
-task zipJs(type: JavaExec, dependsOn: compressJs) {
-	main = "ZipJS"
+task zipJs(type: JavaExec) {
+	classpath("dist/lib/ext/zkjszips.jar")
 	args("src/main/resources/web/js", "${buildDir}/resources/main/web/js")
 	jvmArgs("-Xss1024k")
-	classpath("dist/lib/ext/zkjszips.jar", "dist/lib/ext/yuicompressor.jar", "dist/lib/ext/commons-io.jar", "dist/lib/ext/closure-compiler.jar")
-}
-
-task putBackExcludedFiles(dependsOn: zipJs) {
-	doLast {
-		copy {
-			from "${buildDir}/excludedFiles"
-			into "${buildDir}/resources/main/web/js/${project.name}"
-		}
-		copy {
-			from "${buildDir}/excludedFiles"
-			into jsSource
-		}
-	}
-}
-
-task deleteFiles(dependsOn: zipJs) {
-	doLast {
-	    delete {
-	    	delete fileTree("${buildDir}/resources") {
-		        include "**/*.js.map"
-		    }
-	    }
-	}
-}
-
-task copyLangAddon() {
-	doFirst {
-		copy {
-			from "src/main/resources/metainfo"
-			into "${buildDir}/resources/main/metainfo"
-		}
-	}
 }
 
 task sourceJar(type: Jar) {
-	dependsOn 'sourcesForRelease'
 	outputs.upToDateWhen { false }
 	doFirst {
 		from sourceSets.main.java
@@ -149,13 +51,13 @@ task sourceJar(type: Jar) {
 }
 
 task prepareFiles {
+	dependsOn 'javadoc'
 	dependsOn 'jar'
 	dependsOn 'sourceJar'
 	doFirst {
 		def name = project.name
-		def fl = fldate.trim() ? "-" + fldate : ""
-		def binFolderName = zipnm + "-bin-" + version + fl
-		def srcFolderName = zipnm + "-src-" + version + fl
+		def binFolderName = zipnm + "-bin-" + versionString
+		def srcFolderName = zipnm + "-src-" + versionString
 		copy {
 			from "${buildDir}/libs/" + name + "-sources.jar"
 			into "${buildDir}/binzip/" + binFolderName + "/dist/src"
@@ -176,6 +78,7 @@ task prepareFiles {
 			from ("../${project.name}/") {
 				exclude(buildUri)
 				exclude("dist")
+				exclude(".gradle")
 			}
 			into "${buildDir}/srczip/" + srcFolderName + "/${project.name}/"
 		}
@@ -202,26 +105,28 @@ task makeSrcZip(type: Zip, dependsOn: prepareFiles) {
 	destinationDir(file("${buildDir}/distributions/zk"))
 }
 
-task prepareBundleFilesForOfficialRelease(dependsOn: ['makeBinZip', 'makeSrcZip']) {
+task prepareBundleFiles(dependsOn: ['jar', 'sourceJar']) {
 	doLast {
-		if (!fldate.trim()) {
-			copy {
-				from "${buildDir}/libs/"
-				into "${buildDir}/maven/"
-				rename { String fileName ->
-					fileName.replace("${project.name}", "${project.name}-${version}")
-				}
+		copy {
+			from "${buildDir}/libs/"
+			from ("${project.projectDir}") {
+				include "pom.xml"
+			}
+			into "${buildDir}/maven/"
+			rename { String fileName ->
+				fileName.replace("${project.name}", "${project.name}-${versionString}")
 			}
 		}
 	}
 }
 
-task zipOfficialBundle(type: Zip, dependsOn: prepareBundleFilesForOfficialRelease) {
-	if (!fldate.trim()) {
-		println "Create ${project.name}-" + version + "-bundle.jar"
-		baseName "${project.name}"
-		classifier "bundle"
-		from("${buildDir}/maven/")
-		destinationDir(file("${buildDir}/distributions/maven"))
+task makeBundle(type: Jar, dependsOn: prepareBundleFiles) {
+	doLast {
+		println "Create ${project.name}-" + versionString + "-bundle.jar"
 	}
+	baseName "${project.name}"
+	version versionString
+	classifier "bundle"
+	from("${buildDir}/maven/")
+	destinationDir(file("${buildDir}/distributions/maven"))
 }
