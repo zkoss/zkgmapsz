@@ -1,5 +1,6 @@
-apply plugin: "java"
-apply plugin: "maven"
+plugins {
+	id 'java'
+}
 
 group = "org.zkoss.zkforge"
 version = "3.1.0-FL"
@@ -14,16 +15,12 @@ tasks.withType(JavaCompile) {
 }
 
 repositories {
-     maven { url "https://mavensync.zkoss.org/maven2" }
-     maven { url "https://repo.maven.apache.org/maven2" }
+	 maven { url "https://mavensync.zkoss.org/maven2" }
+	 mavenCentral()
 }
 
 dependencies {
-    compile group: "org.zkoss.common", name: "zcommon", version:"6.5.0"
-    compile group: "org.zkoss.common", name: "zweb", version:"6.5.0"
-    compile group: "org.zkoss.zk", name: "zk", version:"6.5.0"
-    compile group: "org.zkoss.zk", name: "zul", version:"6.5.0"
+	implementation 'org.zkoss.zk:zul:6.5.0'
 }
-
 
 apply from: 'sub-build.gradle'
