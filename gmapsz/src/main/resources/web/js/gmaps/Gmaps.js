@@ -1092,3 +1092,5 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	errormsg: '<p>To use <code>&lt;gmaps&gt;</code>, you have to specify the following statement in your page:</p>'
 		+'<code>&lt;script content="zk.googleAPIkey='+"'key-assigned-by-google'"+'" /></code>' 
 });
+
+})();
