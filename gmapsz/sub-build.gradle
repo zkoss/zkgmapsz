@@ -15,6 +15,8 @@ def fldate = isOfficial ? "" : new Date().format("yyyy-MM-dd")
 def versionString = isOfficial ? version : "${version}-${fldate}"
 println ((isOfficial ? "official" : "FL") + " version: " + versionString)
 
+println version
+
 processResources {
 	exclude '**/web/js' // Handled by zipJs
 }
@@ -105,12 +107,16 @@ task makeSrcZip(type: Zip, dependsOn: prepareFiles) {
 	destinationDir(file("${buildDir}/distributions/zk"))
 }
 
+
+import org.apache.tools.ant.filters.ReplaceTokens
+
 task prepareBundleFiles(dependsOn: ['jar', 'sourceJar']) {
 	doLast {
 		copy {
 			from "${buildDir}/libs/"
 			from ("${project.projectDir}") {
 				include "pom.xml"
+                filter (ReplaceTokens, tokens: [version: versionString.toString()])
 			}
 			into "${buildDir}/maven/"
 			rename { String fileName ->
