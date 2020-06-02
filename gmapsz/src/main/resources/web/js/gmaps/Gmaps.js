@@ -1092,9 +1092,3 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	errormsg: '<p>To use <code>&lt;gmaps&gt;</code>, you have to specify the following statement in your page:</p>'
 		+'<code>&lt;script content="zk.googleAPIkey='+"'key-assigned-by-google'"+'" /></code>' 
 });
-//register to be called when window.onunload. 
-//jq(function(...)) tells to do this until html document is ready.
-jq(function() {jq(window).unload(function(){/** 
-	* Issue 9: Javascript Error: GUnload is not defined
-	* TODO unload maps if unload API avaliable*/})});
-})();
