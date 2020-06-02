@@ -3,6 +3,7 @@ Gmaps 3.1.1
 * Features:
 
 * Bugs:
+   ZKGMAPS-29: jquery API error with ZK 9.1.0
 
 * Upgrade Notes:
 
