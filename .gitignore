@@ -19,3 +19,4 @@ gmapsz/.gradle/*
 gmapsz/build/*
 *.iml
 .idea/
+out/
