@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "org.zkoss.zkforge"
-version = "3.1.1-FL"
+version = "3.2.0-FL"
 
 description = """The Google Maps Component for ZK"""
 
