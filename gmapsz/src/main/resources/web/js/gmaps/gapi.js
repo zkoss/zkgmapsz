@@ -1,22 +1,10 @@
 /* gapi.js
 
 	Purpose:
-		Google's AJAX APIs
+		Load Google Map API
 		
 	Description:
-		http://code.google.com/apis/ajax/documentation/
-		
-		Used to access Google's service, e.g. Maps API, Search API, Feed API, etc..
-		Since it requires a user to sign up and get a "googleAPIkey" to use it, 
-		you have to	get such key on the Google's web site first:
-		
-		http://code.google.com/apis/maps/signup.html
-		
-		Then you specify the key in the ZK's page using following mechanism:
-		
-		<script content="zk.googleAPIkey='your-key-here'/>
-		
-		And that is all!
+		https://developers.google.com/maps/documentation/javascript/overview#Loading_the_Maps_API
 		
 	History:
 		Fri Dec 04 13:24:19     2009, Created by henrichen
@@ -29,20 +17,31 @@ it will be useful, but WITHOUT ANY WARRANTY.
 (function() {
 gmapsGapi = {};
 gmapsGapi.GOOGLE_API_LOADING_TIMEOUT = 10000; //default to ten seconds
-gmapsGapi.loadAPIs = function(wgt, callback, msg, timeout) {
-	var opts = {};
-	opts['condition'] = function() {return window.google && window.google.load};
-	opts['callback'] = function() {callback(); delete gmapsGapi.LOADING;};
-	if (!opts.condition()) {
-		gmapsGapi.waitUntil(wgt, opts);
-		if (!gmapsGapi.LOADING) { //avoid double loading Google Ajax APIs
-			gmapsGapi.LOADING = true;
-			if (!opts.condition())
-				zk.loadScript('https://www.google.com/jsapi');
-		}
-	} else
-		callback();
-};
+gmapsGapi.GOOGLE_MAPS_API_URL = 'https://maps.googleapis.com/maps/api/js';
+
+var GOOGLE_MAPS_API_LOADSCRIPT_KEY = 'googleMapsApiLoadScriptKey';
+
+var effectiveApiParams = null;
+
+gmapsGapi.loadGoogleMapsApi = function(apiParams, callback) {
+	if (!effectiveApiParams) {
+		effectiveApiParams = apiParams;
+	} else if (effectiveApiParams != apiParams) {
+		console.warn("ZK Gmaps - google maps api already loaded with parameters: ", effectiveApiParams);
+		console.warn("ZK Gmaps - ignored parameters: ", apiParams);
+	}
+	if(!window.gmapsInit) {
+		zk.loadScript(gmapsGapi.GOOGLE_MAPS_API_URL + '?' + apiParams + '&callback=gmapsInit', GOOGLE_MAPS_API_LOADSCRIPT_KEY);
+		window.gmapsInit = function() {
+			zk.setScriptLoaded(GOOGLE_MAPS_API_LOADSCRIPT_KEY);
+			zk.load('gmaps.ext');
+		};
+	}
+	zk.afterLoad(GOOGLE_MAPS_API_LOADSCRIPT_KEY, function() {
+		zk.afterLoad('gmaps.ext', callback);
+	});
+}
+
 gmapsGapi.waitUntil = function(wgt, opts) {
 	opts.inittime = opts.inittime || new Date().getTime();
 	opts.timeout = opts.timeout || gmapsGapi.GOOGLE_API_LOADING_TIMEOUT;
@@ -55,26 +54,7 @@ function waitUntil(wgt, opts) {
 			setTimeout(function() {waitUntil(wgt, opts);}, 100);
 			return;
 		}
-		var mopts = wgt._maskOpts;
-		// Issue 43: Clear mask after loading timeout
-		if (mopts && mopts._mask)
-			gmapsGapi.clearMask(wgt, wgt._maskOpts);
 	} else
 		opts.callback();
 }
-gmapsGapi.initMask = function (wgt, opts) {
-	if (wgt.desktop && wgt.isRealVisible(true) && zk(wgt.$n()).isRealVisible()) {
-		var opt = {};
-		opt['anchor'] = wgt;
-		// Issue 42: Give mask an unique id for each map.
-		opt['id'] = wgt.uuid + '-mask';
-		if (opts.message) opt['message'] = opts.message;
-		opts['_mask'] = new zk.eff.Mask(opt);
-	}
-	return opts;
-};
-gmapsGapi.clearMask = function(wgt, opts) {
-	if (opts._mask)
-		opts._mask.destroy();
-};
 })();

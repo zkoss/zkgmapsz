@@ -3,8 +3,14 @@ Gmaps 3.2.0
 * Features:
 
 * Bugs:
+   ZKGMAPS-26: update deprecated api loading mechanism
+   ZKGMAPS-27: duplicate of ZKGMAPS-28
+   ZKGMAPS-28: allow gmap to also load additional libraries (fixed by ZKGMAPS-26)
 
 * Upgrade Notes:
+    With ZKGMAPS-26 the deprecated "jsapi loader" was removed,
+    hence Gmaps.setBaseDomain() has no effect anymore -> use Gmaps.setRegion() instead
+    (https://developers.google.com/maps/premium/faq#ssl_base_domain)
 
   --------
 Gmaps 3.1.1

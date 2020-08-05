@@ -601,148 +601,65 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		//but notice that all goverlay render should be called as callback function
 		wgt.$supers(gmaps.Gmaps, 'bind_', arguments); //calling down kid widgets to do binding
 
-		this._maskOpts = gmapsGapi.initMask(this, {message: 'Loading Google Maps APIs'});
-		if (!window.google || !window.google.maps)
-			gmapsGapi.loadAPIs(wgt, function() {wgt._tryBind(dt, skipper, after)}, 'Loading Google Ajax APIs');
-		else {
-			var opts1 = [];
-			opts1['condition'] = function() {return window.MarkerManager && wgt.$n().offsetHeight;};
-			opts1['callback'] = function() {wgt._realBind(dt, skipper, after);};
-			gmapsGapi.waitUntil(wgt, opts1);
-		}
-	},
-	_tryBind: function(dt, skipper, after) {
-		var maskOpts;
-		if (maskOpts = this._maskOpts) {
-			if (maskOpts._mask && maskOpts._mask._opts) {
-				maskOpts._mask._opts.anchor = this;
-				maskOpts._mask.sync();
-			} else {
-				gmapsGapi.clearMask(this, maskOpts);
-				this._maskOpts = gmapsGapi.initMask(this, {message: 'Loading Google Maps APIs'});
-			}
-		}
+		zAu.cmd0.showBusy(this, 'Loading Google Maps APIs');
 
-		if (!window.google || !window.google.maps) {
-			if (window.google && (!window.google.load  || window.google.load.LoadFailure)) {
-				var n = jq(this.uuid, zk)[0];
-				n.innerHTML = gmaps.Gmaps.errormsg;
-				return;  //failed to load the Google AJAX APIs
-			}
-			var wgt = this,
-				opts0 = {};
-			opts0['condition'] = function() {return window.google && window.google.maps;};
-			opts0['callback'] = function() {};
-			
-			if (!opts0.condition()) {
-				
-				gmapsGapi.waitUntil(wgt, opts0);
-				if (!gmaps.Gmaps.LOADING) { //avoid double loading Google Maps APIs
-					gmaps.Gmaps.LOADING = true;
-					if (!opts0.condition()) {
-						if(!this._gmapsApiConfigParams.client && !this._gmapsApiConfigParams.key && zk.googleAPIkey) {
-							this._gmapsApiConfigParams.key = zk.googleAPIkey;
-						}
-						var otherParams = jq.param(this._gmapsApiConfigParams);
-						var optionalSettings = {
-							other_params: otherParams,
-							callback: function() {// load marker manager after map api loaded
-								zk.loadScript(zk.ajaxURI('/web/js/gmaps/ext/markermanager.js', {desktop : this.desktop,au : true}));
-								wgt._realBind(dt, skipper, after);
-							}
-						};
-						if(this._baseDomain) {
-							optionalSettings.base_domain = this._baseDomain;
-						}
-						google.load('maps', this._version, optionalSettings); // load the maps api
-					}
-				}
-			} else {
-				opts0['condition'] = function() {return window.MarkerManager;};
-				opts0['callback'] = function() {wgt._realBind(dt, skipper, after);};
-				gmapsGapi.waitUntil(wgt, opts0);
-			}
-		} else {
-			var wgt = this,
-				opts1 = [];
-			opts1['condition'] = function() {return window.MarkerManager;};
-			opts1['callback'] = function() {wgt._realBind(dt, skipper, after);};
-			
-			gmapsGapi.waitUntil(wgt, opts1);
+		if(!this._gmapsApiConfigParams.client && !this._gmapsApiConfigParams.key && zk.googleAPIkey) {
+			this._gmapsApiConfigParams.key = zk.googleAPIkey;
 		}
+		gmapsGapi.loadGoogleMapsApi(jq.param(this._gmapsApiConfigParams), function() {
+			wgt._realBind(dt, skipper, after);
+		});
 	},
 	_realBind: function(dt, skipper, after) {
-		var n = jq(this.uuid, zk)[0],
-			maskOpts;
-		if (maskOpts = this._maskOpts) {
-			if (maskOpts._mask && maskOpts._mask._opts) {
-				maskOpts._mask._opts.anchor = this;
-				maskOpts._mask.sync();
-			} else {
-				gmapsGapi.clearMask(this, maskOpts);
-				this._maskOpts = gmapsGapi.initMask(this, {message: 'Loading Google Maps APIs'});
-			}
-		}
+		var n = this.$n();
 		if ( (window.google == null) || (window.google.maps == null) ) {
 			n.innerHTML = gmaps.Gmaps.errormsg;
+			zAu.cmd0.clearBusy(this);
 			return; //failed to load the Google Maps APIs
 		}
 		this._initGmaps(n);
+		this._maxzoom = this._findMaxZoomLevel(); // Issue 28
 
-		// wait until markermanager loaded
-		var opts0 = [],
-			opts1 = [],
-			wgt = this, // Issue 8: First gmarker fails when there are more than one gmap in a page
-			maps = this._gmaps;
-		opts0['condition'] = function() {return window.MarkerManager};
-		opts0['callback'] = function() {
-			
-			setTimeout(function() {
-			  var types = maps.mapTypes;
+		var wgt = this; // Issue 8: First gmarker fails when there are more than one gmap in a page
 
-			// Issue 28: Find map max zoom level.
-			  var mapsMaxZoom = 19;
-			  for (var type in types ) {
-				  if (typeof types.get(type) === 'object' && typeof types.get(type).maxZoom === 'number') {
-					  var zoom = types.get(type).maxZoom;
-				      if (zoom > mapsMaxZoom) {
-				        mapsMaxZoom = zoom;
-				      }
-				  }
-			  }
-			wgt._maxzoom = mapsMaxZoom;
-			wgt._mm = new MarkerManager(maps, {trackMarkers: true, maxZoom: mapsMaxZoom});
-			google.maps.event.addListener(wgt._mm, 'loaded', function(){
-				wgt._mmLoaded = true;
-			});}, 0);
-		};
-		
-		gmapsGapi.waitUntil(wgt, opts0);
-
-		// wait until marker manager is initialized
-		opts1['condition'] = function() {return wgt._mmLoaded};
-		opts1['callback'] = function() {
+		wgt._mm = new MarkerManager(this._gmaps, {trackMarkers: true, maxZoom: this._maxzoom});
+		google.maps.event.addListener(wgt._mm, 'loaded', function(){
+			wgt._mmLoaded = true;
 			wgt.overrideMarkermanager();
 			//init listeners
 			wgt._initListeners(n);
-			
+
 			//bug #2929253 map canvas partly broken when map was invisible
-			//watch the global event onSize/onShow (must after $supers(gmaps.Gmaps, 'bind_', arguments)) 
+			//watch the global event onSize/onShow (must after $supers(gmaps.Gmaps, 'bind_', arguments))
 			zWatch.listen({onSize: wgt, onShow: wgt});
 			// set the hflex/vflex again after bind
 			if (wgt._hflex)
 				wgt.setHflex(wgt._hflex, {force:true});
 			if (wgt._vflex)
 				wgt.setVflex(wgt._vflex, {force:true});
-			
+
+			zAu.cmd0.clearBusy(wgt);
+
 			//Tricky!
-			//IE will not fire onSize at the end, so we have to enforce a 
+			//IE will not fire onSize at the end, so we have to enforce a
 			//resize(true) to restore the center
-			if (zk.ie)
+			if (zk.ie) {
 				setTimeout(function () {wgt._resize(true);}, 500);
-		};
-		
-		gmapsGapi.waitUntil(wgt, opts1);
+			}
+		});
+	},
+	_findMaxZoomLevel: function() {
+		var types = this._gmaps.mapTypes;
+		var mapsMaxZoom = 19;
+		for (var type in types ) {
+			if (typeof types.get(type) === 'object' && typeof types.get(type).maxZoom === 'number') {
+				var zoom = types.get(type).maxZoom;
+				if (zoom > mapsMaxZoom) {
+					mapsMaxZoom = zoom;
+				}
+			}
+		}
+		return mapsMaxZoom;
 	},
 	unbind_: function() { //detach or server invalidate()
 		this.$supers(gmaps.Gmaps, 'unbind_', arguments);
@@ -1009,8 +926,6 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	},
 	_initGmaps: function(n) {
 		var maps = new google.maps.Map(n, this.getMapOptions());
-		if (this._maskOpts)
-			gmapsGapi.clearMask(this, this._maskOpts);
 
 		this._gmaps = maps;
 		this.setNormal(this._normal, {force:true}) //prepare map types
@@ -1055,8 +970,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	_clearGmaps: function() {
 		this._clearListeners();
 		this._gmaps = this._lctrl = this._sctrl = this._tctrl = this._cctrl = this._octrl
-			= this._mm = this._mmLoaded = this._centerRestored = this._onMapClickData 
-			= this._maskOpts = null;
+			= this._mm = this._mmLoaded = this._centerRestored = this._onMapClickData = null;
 	},
 	//zWatch//
 	onSize: function() {
