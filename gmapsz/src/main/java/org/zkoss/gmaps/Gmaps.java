@@ -59,8 +59,15 @@ public class Gmaps extends XulElement {
 	private static final String CHANNEL = "channel";
 	private static final String LIBRARIES = "libraries";
 	private static final String LANGUAGE = "language";
+	private static final String VERSION = "v";
 	private static final String SENSOR = "sensor";
 	private static final String REGION = "region";
+	private static final String BASE_DOMAIN = "base_domain";
+	private static final String DEFAULT_PROTOCOL = "https";
+	private static final JSONObject DEFAULT_API_CONFIG_PARAMS = new JSONObject() {{
+		put(LIBRARIES, "geometry");
+		put(VERSION, "3");
+	}};
 	private transient Ginfo _oneinfo; //the only one Ginfo child of this Gmaps.
     //TODO: GMap should support multiple GInfo in the future.
 	private transient Ginfo _info; //current opened info window, null means none is open.
@@ -90,21 +97,18 @@ public class Gmaps extends XulElement {
 	private boolean _scrollWheelZoom = true;
 	private boolean _enableGoogleBar;
 	private Map<String, ?> _extraMapOptions;
-	private String _baseDomain;
-	private JSONObject _gmapsApiConfigParams = new JSONObject(); 
+	private String _protocol = DEFAULT_PROTOCOL;
+	private JSONObject _gmapsApiConfigParams = new JSONObject();
 	{
-		_gmapsApiConfigParams.put(LIBRARIES, "geometry");
+		_gmapsApiConfigParams.putAll(DEFAULT_API_CONFIG_PARAMS);
 	}
-	private String _protocol;
-	
+
 	private MapModel _model;
 	private MapitemRenderer _renderer;
 	private MapDataListener _dataListener;
 	private EventListener _moveListener; //used by MapModel live data
 	private Map _dataMap = new HashMap(64); //data object -> Mapitem
 	private Component _selected;
-
-	private String _version = "3";
 
 	/** Sets the center of the Google Maps.
 	 * @param lat latitude of the Google Maps center
@@ -813,26 +817,23 @@ public class Gmaps extends XulElement {
 	 * @since 2.0_50
 	 */
 	public String getBaseDomain() {
-		return _baseDomain;
+		return (String) getGmapsApiConfigParam(BASE_DOMAIN);
 	}
 
 	/**
-	 * Sets the base domain from which to load the Maps API. For example, 
-	 * you could load from "maps.google.cn" with the "maps" module to get 
+	 * Sets the base domain from which to load the Maps API. For example,
+	 * you could load from "maps.google.cn" with the "maps" module to get
 	 * the Chinese version of the Maps API; null to use the default domain.<br/>
 	 * <br/>
 	 * As an alternative consider using the {@link Gmaps#setRegion(String)} for geocoding purposes
 	 * (refer to: <a href="https://developers.google.com/maps/premium/faq#ssl_base_domain">FAQ SSL and Base Domain</a>).<br/>
-	 * 
+	 *
 	 * @param baseDomain the base domain from which to load the Maps API
 	 * @since 2.0_50
 	 */
 	public void setBaseDomain(String baseDomain) {
-		if (!Objects.equals(_baseDomain, baseDomain)) {
-			this._baseDomain = baseDomain;
-			smartUpdate("baseDomain", baseDomain);
-		}
-	}	
+		setGmapsApiConfigParam(BASE_DOMAIN, baseDomain);
+	}
 	
 	/**
 	 * Get the <a href="https://developers.google.com/maps/documentation/javascript/localization#Region">gmaps api region parameter</a>
@@ -855,8 +856,7 @@ public class Gmaps extends XulElement {
 
 	/**
 	 * Returns the protocol to load the Maps API.
-	 * Currently support http for insecure connections
-	 * and https for secure connections.
+	 * Default: "https".
 	 * @return the user specified protocol to load the Maps API.
 	 * @since 3.0.0
 	 */
@@ -865,9 +865,8 @@ public class Gmaps extends XulElement {
 	}
 
 	/**
-	 * Sets the protocol to load the Maps API. 
-	 * Currently support http for insecure connections
-	 * and https for secure connections.
+	 * Sets the protocol to load the Maps API.
+	 * Default: "https".
 	 * @param protocol the protocol to load the Maps API
 	 * @since 3.0.0
 	 */
@@ -963,18 +962,15 @@ public class Gmaps extends XulElement {
 	 * @return String
 	 */
 	public String getVersion() {
-		return _version;
+		return (String) getGmapsApiConfigParam(VERSION);
 	}
 
-	/** 
+	/**
 	 * Set the selected version of google map API v3.
 	 * @param version the version of google map.
 	 */
 	public void setVersion(String version) {
-		if (!Objects.equals(_version, version)) {
-			this._version = version;
-			smartUpdate("language", version);
-		}
+		setGmapsApiConfigParam(VERSION, version);
 	}
 
 	/** Open the specified Ginfo or Gmarker. The specified Ginfo must be child of this Gmaps.
@@ -1387,13 +1383,9 @@ public class Gmaps extends XulElement {
 			renderer.render("normal", isNormal());
 		if (_extraMapOptions != null)
 			renderer.render("extraMapOptions", getExtraMapOptions());
-		if (!"3".equals(_version))
-			renderer.render("version", _version);
-		if (!Strings.isBlank(_baseDomain))
-			renderer.render("baseDomain", _baseDomain);
-		if (!Strings.isBlank(_protocol))
+		if (!DEFAULT_PROTOCOL.equals(_protocol))
 			renderer.render("protocol", _protocol);
-		if(!Objects.equals(_gmapsApiConfigParams, Collections.singletonMap(LIBRARIES, "geometry"))) {
+		if (!Objects.equals(_gmapsApiConfigParams, DEFAULT_API_CONFIG_PARAMS)) {
 			renderer.render("gmapsApiConfigParams", _gmapsApiConfigParams);
 		}
 	}

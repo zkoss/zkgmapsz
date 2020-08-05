@@ -17,22 +17,23 @@ it will be useful, but WITHOUT ANY WARRANTY.
 (function() {
 gmapsGapi = {};
 gmapsGapi.GOOGLE_API_LOADING_TIMEOUT = 10000; //default to ten seconds
-gmapsGapi.GOOGLE_MAPS_API_URL = 'https://maps.googleapis.com/maps/api/js';
+gmapsGapi.GOOGLE_MAPS_API_URL = 'maps.googleapis.com/maps/api/js';
 
 var GOOGLE_MAPS_API_LOADSCRIPT_KEY = 'googleMapsApiLoadScriptKey';
 
 var effectiveApiParams = null;
 
-gmapsGapi.loadGoogleMapsApi = function(apiParams, callback) {
+gmapsGapi.loadGoogleMapsApi = function(protocol, apiParams, callback) {
 	if (!effectiveApiParams) {
 		effectiveApiParams = apiParams;
 	} else if (effectiveApiParams != apiParams) {
 		console.warn("ZK Gmaps - google maps api already loaded with parameters: ", effectiveApiParams);
 		console.warn("ZK Gmaps - ignored parameters: ", apiParams);
 	}
-	if(!window.gmapsInit) {
-		zk.loadScript(gmapsGapi.GOOGLE_MAPS_API_URL + '?' + apiParams + '&callback=gmapsInit', GOOGLE_MAPS_API_LOADSCRIPT_KEY);
-		window.gmapsInit = function() {
+	if(!window.gmapsApiLoaded) {
+		var scheme = !protocol ? '//' : (protocol + '://');
+		zk.loadScript(scheme + gmapsGapi.GOOGLE_MAPS_API_URL + '?' + apiParams + '&callback=gmapsApiLoaded', GOOGLE_MAPS_API_LOADSCRIPT_KEY);
+		window.gmapsApiLoaded = function() {
 			zk.setScriptLoaded(GOOGLE_MAPS_API_LOADSCRIPT_KEY);
 			zk.load('gmaps.ext');
 		};
