@@ -1,3 +1,10 @@
 <zk>
-    <gmaps width="400px" height="300px"/>
+<!--    <button id="show" label="show"/>-->
+<!--    <vlayout width="100%" fulfill="show.onClick">-->
+    <vlayout width="100%">
+        <gmaps id="gm1" hflex="1" height="300px" lng="10" lat="55">
+            <gmarker lng="10" lat="55"/>
+        </gmaps>
+        <gmaps id="gm2" width="400px" height="300px"/>
+    </vlayout>
 </zk>
