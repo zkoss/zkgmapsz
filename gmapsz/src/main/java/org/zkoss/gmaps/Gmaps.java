@@ -197,7 +197,7 @@ public class Gmaps extends XulElement {
 	public void setGmapsApiConfigParam(String param, Object value) {
 		if (!Objects.equals(getGmapsApiConfigParam(param), value)) {
 			this._gmapsApiConfigParams.put(param, value);
-			smartUpdate("gmapsApiConfig", this._gmapsApiConfigParams);
+			smartUpdate("gmapsApiConfigParams", this._gmapsApiConfigParams);
 		}
 	}
 
