@@ -8,7 +8,6 @@ switch ( project.name ) {
         break
 }
 println project.name
-def buildUri = "${buildDir}".substring(("${buildDir}".indexOf("/" + project.name + "/")) + project.name.length() + 2)
 def isOfficial = project.hasProperty("target") && "official" == project.getProperty("target") ? true : ""
 version = isOfficial && version.contains("-FL") ? version.substring(0, version.indexOf("-FL")) : version
 def fldate = isOfficial ? "" : new Date().format("yyyy-MM-dd")
@@ -77,12 +76,12 @@ task prepareFiles {
 			into "${buildDir}/binzip/" + binFolderName
 		}
 		copy {
-			from ("../${project.name}/") {
-				exclude(buildUri)
+			from (".") {
+				exclude("build")
 				exclude("dist")
 				exclude(".gradle")
 			}
-			into "${buildDir}/srczip/" + srcFolderName + "/${project.name}/"
+			into "${buildDir}/srczip/" + srcFolderName + "/${name}/"
 		}
 		copy {
 			from "../zkdoc"
