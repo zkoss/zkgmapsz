@@ -37,22 +37,14 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	_scrollWheelZoom: true,
 	_enableDragging: true,
 	_extraMapOptions: null,
-	_version: '3',
+	_protocol: 'https',
 	_gmapsApiConfigParams: {
+		v: 3, /* version 3 latest */
 		libraries: 'geometry'
 	},
 	
 	$define: {
-		/** 
-		 * Returns the selected version of google map API v3.
-		 * @return String
-		 */
-		/** 
-		 * Set the selected version of google map API v3.
-		 * @param String version.
-		 */
-		version: null,
-		/** 
+		/**
 		 * Returns the center point of this Gmaps.
 		 * @return double[]
 		 */
@@ -376,19 +368,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 				maps.setOptions(opts);
 			}
 		},
-		/**
-		 * Returns the base domain from which to load the Maps API. For example,
-		 * you could load from "ditu.google.cn" with the "maps" module to get
-		 * the Chinese version of the Maps API; null to use the default domain.
-		 * @return String
-		 */
-		/**
-		 * Sets the base domain from which to load the Maps API. For example,
-		 * you could load from "ditu.google.cn" with the "maps" module to get
-		 * the Chinese version of the Maps API; null to use the default domain.
-		 * @param String baseDomain the base domain from which to load the Maps API
-		 */
-		baseDomain: null,
+
 		/**
 		 * Returns the protocol to load the Maps API.
 		 * Currently support http for insecure connections
@@ -606,7 +586,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		if(!this._gmapsApiConfigParams.client && !this._gmapsApiConfigParams.key && zk.googleAPIkey) {
 			this._gmapsApiConfigParams.key = zk.googleAPIkey;
 		}
-		gmapsGapi.loadGoogleMapsApi(jq.param(this._gmapsApiConfigParams), function() {
+		gmapsGapi.loadGoogleMapsApi(this._protocol, jq.param(this._gmapsApiConfigParams), function() {
 			wgt._realBind(dt, skipper, after);
 		});
 	},
