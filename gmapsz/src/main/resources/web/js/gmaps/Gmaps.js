@@ -39,7 +39,6 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	_extraMapOptions: null,
 	_protocol: 'https',
 	_gmapsApiConfigParams: {
-		v: 3, /* version 3 latest */
 		libraries: 'geometry'
 	},
 	
