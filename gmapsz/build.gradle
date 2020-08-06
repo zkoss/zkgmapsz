@@ -16,6 +16,7 @@ tasks.withType(JavaCompile) {
 
 repositories {
 	 maven { url "https://mavensync.zkoss.org/maven2" }
+	 maven { url "https://mavensync.zkoss.org/eval" }
 	 mavenCentral()
 }
 
@@ -26,7 +27,8 @@ sourceSets {
 }
 
 dependencies {
-	implementation 'org.zkoss.zk:zul:9.0.0.1'
+	compileOnly 'org.zkoss.zk:zul:9.0.0.1'
+	jettyRunnerRuntime 'org.zkoss.zk:zkmax:9.1.0-Eval'
 	jettyRunnerRuntime "org.eclipse.jetty:jetty-runner:${jettyVersion}"
 }
 
