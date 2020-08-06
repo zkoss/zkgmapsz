@@ -66,7 +66,6 @@ public class Gmaps extends XulElement {
 	private static final String DEFAULT_PROTOCOL = "https";
 	private static final JSONObject DEFAULT_API_CONFIG_PARAMS = new JSONObject() {{
 		put(LIBRARIES, "geometry");
-		put(VERSION, "3");
 	}};
 	private transient Ginfo _oneinfo; //the only one Ginfo child of this Gmaps.
     //TODO: GMap should support multiple GInfo in the future.
@@ -958,7 +957,8 @@ public class Gmaps extends XulElement {
 	}
 
 	/**
-	 * Returns the selected version of google map API v3.
+	 * Returns the selected version of google map API.
+	 * <a href="https://developers.google.com/maps/documentation/javascript/versions">Defaults null/undefined -> 'weekly'.</a>
 	 * @return String
 	 */
 	public String getVersion() {
@@ -967,6 +967,7 @@ public class Gmaps extends XulElement {
 
 	/**
 	 * Set the selected version of google map API v3.
+	 * <a href="https://developers.google.com/maps/documentation/javascript/versions">Defaults null/undefined -> 'weekly'.</a>
 	 * @param version the version of google map.
 	 */
 	public void setVersion(String version) {
