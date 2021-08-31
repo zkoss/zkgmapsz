@@ -1,0 +1,4 @@
+<zk>
+    <gmaps id="gm" width="300px" height="300px"></gmaps>
+    <button label="invalidate" onClick="gm.invalidate();"/>
+</zk>
