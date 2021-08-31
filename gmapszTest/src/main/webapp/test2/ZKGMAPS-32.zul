@@ -1,4 +1,13 @@
 <zk>
-    <gmaps id="gm" width="300px" height="300px"></gmaps>
-    <button label="invalidate" onClick="gm.invalidate();"/>
+    No initial bounds
+    <gmaps id="gm1" width="400px" height="400px"/>
+    <button label="fit bounds" onClick="gm1.fitBounds(new LatLngBounds(new LatLng(20, 10), new LatLng(23.001, 13.001)))"/>
+    <button label="invalidate" onClick="gm1.invalidate();"/>
+    <separator/>
+    With initial bounds
+    <div width="400px" height="400px">
+        <gmaps id="gm2" hflex="1" vflex="1" onCreate="gm2.fitBounds(new LatLngBounds(new LatLng(20, 10), new LatLng(23.001, 13.001)))"/>
+    </div>
+    <button label="fit bounds" onClick="gm2.fitBounds(new LatLngBounds(new LatLng(20, 10), new LatLng(23.001, 13.001)))"/>
+    <button label="invalidate" onClick="gm2.invalidate();"/>
 </zk>
