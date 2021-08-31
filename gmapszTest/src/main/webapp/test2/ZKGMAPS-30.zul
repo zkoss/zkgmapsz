@@ -1,0 +1,18 @@
+<zk>
+    <!--    fitBounds works-->
+    <gmaps width="300px" height="300px">
+        <attribute name="onCreate"><![CDATA[
+          import org.zkoss.gmaps.*;
+          self.fitBounds(new LatLngBounds(new LatLng(10, 10), new LatLng(15, 15)));
+        ]]></attribute>
+    </gmaps>
+    <!--    fitBounds fails with flex-->
+    <div width="300px" height="300px">
+        <gmaps hflex="1" vflex="1">
+            <attribute name="onCreate"><![CDATA[
+              import org.zkoss.gmaps.*;
+              self.fitBounds(new LatLngBounds(new LatLng(10, 10), new LatLng(15, 15)));
+            ]]></attribute>
+        </gmaps>
+    </div>
+</zk>

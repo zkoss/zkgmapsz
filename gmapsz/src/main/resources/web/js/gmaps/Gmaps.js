@@ -72,6 +72,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 				var bounds = b != null ? new google.maps.LatLngBounds(
 						new google.maps.LatLng(b.southWest.latitude, b.southWest.longitude),
 						new google.maps.LatLng(b.northEast.latitude, b.northEast.longitude)) : null;
+				this._center = {latitude: bounds.getCenter().lat(), longitude: bounds.getCenter().lng()};
 				maps.fitBounds(bounds);
 			}
 		},

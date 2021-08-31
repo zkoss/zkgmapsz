@@ -17,6 +17,7 @@ gmapsz/target/*
 .gitignore
 gmapsz/.gradle/*
 gmapsz/build/*
+target/
 *.iml
 .idea/
 out/

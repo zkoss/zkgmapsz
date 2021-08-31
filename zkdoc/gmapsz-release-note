@@ -1,4 +1,11 @@
   --------
+Gmaps 3.2.1
+* Features:
+
+* Bugs:
+   ZKGMAPS-30: fitBounds fails with h/vflex
+
+  --------
 Gmaps 3.2.0
 * Features:
 
