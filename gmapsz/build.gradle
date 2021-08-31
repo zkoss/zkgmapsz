@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "org.zkoss.zkforge"
-version = "3.2.0-FL"
+version = "3.2.1-FL"
 
 description = """The Google Maps Component for ZK"""
 
@@ -28,8 +28,8 @@ sourceSets {
 
 dependencies {
 	compileOnly 'org.zkoss.zk:zul:9.0.0.1'
-	jettyRunnerRuntime 'org.zkoss.zk:zkmax:9.1.0-Eval'
-	jettyRunnerRuntime "org.eclipse.jetty:jetty-runner:${jettyVersion}"
+	jettyRunnerRuntimeOnly 'org.zkoss.zk:zkmax:9.6.0.1-Eval'
+	jettyRunnerRuntimeOnly "org.eclipse.jetty:jetty-runner:${jettyVersion}"
 }
 
 apply from: 'sub-build.gradle'
