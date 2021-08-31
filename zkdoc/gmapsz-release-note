@@ -4,6 +4,7 @@ Gmaps 3.2.1
 
 * Bugs:
    ZKGMAPS-30: fitBounds fails with h/vflex
+   ZKGMAPS-32: gmaps view zooms out when calling invalidate
 
   --------
 Gmaps 3.2.0

@@ -58,25 +58,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 				maps.setCenter(latLng);
 			}
 		},
-		/** 
-		 * Returns the viewport to contain the given bounds.
-		 * @return double[]
-		 */
-		/** 
-		 * Sets the viewport to contain the given bounds.
-		 * @param double[] the bounds of this Gmaps.
-		 */
-		bounds: function(b) {
-			var maps = this._gmaps;
-			if (maps) {
-				var bounds = b != null ? new google.maps.LatLngBounds(
-						new google.maps.LatLng(b.southWest.latitude, b.southWest.longitude),
-						new google.maps.LatLng(b.northEast.latitude, b.northEast.longitude)) : null;
-				this._center = {latitude: bounds.getCenter().lat(), longitude: bounds.getCenter().lng()};
-				maps.fitBounds(bounds);
-			}
-		},
-		/** 
+		/**
 		 * Returns the zoom level of this Gmaps.
 		 * @return int
 		 */
@@ -386,17 +368,67 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		protocol: null,
 		
 		/**
-		 * Returns the google maps API parmeter configuration map.
+		 * Returns the google maps API parameter configuration map.
 		 * @return object containing the parameters load the Maps API with.
 		 * @since 3.0.5
 		 */
 		/**
-		 * Set the google maps API parmeter configuration map.
+		 * Set the google maps API parameter configuration map.
 		 * @param protocol the protocol to load the Maps API
 		 * @since 3.0.5
 		 */
 		gmapsApiConfigParams: null 
 	},
+	/**
+	 * @deprecated use fitBounds() instead (the current bounds are not stored)
+	 * Sets the viewport to contain the given bounds (this effectively changes the current center and zoom level)
+	 * @param Object the bounds of this Gmaps.
+	 */
+	setBounds: function(b) {
+		this.fitBounds(b);
+	},
+	/**
+	 * Returns the bounds of the current viewport.
+	 * @return Object
+	 */
+	getBounds: function() {
+		var maps = this._gmaps;
+		if (maps) {
+			var bounds = maps.getBounds();
+			var sw = bounds.getSouthWest();
+			var ne = bounds.getNorthEast();
+			return {
+				southWest: {
+					latitude: sw.lat(),
+					longitude: sw.lng()
+				},
+				northEast: {
+					latitude: ne.lat(),
+					longitude: ne.lng()
+				}
+			};
+		}
+		return null;
+	},
+	/**
+	 * Sets the viewport to contain the given bounds. This effectively adjust the current center and zoom level.
+	 * @param Object the bounds of this Gmaps.
+	 * @since 3.2.1
+	 */
+	fitBounds: function(b) {
+		var maps = this._gmaps;
+		if (maps) {
+			var bounds = b != null ? new google.maps.LatLngBounds(
+					new google.maps.LatLng(b.southWest.latitude, b.southWest.longitude),
+					new google.maps.LatLng(b.northEast.latitude, b.northEast.longitude)) : null;
+			this._center = {latitude: bounds.getCenter().lat(), longitude: bounds.getCenter().lng()};
+			maps.fitBounds(bounds);
+			this._boundsToFit = null;
+		} else {
+			this._boundsToFit = b;
+		}
+	},
+
 	/**
 	 * Add supported map type into this Gmaps("normal", "satellite", "hybrid", "physical").
 	 * @param String maptype the supported map type.
@@ -769,8 +801,17 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		if (this.isRealVisible()) {
 			var c = maps.getCenter();
 			this._center = {latitude: c.lat(), longitude: c.lng()};
+			this._zoom = maps.getZoom();
 		}
-		this.fireX(new zk.Event(this, 'onMapMove', {lat:this._center.latitude,lng:this._center.longitude,swlat:sw.lat(),swlng:sw.lng(),nelat:ne.lat(),nelng:ne.lng()}, {}, null));
+		this.fireX(new zk.Event(this, 'onMapMove', {
+			lat: this._center.latitude,
+			lng: this._center.longitude,
+			swlat: sw.lat(),
+			swlng: sw.lng(),
+			nelat: ne.lat(),
+			nelng: ne.lng(),
+			zoom:this._zoom
+		}, {}, null));
 	},
 	_doZoomEnd: function() {
 		var maps = this._gmaps;
@@ -924,8 +965,9 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			.setCenter(this._center, {force:true})
 			.setZoom(this._zoom, {force:true})
 			.setExtraMapOptions(this._extraMapOptions, {force:true});
-		if (this._bounds)
-			this.setBounds(this._bounds, {force:true});
+		if (this._boundsToFit) {
+			this.fitBounds(this._boundsToFit);
+		}
 	},
 	overrideMarkermanager: function() {
 		var mm = this._mm; //markermanager

@@ -38,6 +38,7 @@ import org.zkoss.gmaps.LatLngBounds;
 public class MapMoveEvent extends Event {
 	private final LatLng _latLng;
 	private final LatLngBounds _bounds;
+	private final int _zoom;
 
 	/** Converts an AU request to a event.
 	 * @since 5.0.0
@@ -52,6 +53,7 @@ public class MapMoveEvent extends Event {
 				new Object[] {data, request});
 
 		//bug #2930047 Gmaps Exception when set lat/lng to integer
+		final int zoom = ((Number)data.get("zoom")).intValue();
 		final double lat = ((Number)data.get("lat")).doubleValue();
 		final double lng = ((Number)data.get("lng")).doubleValue();
 		final double swlat = ((Number)data.get("swlat")).doubleValue();
@@ -59,21 +61,22 @@ public class MapMoveEvent extends Event {
 		final double nelat = ((Number)data.get("nelat")).doubleValue();
 		final double nelng = ((Number)data.get("nelng")).doubleValue();
 		return new MapMoveEvent(request.getCommand(), comp, new LatLng(lat, lng),
-				new LatLngBounds( new LatLng(swlat, swlng), new LatLng(nelat, nelng)));
+				new LatLngBounds( new LatLng(swlat, swlng), new LatLng(nelat, nelng)), zoom);
 	}
 
 	/** Constructs a Google Maps moving relevant event.
 	 */
-	public MapMoveEvent(String name, Component target, LatLng latLng, LatLngBounds bounds) {
+	public MapMoveEvent(String name, Component target, LatLng latLng, LatLngBounds bounds, int zoom) {
 		super(name, target);
 		_latLng = latLng;
 		_bounds = bounds;
+		_zoom = zoom;
 	}
 	
 	/** Constructs a Google Maps moving relevant event.
 	 */
-	public MapMoveEvent(String name, Component target, double lat, double lng, double swlat, double swlng, double nelat, double nelng) {
-		this(name, target, new LatLng(lat, lng), new LatLngBounds( new LatLng(swlat, swlng), new LatLng(nelat, nelng)));
+	public MapMoveEvent(String name, Component target, double lat, double lng, double swlat, double swlng, double nelat, double nelng, int zoom) {
+		this(name, target, new LatLng(lat, lng), new LatLngBounds( new LatLng(swlat, swlng), new LatLng(nelat, nelng)), zoom);
 	}
 	
 	/** Returns the latitude and longitude of the Google Map center after moved.
@@ -82,7 +85,14 @@ public class MapMoveEvent extends Event {
 	public LatLng getLatLng() {
 		return _latLng;
 	}
-	
+
+	/**
+	 * @since 3.2.1
+	 */
+	public int getZoom() {
+		return _zoom;
+	}
+
 	/** Returns the latitude of the Google Map center after moved.
 	 * @deprecated As of release 3.0.2, use {@link #getLatLng()} instead.
 	 */
@@ -140,4 +150,5 @@ public class MapMoveEvent extends Event {
 	public double getNeLng() {
 		return _bounds.getNorthEast().getLongitude();
 	}
+
 }

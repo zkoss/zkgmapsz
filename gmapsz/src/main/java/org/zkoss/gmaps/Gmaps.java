@@ -36,12 +36,14 @@ import org.zkoss.gmaps.event.MapZoomEvent;
 import org.zkoss.json.JSONObject;
 import org.zkoss.lang.Objects;
 import org.zkoss.lang.Strings;
+import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SelectEvent;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.impl.XulElement;
 
 
@@ -72,9 +74,8 @@ public class Gmaps extends XulElement {
 	private transient Ginfo _info; //current opened info window, null means none is open.
 
 	private LatLng _center = new LatLng(37.4419, -122.1419);
-	private LatLngBounds _bounds = new LatLngBounds(
-								new LatLng(37.418026932311111, -122.1933746338),
-								new LatLng(37.4657298516, -122.0903778076));
+	private LatLngBounds _bounds = null;
+	private LatLngBounds _boundsToFit = null;
 	private int _zoom = 13;
 	private boolean _large;
 	private boolean _small;
@@ -249,10 +250,10 @@ public class Gmaps extends XulElement {
 		if (bounds == null) {
 			throw new NullPointerException("bounds");
 		}
-		if(!Objects.equals(_bounds, bounds)) {
-			_bounds = bounds;
+		if(!Objects.equals(_boundsToFit, bounds)) {
+			_boundsToFit = bounds;
 			syncModel();
-			smartUpdate("bounds", bounds);
+			Clients.response(new AuInvoke(this, "fitBounds", bounds));
 		}
 	}
 	
@@ -1059,7 +1060,7 @@ public class Gmaps extends XulElement {
 
 		public void onEvent(Event evt) {
 			//bounds not initiated yet(do it at server side)
-			if (getSwlat() == 37.418026932311111)
+			if (_bounds == null)
 				initBounds();
 			syncModel();
 		}
@@ -1076,7 +1077,7 @@ public class Gmaps extends XulElement {
 		}
 	}
 	private void syncModel() {
-		if (_model != null)
+		if (_model != null && _bounds != null)
 			onMapDataChange(new MapDataEvent(_model, MapDataEvent.BOUNDS_CHANGED, 
 				_model.getItemsIn(getSwlat(), getSwlng(), getNelat(), getNelng(), getLat(), getLng(), _zoom)));
 	}
@@ -1303,6 +1304,7 @@ public class Gmaps extends XulElement {
     }
 	/* package */ void setBoundsByClient(LatLngBounds bounds) {
 		_bounds = bounds;
+		_boundsToFit = null;
 	}
 
 	private int width(String width) {
@@ -1342,10 +1344,6 @@ public class Gmaps extends XulElement {
 
 		if (!_center.equals(new LatLng(37.4419, -122.1419)))
 			render(renderer, "center", _center);
-		if (!_bounds.equals(new LatLngBounds(
-				new LatLng(37.418026932311111, -122.1933746338),
-				new LatLng(37.4657298516, -122.0903778076))))
-			render(renderer, "bounds", _bounds);
 		if (_zoom != 13)
 			render(renderer, "zoom", new Integer(getZoom()));
 		if (_large)
@@ -1403,6 +1401,7 @@ public class Gmaps extends XulElement {
 			final MapMoveEvent evt = MapMoveEvent.getMapMoveEvent(request);
 			setCenterByClient(evt.getLatLng());
 			setBoundsByClient(evt.getBounds());
+			setZoomByClient(evt.getZoom());
 			Events.postEvent(evt);
 		} else if (cmd.equals("onMapZoom")) {
 			final MapZoomEvent evt = MapZoomEvent.getMapZoomEvent(request);
