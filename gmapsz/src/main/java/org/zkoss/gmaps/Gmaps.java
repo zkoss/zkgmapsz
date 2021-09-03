@@ -999,11 +999,15 @@ public class Gmaps extends XulElement {
     
     /** Close the currently opened info window.
      */
-    public void closeInfo(Ginfo info) {
-    	_info = null;
-        smartUpdate("closeInfo_", info.getUuid());
-    }
-    
+	public void closeInfo(Ginfo info) {
+		if(info != null) {
+			smartUpdate("closeInfo_", info.getUuid());
+		} else if(_info != null) {
+			smartUpdate("closeInfo_", _info.getUuid());
+		}
+		_info = null;
+	}
+
 	/** Returns the currently opened info window of this Google Maps (might be Gmarker or Ginfo).
 	 * @return the currently opened Ginfo.
 	 */

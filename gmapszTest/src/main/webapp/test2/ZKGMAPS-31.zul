@@ -1,0 +1,6 @@
+<zk>
+    <gmaps id="gm" width="400px" height="400px">
+        <ginfo lat="37.44217258755229" lng="-122.14275830688477" content="info 1" open="true"/>
+    </gmaps>
+    <button label="closeInfo" onClick="gm.closeInfo();"/>
+</zk>
