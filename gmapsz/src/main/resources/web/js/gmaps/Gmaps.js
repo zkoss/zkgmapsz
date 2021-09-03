@@ -533,7 +533,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			info = zk.Widget.$(info);
 		}
 		var maps = this._gmaps;
-		// if maps is undifined, just skip and let info open it self
+		// if maps is undefined, just skip and let info open it self
 		if (maps && info) {
 			var infocontent = info.getContent();
 			if (!infocontent) return; //no contents, no way to open info window
