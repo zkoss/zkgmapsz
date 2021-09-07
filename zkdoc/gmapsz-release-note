@@ -1,4 +1,13 @@
   --------
+Gmaps 3.3.0
+* Features:
+   ZKGMAPS-33: provide an option to specify raw polyline/-gon coordinates (not encoded)
+
+* Bugs:
+
+* Upgrade Notes:
+
+  --------
 Gmaps 3.2.1
 * Features:
 
@@ -6,6 +15,8 @@ Gmaps 3.2.1
    ZKGMAPS-30: fitBounds fails with h/vflex
    ZKGMAPS-31: Gmaps.closeInfo() cause NPE
    ZKGMAPS-32: gmaps view zooms out when calling invalidate
+
+* Upgrade Notes:
 
   --------
 Gmaps 3.2.0

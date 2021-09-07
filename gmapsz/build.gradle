@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "org.zkoss.zkforge"
-version = "3.2.1-FL"
+version = "3.3.0-FL"
 
 description = """The Google Maps Component for ZK"""
 
@@ -22,14 +22,16 @@ repositories {
 
 sourceSets {
 	jettyRunner {
-		runtimeClasspath += sourceSets.main.runtimeClasspath
+		runtimeClasspath += sourceSets.test.runtimeClasspath
 	}
 }
 
 dependencies {
 	compileOnly 'org.zkoss.zk:zul:9.0.0.1'
+	testCompileOnly 'org.zkoss.zk:zul:9.6.0.1'
 	jettyRunnerRuntimeOnly 'org.zkoss.zk:zkmax:9.6.0.1-Eval'
 	jettyRunnerRuntimeOnly "org.eclipse.jetty:jetty-runner:${jettyVersion}"
+	jettyRunnerRuntimeOnly 'ch.qos.logback:logback-classic:1.2.5'
 }
 
 apply from: 'sub-build.gradle'
