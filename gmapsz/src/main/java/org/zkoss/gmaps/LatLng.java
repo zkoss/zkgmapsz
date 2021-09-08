@@ -18,7 +18,11 @@ Copyright (C) 2013 Potix Corporation. All Rights Reserved.
 */
 package org.zkoss.gmaps;
 
+import org.zkoss.json.JSONArray;
+import org.zkoss.json.JSONAware;
 import org.zkoss.json.JSONObject;
+
+import java.util.Objects;
 
 /**
  * A point in geographical coordinates represented by latitude and longitude.
@@ -26,56 +30,61 @@ import org.zkoss.json.JSONObject;
  * @author RaymondChao
  * @since 3.0.2
  */
-public class LatLng extends JSONObject {
+public class LatLng implements JSONAware {
 	final private double _latitude, _longitude;
 	
-	/**
-	 * Construct a point with latitude and longitude.
-	 * @param latitude the latitude of the point.
-	 * @param longitude the longitude of the point.
-	 */
 	public LatLng(double latitude, double longitude) {
-		this(latitude, longitude, false);
-	}
-	/**
-	 * Construct a point with latitude and longitude.
-	 * @param latitude the latitude of the point.
-	 * @param longitude the longitude of the point.
-	 * @param unbound the set to true if want to enable values outside of this range.
-	 */
-	public LatLng(double latitude, double longitude, boolean unbound) {
-		this.put("latitude", new Double(latitude));
-		this.put("longitude", new Double(longitude));
-		// Not use yet.
-		//this.put("unbound", unbound);
 		_latitude = latitude;
 		_longitude = longitude;
 	}
-	
-	/**
-	 * Returns the latitude in degrees.
-	 */
+
 	public double getLatitude() {
 		return _latitude;
 	}
 	
-	/**
-	 * Returns the longitude in degrees.
-	 */
 	public double getLongitude() {
 		return _longitude;
 	}
-	
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-	    if(obj == null || getClass() != obj.getClass())
-	        return false;
-		LatLng other = (LatLng) obj;
-		return _latitude == other.getLatitude() && _longitude == other.getLongitude();
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		LatLng latLng = (LatLng) o;
+		return Double.compare(latLng._latitude, _latitude) == 0 && Double.compare(latLng._longitude, _longitude) == 0;
 	}
-	
+
+	@Override
 	public int hashCode() {
-    	return Double.valueOf(_latitude).hashCode() * 31 + Double.valueOf(_longitude).hashCode();
+		return Objects.hash(_latitude, _longitude);
+	}
+
+	public String toJSONString() {
+		return "{latitude:" + _latitude  + ",longitude:" + _longitude + "}";
+	}
+
+	/**
+	 * produces the JSON corresponding to the gmaps API
+	 * <a href="https://developers.google.com/maps/documentation/javascript/reference/coordinates#LatLngLiteral">
+	 *     google.maps.LatLngLiteral
+	 * </a>
+	 * @return google.maps.LatLngLiteral JSON String
+	 */
+	public String toLatLngLiteral() {
+		return "{lat:" + _latitude  + ",lng:" + _longitude + "}";
+	}
+
+	/**
+	 * build a LatLng object from a JSON object corresponding to the gmaps API
+	 * <a href="https://developers.google.com/maps/documentation/javascript/reference/coordinates#LatLngLiteral">
+	 *     google.maps.LatLngLiteral
+	 * </a>
+	 * @return latlng
+	 */
+	public static LatLng fromLatLngLiteral(JSONObject json) {
+		return new LatLng(
+				((Number)json.get("lat")).doubleValue(),
+				((Number)json.get("lng")).doubleValue()
+		);
 	}
 }
