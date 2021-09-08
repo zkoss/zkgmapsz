@@ -20,6 +20,7 @@ package org.zkoss.gmaps.event;
 
 import java.util.Map;
 
+import org.zkoss.json.JSONArray;
 import org.zkoss.zk.au.AuRequest;
 import org.zkoss.zk.mesg.MZk;
 import org.zkoss.zk.ui.Component;
@@ -35,7 +36,9 @@ import org.zkoss.zk.ui.event.Event;
  * @since 3.0.2
  */
 public class PathChangeEvent extends Event {
-	private String _path;
+	private boolean _encoded;
+	private String _encodedPath;
+	private JSONArray _rawPath;
 
 	/** Converts an AU request to a event.
 	 */
@@ -47,8 +50,14 @@ public class PathChangeEvent extends Event {
 		if (data == null)
 			throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA,
 					new Object[] {data, request});
-		
-		return new PathChangeEvent(request.getCommand(), comp, (String) data.get("path"));
+		Object pathData = data.get("path");
+		if(pathData instanceof String) {
+			return new PathChangeEvent(request.getCommand(), comp, (String) pathData);
+		}
+		if (pathData instanceof JSONArray) {
+			return new PathChangeEvent(request.getCommand(), comp, (JSONArray) pathData);
+		}
+		throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA);
 	}
 	
 	/** Constructs a Google Maps path change relevant event.
@@ -56,11 +65,32 @@ public class PathChangeEvent extends Event {
 	 */
 	public PathChangeEvent(String name, Component target, String path) {
 		super(name, target);
-		_path = path;
+		_encodedPath = path;
+		_encoded = true;
+	}
+
+	public PathChangeEvent(String name, Component target, JSONArray path) {
+		super(name, target);
+		_rawPath = path;
+		_encoded = false;
 	}
 	/** Returns the encoded path of the Google Map.
+	 * @deprecated use specific method {@link #getEncodedPath()}  or {@link #getRawPath()} instead
 	 */
+	@Deprecated
 	public final String getPath() {
-		return _path;
+		return getEncodedPath();
+	}
+
+	public String getEncodedPath() {
+		return _encodedPath;
+	}
+
+	public JSONArray getRawPath() {
+		return _rawPath;
+	}
+
+	public boolean isPathEncoded() {
+		return _encoded;
 	}
 }

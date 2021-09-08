@@ -19,14 +19,12 @@ Copyright (C) 2007 Potix Corporation. All Rights Reserved.
 
 package org.zkoss.gmaps;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.zkoss.gmaps.event.PathChangeEvent;
+import org.zkoss.json.JSONArray;
+import org.zkoss.json.JSONAware;
+import org.zkoss.json.JSONObject;
 import org.zkoss.lang.Objects;
 import org.zkoss.lang.Strings;
 import org.zkoss.util.CollectionsX;
@@ -42,30 +40,20 @@ import org.zkoss.zul.impl.XulElement;
  */
 public class Gpolyline extends XulElement implements Mapitem {
 	private static final long serialVersionUID = 200807041530L;
-	protected List _path = new LinkedList();
+	protected List<LatLng> _path = new ArrayList<>();
 	private String _strpath;
 	private String _color = "#808080"; //default to dark gray
 	private int _weight = 5;  //default to 5
 	private int _opacity = 50; //default to 50/100
-	private int _numLevels = 4; //default to 4
-	private int _zoomFactor = 32; //zoom factor between polyline levels (2^5 if _numLevels == 4).
+	private boolean _pathEncoded = true;
 	protected String _encodedPolyline; //cached value
 	private boolean _editable = false;
-	//private boolean _smartUpdatePoly; //whether post the smartUpdate event already?
-	
+
 	static {
 		addClientEvent(Gpolyline.class, "onPathChange", CE_IMPORTANT|CE_DUPLICATE_IGNORE);
 	}
 
 	public Gpolyline() {
-		/*
-		addEventListener("onSmartUpdatePoly", new EventListener() {
-			public void onEvent(Event evt) {
-				_smartUpdatePoly = false; //reset
-				smartRerender();
-			}
-		});
-		*/
 	}
 	/**
 	 * Add polyline axix point.
@@ -113,20 +101,6 @@ public class Gpolyline extends XulElement implements Mapitem {
 		clearCacheAndSmartUpdatePth();
 	}
 	
-	/*
-	protected void smartUpdatePoly() {
-		if (_smartUpdatePoly) { //already mark smart draw
-			return;
-		}
-		_smartUpdatePoly = true;
-		Events.postEvent("onSmartUpdatePoly", this, null);
-	}
-	private void clearCacheAndSmartUpdate() {
-		_encodedPolyline = null; //cached value
-		smartUpdatePoly();
-	}
-	*/
-	
 	/**
 	 * Set polyline in lat,lng,level tuple(double, double, int); 
 	 * e.g. "lat1,lng1,level1,lat2,lng2,level2,lat3,lng3,level3, ...".
@@ -139,7 +113,7 @@ public class Gpolyline extends XulElement implements Mapitem {
 		} else {
 			String[] arr = points.split(",");
 			int length = arr.length;
-			final StringBuffer sb = new StringBuffer();
+			final StringBuilder sb = new StringBuilder();
 			for(int i = 0; i < length; sb.append(","), i += 3) {
 				sb.append(arr[i]).append(",").append(arr[i+1]);
 			}
@@ -158,10 +132,10 @@ public class Gpolyline extends XulElement implements Mapitem {
 			_strpath = path;
 			if (path != null) {
 				_path.clear();
-				final Collection list = CollectionsX.parse(null, path, ',');
-				for(final Iterator it = list.iterator(); it.hasNext();) {
-					double lat = Double.parseDouble((String) it.next());
-					double lng = Double.parseDouble((String) it.next());
+				final Collection<String> list = CollectionsX.parse(null, path, ',');
+				for(final Iterator<String> it = list.iterator(); it.hasNext();) {
+					double lat = Double.parseDouble(it.next());
+					double lng = Double.parseDouble(it.next());
 					_path.add(new LatLng(lat, lng));
 				}
 			}
@@ -174,7 +148,7 @@ public class Gpolyline extends XulElement implements Mapitem {
 	 * @param path the List of LatLng
 	 * @since 3.0.2
 	 */
-	public void setPath(List path) {
+	public void setPath(List<LatLng> path) {
 		if(!Objects.equals(_path, path)) {
 			_path = path;
 			clearCacheAndSmartUpdatePth();
@@ -186,26 +160,25 @@ public class Gpolyline extends XulElement implements Mapitem {
 	 * @return the List of LatLng
 	 * @since 3.0.2
 	 */
-	public List getPath() {
+	public List<LatLng> getPath() {
 		return _path;
 	}
 
 	private void clearCacheAndSmartUpdatePth() {
 		_encodedPolyline = null;
-		smartUpdate("path", getEncodedPolyline());
+		if(this._pathEncoded) {
+			smartUpdate("path", getEncodedPolyline());
+		} else {
+			smartUpdate("path", pathToLatLngLiteralArrayJson);
+		}
 	}
-	/*
-	private String[] getPointsAndLevels() {
-		return new String[] {getEncodedPolyline(), getEncodedLevels()};
-	}
-	*/
+
 	public String getEncodedPolyline() {
 		if (_encodedPolyline == null) {
 			int lat = 0;
 			int lng = 0;
-			final StringBuffer sb = new StringBuffer(_path.size()*4);
-			for(final Iterator it = _path.iterator(); it.hasNext();) {
-				LatLng latLng = (LatLng) it.next();
+			final StringBuilder sb = new StringBuilder(_path.size()*4);
+			for (LatLng latLng : _path) {
 				final int tlat = e5(latLng.getLatitude());
 				final int tlng = e5(latLng.getLongitude());
 				sb.append(encodeLatLng(tlat - lat)).append(encodeLatLng(tlng - lng));
@@ -220,18 +193,7 @@ public class Gpolyline extends XulElement implements Mapitem {
 	protected int e5(double db) {
 		return (int) Math.floor(db * 100000);
 	}
-	/*
-	public String getEncodedLevels() {
-		if (_encodedLevels == null) {
-			final StringBuffer sb = new StringBuffer(_levels.size()*2);
-			for(final Iterator<Integer> it = _levels.iterator(); it.hasNext();) {
-				sb.append(encodeInt(it.next()));
-			}
-			_encodedLevels = sb.length() == 0 ? "?" : sb.toString();
-		}
-		return _encodedLevels;
-	}
-	*/
+
 	protected static String encodeLatLng(int e5) {
 		boolean sign = e5 < 0;
 		e5 <<=1; //shift left
@@ -240,7 +202,7 @@ public class Gpolyline extends XulElement implements Mapitem {
 	}
 	
 	protected static String encodeInt(int x) {
-		final StringBuffer sb = new StringBuffer(6);
+		final StringBuilder sb = new StringBuilder(6);
 		do {
 			int chunk = (x & 0x1f);
 			x >>>= 5;
@@ -267,23 +229,23 @@ public class Gpolyline extends XulElement implements Mapitem {
 	}
 	
 	protected void decodePolyline(String encodedPolyline) {
-		Object[] values = getDecodeLatLngs(encodedPolyline); 
+		Double[] values = getDecodeLatLngs(encodedPolyline);
 		int length = values.length;
 		_path.clear();
 		if (length > 2) {
-			_path.add(new LatLng(((Double)values[0]).doubleValue(), ((Double)values[1]).doubleValue()));
+			_path.add(new LatLng(values[0], values[1]));
 			for (int i = 2; i < length - 1; i += 2) {
-				final double preLat = ((LatLng) _path.get(i/2 - 1)).getLatitude();
-				final double preLng = ((LatLng) _path.get(i/2 - 1)).getLongitude();
-				_path.add(new LatLng( ((Double)values[i]).doubleValue() + preLat, ((Double)values[i+1]).doubleValue() + preLng));
+				final double preLat = (_path.get(i/2 - 1)).getLatitude();
+				final double preLng = (_path.get(i/2 - 1)).getLongitude();
+				_path.add(new LatLng(values[i] + preLat, values[i+1] + preLng));
 			}
 		}
 	}
 	
-	protected static Object[] getDecodeLatLngs(String encodedPolyline) {
+	protected static Double[] getDecodeLatLngs(String encodedPolyline) {
 		int length = encodedPolyline.length();
 		int index = 0, value = 0, shift = 0;
-		List decodeLatLngs = new LinkedList();
+		List<Double> decodeLatLngs = new ArrayList<>();
 		while (index < length) {
 			int chunk = ((int) encodedPolyline.charAt(index ++)) - 63;
 			value |= (chunk & 0x1f) << shift;
@@ -294,7 +256,7 @@ public class Gpolyline extends XulElement implements Mapitem {
 				shift = 0;
 			}
 		}
-		return decodeLatLngs.toArray();
+		return decodeLatLngs.toArray(new Double[0]);
 	}
 	
 	protected static Double decodeInt(int x) {
@@ -366,38 +328,6 @@ public class Gpolyline extends XulElement implements Mapitem {
 		}
 	}
 
-	/**
-	 * Returns the number of polyline levels.
-	 * @return the number of polyline levels.
-	 * @deprecated As of release 3.0.2, Google v3 not supported.
-	 */
-	public int getNumLevels() {
-		return _numLevels;
-	}
-	
-	/**
-	 * Sets the number of polyline levels.
-	 * @param numLevels the number of levels.
-	 * @deprecated As of release 3.0.2, Google v3 not supported.
-	 */
-	public void setNumLevels(int numLevels) {
-		if (numLevels < 1 || numLevels > 19) {
-			throw new IllegalArgumentException("numLevels must be from 1 ~ 19: " + numLevels);
-		}
-		if (_numLevels != numLevels) {
-			this._numLevels = numLevels;
-			
-			//calculate proper zoomFactor
-			int factor = 19/numLevels;
-			int mod = 19%numLevels;
-			
-			//if mod is larger than numLevels / 2
-			_zoomFactor = 2 << ((mod > (numLevels >> 1)) ? (factor + 1) : factor);
-			
-			smartRerender();
-		}
-	}
-	
 	/** Returns whether can edit the Gpolyline by mouse; default to false.
 	 * @return whether can edit the Gpolyline by mouse; default to false.
 	 * @since 3.0.2
@@ -417,25 +347,53 @@ public class Gpolyline extends XulElement implements Mapitem {
 		}
 	}
 	
-	/**
-	 * Returns the zoomFactor (zoomFactor change per the numLevels).
-	 * @deprecated As of release 3.0.2, Google v3 not supported.
-	 */
-	public int getZoomFactor() {
-		return _zoomFactor;
+	public boolean isPathEncoded() {
+		return _pathEncoded;
 	}
-	
-	protected void prepareRerender(Map info) {
-		//info.put("pointsAndLevels", getPointsAndLevels());
-		info.put("path", getEncodedPolyline());
+
+	public void setPathEncoded(boolean pathEncoded) {
+		if (_pathEncoded != pathEncoded) {
+			_pathEncoded = pathEncoded;
+			smartUpdate("pathEncoded", _pathEncoded);
+		}
+	}
+
+	public void setPathByClient(JSONArray latLngLiteralArray) {
+		this._path = latLngLiteralArrayToPath(latLngLiteralArray);
+	}
+
+	private JSONAware pathToLatLngLiteralArrayJson = new JSONAware() {
+		@Override
+		public String toJSONString() {
+			List<LatLng> path = getPath();
+			StringBuilder sb = new StringBuilder("[");
+			for (LatLng latLng : path) {
+				sb.append(latLng.toLatLngLiteral()).append(",");
+			}
+			sb.setCharAt(sb.length() - 1, ']');
+			return sb.toString();
+		}
+	};
+
+	private static List<LatLng> latLngLiteralArrayToPath(JSONArray jsonArray) {
+		List<LatLng> path = new ArrayList<>(jsonArray.size());
+		for(Object jsonObject : jsonArray) {
+			path.add(LatLng.fromLatLngLiteral((JSONObject) jsonObject));
+		}
+		return path;
+	}
+
+	protected void prepareRerender(Map<String, Object> info) {
+		info.put("path", this.isPathEncoded() ? getEncodedPolyline() : pathToLatLngLiteralArrayJson);
 		info.put("color", getColor());
-		info.put("weight", new Integer(getWeight()));
-		info.put("opacity", new Double(getOpacity()/100.0));
-		info.put("editable", new Boolean(isEditable()));
+		info.put("weight", getWeight());
+		info.put("opacity", getOpacity()/100.0);
+		info.put("editable", isEditable());
+		info.put("pathEncoded", isPathEncoded());
 	}
 
 	protected void smartRerender() {
-		final Map info = new HashMap();
+		final Map<String, Object> info = new HashMap<>();
 		prepareRerender(info);
 		smartUpdate("rerender_", info);
 	}
@@ -450,16 +408,18 @@ public class Gpolyline extends XulElement implements Mapitem {
 	protected void renderProperties(org.zkoss.zk.ui.sys.ContentRenderer renderer)
 	throws java.io.IOException {
 		super.renderProperties(renderer);
-		//render(renderer, "pointsAndLevels", getPointsAndLevels());
-		render(renderer, "path", getEncodedPolyline());
+		render(renderer, "path", isPathEncoded() ? getEncodedPolyline() : pathToLatLngLiteralArrayJson);
 		render(renderer, "color", getColor());
-		render(renderer, "weight", new Integer(getWeight()));
-		render(renderer, "opacity", new Double(getOpacity()/100.0));
+		render(renderer, "weight", getWeight());
+		render(renderer, "opacity", getOpacity() / 100.0);
 		render(renderer, "editable", isEditable());
+		if (!isPathEncoded()) {
+			renderer.render("pathEncoded", isPathEncoded());
+		}
 	}
 	/** Processes an AU request.
 	 *
-	 * <p>Default: in addition to what are handled by {@link XulElement#service},
+	 * <p>Default: in addition to what are handled by {@link org.zkoss.zk.ui.HtmlBasedComponent#service(AuRequest, boolean)}},
 	 * it also handles onClick.
 	 * @since 3.0.2
 	 */
@@ -467,7 +427,11 @@ public class Gpolyline extends XulElement implements Mapitem {
 		final String cmd = request.getCommand();
 		if ("onPathChange".equals(cmd)) {
 			final PathChangeEvent evt = PathChangeEvent.getPathChangeEvent(request);
-			setEncodedPolylineByClient(evt.getPath());
+			if(evt.isPathEncoded()) {
+				setEncodedPolylineByClient(evt.getEncodedPath());
+			} else {
+				setPathByClient(evt.getRawPath());
+			}
 			Events.postEvent(evt);
 		} else
 			super.service(request, everError);

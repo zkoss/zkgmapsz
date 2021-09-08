@@ -18,7 +18,10 @@ Copyright (C) 2013 Potix Corporation. All Rights Reserved.
 */
 package org.zkoss.gmaps;
 
-import org.zkoss.json.JSONObject;
+import org.zkoss.json.JSONAware;
+
+import javax.annotation.Nonnull;
+import java.util.Objects;
 
 /**
  * A rectangle bound in geographical coordinates used by Google Maps.
@@ -26,7 +29,7 @@ import org.zkoss.json.JSONObject;
  * @author RaymondChao
  * @since 3.0.2
  */
-public class LatLngBounds extends JSONObject {
+public class LatLngBounds implements JSONAware {
 	final LatLng _southWest, _northEast;
 	
 	/**
@@ -34,44 +37,44 @@ public class LatLngBounds extends JSONObject {
 	 * @param southWest the south-west corner.
 	 * @param northEast the north-east corner.
 	 */
-	public LatLngBounds(LatLng southWest, LatLng northEast) {
-		this.put("southWest", southWest);
-		this.put("northEast", northEast);
+	public LatLngBounds(@Nonnull LatLng southWest, @Nonnull LatLng northEast) {
+		if(southWest == null || northEast == null) {
+			throw new IllegalArgumentException("southWest/northEast cannot be NULL");
+		}
 		_southWest = southWest;
 		_northEast = northEast;
 	}
 	
-	/**
-	 * Returns the point at the north-east corner of the bound.
-	 * @return the point at the north-east corner of the bound.
-	 */
 	public LatLng getNorthEast() {
 		return _northEast;
 	}
 	
-	/**
-	 * Returns the point at the south-west corner of the bound.
-	 * @return the point at the south-west corner of the bound.
-	 */
 	public LatLng getSouthWest() {
 		return _southWest;
 	}
-	
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if(obj== null || getClass() != obj.getClass())
-			return false;
-		LatLngBounds other = (LatLngBounds) obj;
-	    if ((_northEast == null && other.getNorthEast() != null) ||
-	    		(_southWest == null && other.getSouthWest() != null))
-	    	return false;
-	    
-	    return _northEast.equals(other.getNorthEast()) && _southWest.equals(other.getSouthWest());
+
+	@Override
+	public String toJSONString() {
+		return "{southWest:" + _southWest.toJSONString() + ",northEast:" + _northEast.toJSONString() + "}";
 	}
-	
-    public int hashCode() {
-        return (_southWest != null ? _southWest.hashCode() : 0) * 31 +
-				(_northEast != null ? getNorthEast().hashCode() : 0);
-    }
+
+	public String toLatLngBoundsLiteral() {
+		return "{south:" + _southWest.getLatitude() +
+				",west:" + _southWest.getLongitude() +
+				",north:" + _northEast.getLatitude() +
+				",east:" + _northEast.getLongitude() + "}";
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		LatLngBounds that = (LatLngBounds) o;
+		return _southWest.equals(that._southWest) && _northEast.equals(that._northEast);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(_southWest, _northEast);
+	}
 }

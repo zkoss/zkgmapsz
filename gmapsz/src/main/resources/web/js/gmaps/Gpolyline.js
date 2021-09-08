@@ -22,6 +22,7 @@ Copyright (C) 2009 Potix Corporation. All Rights Reserved.
  * Polyline that can be overlay on the Google Maps.
  */
 gmaps.Gpolyline = zk.$extends(gmaps.Goverlay, {
+	_pathEncoded: true,
 	$define: {
 		/**
 		 * Returns the encoded path for this Gpolyline.
@@ -95,10 +96,14 @@ gmaps.Gpolyline = zk.$extends(gmaps.Goverlay, {
 			if (this.mapitem_) {
 				polyline.setVisible(b);
 			}
-		}
+		},
+		pathEncoded: function() {}
 	},
 	initMapitem_: function() {
-		var decodedPath = google.maps.geometry.encoding.decodePath(this._path);
+		var decodedPath = this._path;
+		if(this._pathEncoded) {
+			decodedPath = google.maps.geometry.encoding.decodePath(decodedPath);
+		}
 
 		var polyOptions = {
 			editable: this._editable,
@@ -139,11 +144,16 @@ gmaps.Gpolyline = zk.$extends(gmaps.Goverlay, {
 		}
 	},
 	_updatePath: function() {
-		var gpolyline = this.mapitem_,
-			encodePath;
+		var gpolyline = this.mapitem_;
 		if (gpolyline) {
-			encodePath = google.maps.geometry.encoding.encodePath(gpolyline.getPath());
-			this._path = encodePath;
+			if(this._pathEncoded) {
+				var encodedPath = google.maps.geometry.encoding.encodePath(gpolyline.getPath());
+				this._path = encodedPath;
+			} else {
+				this._path = gpolyline.getPath().getArray().map(function (latlng) {
+					return latlng.toJSON();
+				});
+			}
 			this.fireOnPathChange();
 		}
 	},
