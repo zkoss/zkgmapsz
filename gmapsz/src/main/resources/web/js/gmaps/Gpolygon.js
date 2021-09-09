@@ -67,8 +67,11 @@ gmaps.Gpolygon = zk.$extends(gmaps.Gpolyline, {
 		}
 	},
 	initMapitem_: function() {
-		var decodedPath = google.maps.geometry.encoding.decodePath(this._path),
-			opt = {
+		var decodedPath = this._path;
+		if(this._pathEncoded) {
+			decodedPath = google.maps.geometry.encoding.decodePath(decodedPath);
+		}
+		var opt = {
 					editable: this._editable,
 					paths: decodedPath,
 					strokeColor: this._color,
