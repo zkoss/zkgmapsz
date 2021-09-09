@@ -346,11 +346,25 @@ public class Gpolyline extends XulElement implements Mapitem {
 			smartUpdate("editable", _editable);
 		}
 	}
-	
+
+	/**
+	 * @see #setPathEncoded(boolean)
+	 * @return
+	 */
 	public boolean isPathEncoded() {
 		return _pathEncoded;
 	}
 
+	/**
+	 * <p>Toggle between <a href="https://developers.google.com/maps/documentation/utilities/polylinealgorithm">lossy polygon encoding (compression)</a>
+	 * or raw <a href="https://developers.google.com/maps/documentation/javascript/reference/coordinates#LatLngLiteral">LatLngLiteral</a>s
+	 * (for maximum precision).</p>
+	 * <p>Especially when a polygon is editable (at high zoom levels) it is useful to preserve the exact coordinates without compression.</p>
+	 * <p>For backwards compatibility the path encoding is enabled by default.</p>
+	 *
+	 * @param pathEncoded
+	 * @since 3.3.0
+	 */
 	public void setPathEncoded(boolean pathEncoded) {
 		if (_pathEncoded != pathEncoded) {
 			_pathEncoded = pathEncoded;
