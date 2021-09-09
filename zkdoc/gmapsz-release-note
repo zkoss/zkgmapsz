@@ -6,6 +6,13 @@ Gmaps 3.3.0
 * Bugs:
 
 * Upgrade Notes:
+   deprecated methods from GPolyLine have been removed without replacement, since the gmaps JS api no longer supported those function.
+   Removed methods:
+    - Gpolyline.getNumLevels() / setNumLevels()
+    - Gpolyline.getZoomFactor()
+
+   Removed obsolete LatLng constructor:
+	- public LatLng(double latitude, double longitude, boolean unbound) {
 
   --------
 Gmaps 3.2.1
