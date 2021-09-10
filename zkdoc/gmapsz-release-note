@@ -1,4 +1,9 @@
   --------
+Gmaps 3.3.1
+* Features:
+* Bugs:
+* Upgrade Notes:
+  --------
 Gmaps 3.3.0
 * Features:
    ZKGMAPS-33: provide an option to specify raw polyline/-gon coordinates (not encoded)
