@@ -23,3 +23,6 @@ Component References:
 
 ### Issues
  Now we've transferred issues to [jira issue tracker](http://tracker.zkoss.org/browse/ZKGMAPS)
+
+### Build Job
+[jenkins2 - Build_ZK_Addons](http://jenkins2/job/Build_ZK_Addons/)
