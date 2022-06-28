@@ -6,7 +6,7 @@
 	<properties>
 		<servlet.version>2.4</servlet.version>
 		<jetty.version>9.4.43.v20210629</jetty.version>
-		<poi.version>3.17</poi.version>
+		<poi.version>4.1.1</poi.version>
 		<gmapsz.version>3.3.0</gmapsz.version>
 	    <maven.compiler.source>1.8</maven.compiler.source>
     	<maven.compiler.target>1.8</maven.compiler.target>
