@@ -621,6 +621,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		gmapsGapi.loadGoogleMapsApi(this._protocol, jq.param(this._gmapsApiConfigParams), function() {
 			wgt._realBind(dt, skipper, after);
 		});
+		this.initLoadFailureHandler();
 	},
 	_realBind: function(dt, skipper, after) {
 		var n = this.$n();
@@ -659,6 +660,20 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 				setTimeout(function () {wgt._resize(true);}, 500);
 			}
 		});
+	},
+	/* ZKGMAPS-21 show a loading failure message when it fails to load google map js API*/
+	initLoadFailureHandler: function(){
+	    var gmapsWidget = this;
+	    this.loadFailureTimeout = setTimeout(
+	        function(){
+	            if (!gmapsWidget._mmLoaded){
+	                zAu.cmd0.clearBusy(gmapsWidget);
+	                gmapsWidget.$n().textContent = gmaps.Gmaps.LOAD_FAILURE_MESSAGE;
+	                console.error(gmaps.Gmaps.LOAD_FAILURE_MESSAGE);
+	            }
+	            clearTimeout(gmapsWidget.loadFailureTimeout);
+	            zk.setScriptLoaded(gmapsGapi.GOOGLE_MAPS_API_LOADSCRIPT_KEY); // stop zk processing animation
+	        }, gmapsGapi.GOOGLE_API_LOADING_TIMEOUT);
 	},
 	_findMaxZoomLevel: function() {
 		var types = this._gmaps.mapTypes;
@@ -1026,7 +1041,8 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		return {x: evtXY.x-nwXY.x, y: evtXY.y-nwXY.y};
 	},
 	errormsg: '<p>To use <code>&lt;gmaps&gt;</code>, you have to specify the following statement in your page:</p>'
-		+'<code>&lt;script content="zk.googleAPIkey='+"'key-assigned-by-google'"+'" /></code>' 
+		+'<code>&lt;script content="zk.googleAPIkey='+"'key-assigned-by-google'"+'" /></code>',
+	LOAD_FAILURE_MESSAGE: 'Failed to load Google Maps API. Please check your network settings.'
 });
 
 })();

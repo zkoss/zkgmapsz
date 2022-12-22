@@ -19,7 +19,7 @@ gmapsGapi = {};
 gmapsGapi.GOOGLE_API_LOADING_TIMEOUT = 10000; //default to ten seconds
 gmapsGapi.GOOGLE_MAPS_API_URL = 'maps.googleapis.com/maps/api/js';
 
-var GOOGLE_MAPS_API_LOADSCRIPT_KEY = 'googleMapsApiLoadScriptKey';
+gmapsGapi.GOOGLE_MAPS_API_LOADSCRIPT_KEY = 'googleMapsApiLoadScriptKey';
 
 var effectiveApiParams = null;
 
@@ -32,13 +32,13 @@ gmapsGapi.loadGoogleMapsApi = function(protocol, apiParams, callback) {
 	}
 	if(!window.gmapsApiLoaded) {
 		var scheme = !protocol ? '//' : (protocol + '://');
-		zk.loadScript(scheme + gmapsGapi.GOOGLE_MAPS_API_URL + '?' + apiParams + '&callback=gmapsApiLoaded', GOOGLE_MAPS_API_LOADSCRIPT_KEY);
+		zk.loadScript(scheme + gmapsGapi.GOOGLE_MAPS_API_URL + '?' + apiParams + '&callback=gmapsApiLoaded', gmapsGapi.GOOGLE_MAPS_API_LOADSCRIPT_KEY);
 		window.gmapsApiLoaded = function() {
-			zk.setScriptLoaded(GOOGLE_MAPS_API_LOADSCRIPT_KEY);
+			zk.setScriptLoaded(gmapsGapi.GOOGLE_MAPS_API_LOADSCRIPT_KEY);
 			zk.load('gmaps.ext');
 		};
 	}
-	zk.afterLoad(GOOGLE_MAPS_API_LOADSCRIPT_KEY, function() {
+	zk.afterLoad(gmapsGapi.GOOGLE_MAPS_API_LOADSCRIPT_KEY, function() {
 		zk.afterLoad('gmaps.ext', callback);
 	});
 }
