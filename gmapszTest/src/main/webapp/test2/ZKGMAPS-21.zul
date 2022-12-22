@@ -1,0 +1,24 @@
+<zk>
+    <label multiline="true">
+    # case 1 - Steps to reproduce:
+    1. visit this page with ?fail=true
+    2. wait for timeout
+    # Expected result:
+      show a load failure message
+
+    # case 2 - Steps to reproduce:
+    1. visit this page without any parameters
+    2. wait for timeout
+    # Expected result:
+        show google map correctly
+    </label>
+    <script if="${param.fail eq 'true'}"><![CDATA[
+zk.afterLoad('zul', function() {
+    gmapsGapi.GOOGLE_MAPS_API_URL = 'nonexisted-url'; //cause loading failure on purpose
+    gmapsGapi.GOOGLE_API_LOADING_TIMEOUT = 3000;
+});
+    ]]></script>
+    <gmaps hflex="1" height="300px" lng="10" lat="55">
+        <gmarker lng="10" lat="55"/>
+    </gmaps>
+</zk>

@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<zk xmlns="http://www.zkoss.org/2005/zk/config"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zk/config http://www.zkoss.org/2005/zk/config/zk.xsd">
 
 <!-- zk.xml
 	Purpose:
@@ -10,9 +12,24 @@
 
 Copyright (C) 2012 Potix Corporation. All Rights Reserved.
 -->
-
-<zk>
+	<client-config>
+		<debug-js>true</debug-js>
+	</client-config>
 	<session-config>
 	  <timer-keep-alive>true</timer-keep-alive>
 	</session-config>
+	<library-property>
+		<name>org.zkoss.zk.WPD.cache</name>
+		<value>false</value>
+	</library-property>
+
+	<library-property>
+		<name>org.zkoss.zk.WCS.cache</name>
+		<value>false</value>
+	</library-property>
+
+	<library-property>
+		<name>org.zkoss.web.classWebResource.cache</name>
+		<value>false</value>
+	</library-property>
 </zk>
