@@ -7,7 +7,7 @@
 		<servlet.version>2.4</servlet.version>
 		<jetty.version>9.4.43.v20210629</jetty.version>
 		<poi.version>3.17</poi.version>
-		<gmapsz.version>3.3.1-FL</gmapsz.version>
+		<gmapsz.version>4.0.0-FL</gmapsz.version>
 	    <maven.compiler.source>1.8</maven.compiler.source>
     	<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
@@ -66,7 +66,7 @@
 				<configuration>
 					<jvmArgs>-Xmx4096m</jvmArgs>
 					<webAppConfig>
-						<contextPath>/gmapsztest</contextPath>
+						<contextPath>/${artifactId}</contextPath>
 						<!-- disable web fragment scanning to speed up startup time-->
 						<webInfIncludeJarPattern>^$</webInfIncludeJarPattern>
 						<containerIncludeJarPattern>^$</containerIncludeJarPattern>

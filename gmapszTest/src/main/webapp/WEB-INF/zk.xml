@@ -12,6 +12,14 @@
 
 Copyright (C) 2012 Potix Corporation. All Rights Reserved.
 -->
+	<library-property>
+		<name>org.zkoss.gmaps.apiKey</name>
+		<value>AIzaSyBXCUMObDb6AIOm5LxiKyvHaDjFZvzAb78</value>
+	</library-property>
+	<library-property>
+		<name>org.zkoss.gmaps.clientId</name>
+		<value>abcd</value>
+	</library-property>
 	<client-config>
 		<debug-js>true</debug-js>
 	</client-config>
