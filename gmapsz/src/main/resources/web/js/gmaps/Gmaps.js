@@ -615,7 +615,10 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 
 		zAu.cmd0.showBusy(this, 'Loading Google Maps APIs');
 
-		if(!this._gmapsApiConfigParams.client && !this._gmapsApiConfigParams.key && zk.googleAPIkey) {
+		if(!this._gmapsApiConfigParams.client) {
+			this._gmapsApiConfigParams.client = zk.gmapsClientId;
+		}
+		if(!this._gmapsApiConfigParams.key) {
 			this._gmapsApiConfigParams.key = zk.googleAPIkey;
 		}
 		gmapsGapi.loadGoogleMapsApi(this._protocol, jq.param(this._gmapsApiConfigParams), function() {
@@ -1015,6 +1018,12 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	},
 	onShow: function() {
 		this._resize(true);
+	},
+	setGlobalApiKey: function(apiKey) {
+	    zk.googleAPIkey = apiKey;
+	},
+    setGlobalClientId: function(clientId) {
+	    zk.gmapsClientId = clientId;
 	}
 },{//static
 	//given Gmaps, pageXY, return relative xy as [x, y]

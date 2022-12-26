@@ -17,6 +17,7 @@ Copyright (C) 2006 Potix Corporation. All Rights Reserved.
 }}IS_RIGHT
 */
 package org.zkoss.gmaps;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,8 +35,7 @@ import org.zkoss.gmaps.event.MapMoveEvent;
 import org.zkoss.gmaps.event.MapTypeChangeEvent;
 import org.zkoss.gmaps.event.MapZoomEvent;
 import org.zkoss.json.JSONObject;
-import org.zkoss.lang.Objects;
-import org.zkoss.lang.Strings;
+import org.zkoss.lang.*;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.UiException;
@@ -43,8 +43,9 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SelectEvent;
+import org.zkoss.zk.ui.sys.ContentRenderer;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.impl.XulElement;
+import org.zkoss.zul.impl.*;
 
 
 /**
@@ -140,7 +141,8 @@ public class Gmaps extends XulElement {
 		return _center;
 	}
 	
-	/** Sets the <a href="https://developers.google.com/maps/documentation/javascript/get-api-key#client-id">'client ID' Gmaps API parameter</a>.
+	/** Sets the <a href="https://developers.google.com/maps/premium/overview#client_id">'client ID' Gmaps API parameter</a>.
+	 * You should set either API key or client ID, if you set both of them, Google Maps puts API key first.
 	 * @param client client ID of the Google Maps
 	 * @since 3.0.2
 	 */
@@ -175,6 +177,8 @@ public class Gmaps extends XulElement {
 	/** 
 	 * Sets the <a href="https://developers.google.com/maps/documentation/javascript/get-api-key">Gmaps 'API key' parameter</a>.
 	 * Alternatively you can set the <a href="https://www.zkoss.org/wiki/ZK_Component_Reference/Diagrams_and_Reports/Gmaps#Example">global JS variable 'zk.googleAPIkey'</a>
+	 * Notice that you can set API key with library property {@link #API_KEY_PROPERTY} in application scope. This method will override the library property's value. <br/>
+	 * You should set either API key or client ID, if you set both of them, Google Maps puts API key first.
 	 * @param key Gmaps API key of the Google Maps
 	 * @since 3.0.5
 	 */
@@ -1390,6 +1394,24 @@ public class Gmaps extends XulElement {
 			renderer.render("protocol", _protocol);
 		if (!Objects.equals(_gmapsApiConfigParams, DEFAULT_API_CONFIG_PARAMS)) {
 			renderer.render("gmapsApiConfigParams", _gmapsApiConfigParams);
+		}
+		renderGlobalApiKey(renderer);
+		renderGlobalClientId(renderer);
+	}
+
+	public static final String CLIENT_ID_PROPERTY = "org.zkoss.gmaps.clientId";
+	private void renderGlobalClientId(ContentRenderer renderer) throws IOException {
+		String clientId = Library.getProperty(CLIENT_ID_PROPERTY);
+		if (clientId!= null) {
+			renderer.render("globalClientId", clientId);
+		}
+	}
+
+	public static final String API_KEY_PROPERTY = "org.zkoss.gmaps.apiKey";
+	public void renderGlobalApiKey(ContentRenderer renderer) throws IOException {
+		String apiKey = Library.getProperty(API_KEY_PROPERTY);
+		if (apiKey!= null) {
+			renderer.render("globalApiKey", apiKey);
 		}
 	}
 
