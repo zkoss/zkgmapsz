@@ -30,5 +30,9 @@ Component References:
 * after modifying js, run gradle task `install` to install jar into local maven repository
 wait for several seconds, jetty will restart to reload jar
 
-# Build Job
+# Release process
+1. Update versions in all places, run [update_version.py](/gmapsz/update_version.py)
+2. Update release note. 
+get from [JIRA](https://tracker.zkoss.org/projects/ZKGMAPS?selectedItem=com.atlassian.jira.jira-projects-plugin:release-page&status=unreleased)
+3. Build and publish to maven by 
 [jenkins2 - Build_ZK_Addons](http://jenkins2/job/Build_ZK_Addons/)
