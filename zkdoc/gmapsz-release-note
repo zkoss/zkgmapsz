@@ -1,3 +1,9 @@
+Gmaps 4.0.0
+New Feature
+[ZKGMAPS-15] - configure API key and Client ID with library property
+[ZKGMAPS-21] - Add "fail to load" message to gmaps container if API resource cannot be loaded
+[ZKGMAPS-34] - upgrade to JDK 1.8
+
   --------
 Gmaps 3.3.1
 * Features:
