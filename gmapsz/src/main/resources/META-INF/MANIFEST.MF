@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Specification-Title: The Google Maps Component for ZK
-Specification-Version: 3.3.1
+Specification-Version: 4.0.0
 Specification-Vendor: Potix Corporation
 Implementation-Title: org.zkoss.gmapsz
 Implementation-URL: http://www.zkoss.org/gmapsz
-Implementation-Version: 3.3.1
+Implementation-Version: 4.0.0
 Implementation-Vendor: Potix Corporation
