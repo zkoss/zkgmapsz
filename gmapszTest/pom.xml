@@ -7,7 +7,7 @@
 		<servlet.version>2.4</servlet.version>
 		<jetty.version>9.4.43.v20210629</jetty.version>
 		<poi.version>3.17</poi.version>
-		<gmapsz.version>4.0.0-FL-2022-12-26</gmapsz.version>
+		<gmapsz.version>4.0.0</gmapsz.version>
 	    <maven.compiler.source>1.8</maven.compiler.source>
     	<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
