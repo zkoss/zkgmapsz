@@ -10,6 +10,7 @@ dist/lib/z*.war
 dist/lib/osgi
 gmapsz/target/*
 *.classpath
+*/.settings
 */.settings/*.prefs
 */.settings/*.component
 */.settings/*.xml
