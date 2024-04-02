@@ -7,11 +7,11 @@
 		<servlet.version>2.4</servlet.version>
 		<jetty.version>9.4.43.v20210629</jetty.version>
 		<poi.version>3.17</poi.version>
-		<gmapsz.version>4.0.0</gmapsz.version>
+		<gmapsz.version>4.0.1</gmapsz.version>
 	    <maven.compiler.source>1.8</maven.compiler.source>
     	<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
-	<version>9.6.0.1-Eval</version>
+	<version>10.0.0</version>
 	<packaging>war</packaging>
 	<licenses>
 		<license>
@@ -31,7 +31,11 @@
 		<repository>
 			<id>ZK EE Evaluation</id>
 			<url>https://mavensync.zkoss.org/eval</url>
-		</repository>		
+		</repository>
+		<repository>
+			<id>ZK EE</id>
+			<url>https://maven.zkoss.org/repo/zk/ee</url>
+		</repository>	
 	</repositories>
 	<dependencies>
 		<dependency>
@@ -57,22 +61,57 @@
 		</dependency>
 	</dependencies>
 	<build>
+		<finalName>${project.artifactId}</finalName>
 		<plugins>
+			<!-- Run with Jetty -->
 			<plugin>
-				<!-- starts up faster but no JSP, JSF supported	-->
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
-				<version>9.4.27.v20200227</version>
+				<version>10.0.20</version>
 				<configuration>
-					<jvmArgs>-Xmx4096m</jvmArgs>
-					<webAppConfig>
-						<contextPath>/${artifactId}</contextPath>
-						<!-- disable web fragment scanning to speed up startup time-->
-						<webInfIncludeJarPattern>^$</webInfIncludeJarPattern>
-						<containerIncludeJarPattern>^$</containerIncludeJarPattern>
-					</webAppConfig>
+					<webApp>
+						<contextPath>/${project.artifactId}</contextPath>
+						<allowDuplicateFragmentNames>true</allowDuplicateFragmentNames>
+					</webApp>
 					<scanIntervalSeconds>5</scanIntervalSeconds>
 				</configuration>
+			</plugin>
+			<!-- Compile java -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.12.1</version>
+				<configuration>
+					<source>11</source>
+					<target>11</target>
+				</configuration>
+			</plugin>
+			<!-- Build war -->
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<version>3.4.0</version>
+			</plugin>
+			<!-- Pack zips -->
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.7.0</version>
+				<executions>
+					<execution>
+						<id>webapp</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<finalName>${project.artifactId}${packname}</finalName>
+							<appendAssemblyId>false</appendAssemblyId>
+							<descriptors>
+								<descriptor>src/main/assembly/webapp.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
@@ -89,7 +128,7 @@
 				<dependency>
 					<groupId>ch.qos.logback</groupId>
 					<artifactId>logback-classic</artifactId>
-					<version>1.2.3</version>
+					<version>1.2.13</version>
 				</dependency>
 			</dependencies>
 		</profile>

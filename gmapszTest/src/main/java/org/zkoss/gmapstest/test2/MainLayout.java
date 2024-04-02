@@ -25,20 +25,19 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
 
 import org.zkoss.io.Files;
-import org.zkoss.util.logging.Log;
 import org.zkoss.web.fn.ServletFns;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
@@ -65,7 +64,7 @@ import org.zkoss.zul.Window;
  * @author jumperchen
  */
 public class MainLayout extends Borderlayout {
-	private static final Log log = Log.lookup(MainLayout.class);
+	private static final Logger log = Logger.getLogger(MainLayout.class.getName());
 
 	ListModelList fileModel = new ListModelList();
 	Map relatedFileModel = new LinkedHashMap();
