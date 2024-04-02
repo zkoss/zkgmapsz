@@ -1,0 +1,57 @@
+<zk>
+	<window title="no click listener on gpolyline" height="700px" border="normal">
+		<separator bar="true"/>
+		
+	<zscript>
+		public void polyClick(){
+			lbl.value="You've clicked on a polygon.";
+		}
+		public void polylineClick(){
+			lbl.value="You've clicked on a polyline.";
+		}
+		public void mapClick(){
+			lbl.value="You've clicked on the map.";
+		}
+		public void markerClick(){
+			lbl.value="You've clicked on the marker.";
+		
+		}
+	</zscript>
+	
+		<gmaps id="map" width="600px" height="360px"  lat="37.42838786" lng="-122.13998795" zoom="8">
+	
+			<attribute name="onMapClick">
+			 mapClick();
+				if (event.getReference() instanceof org.zkoss.gmaps.Gmarker){
+					markerClick();
+					}else if(event.getReference() instanceof org.zkoss.gmaps.Gpolygon ){
+					polyClick();
+					}
+					
+	    </attribute>
+	
+			<gmarker id="mymark" lat="37.42838786" lng="-122.13998795">
+				<attribute name="content">
+					GMarker
+				</attribute>
+			</gmarker>
+			
+			     <gpolyline color="#FF0000" onClick="polylineClick()"  path="37.42838786,-122.13998795,
+                         37.43561240,-122.13277816,
+                         37.42416187,-122.11441040,
+                         37.42157162,-122.12007522,
+                         37.41734524,-122.12316513,
+                         37.42838786,-122.13998795"/>
+	
+			<gpolygon id="poly" color="#00FF00" onClick="polyClick()"   points="37.43838786,-73.1490,3,37.42561240,-122.12277816,3,37.43416187,-122.12441040,3,
+	                                       37.43157162,-122.13007522,3,37.42734524,-122.13316513,3" />
+	
+		</gmaps>
+		
+		<vbox>
+			Last Click:
+			<label id="lbl" pre="true" />
+		</vbox>
+		
+	</window>
+</zk>
