@@ -20,7 +20,6 @@ package org.zkoss.gmaps;
 
 import org.zkoss.json.JSONAware;
 
-import javax.annotation.Nonnull;
 import java.util.Objects;
 
 /**
@@ -37,7 +36,7 @@ public class LatLngBounds implements JSONAware {
 	 * @param southWest the south-west corner.
 	 * @param northEast the north-east corner.
 	 */
-	public LatLngBounds(@Nonnull LatLng southWest, @Nonnull LatLng northEast) {
+	public LatLngBounds(LatLng southWest, LatLng northEast) {
 		if(southWest == null || northEast == null) {
 			throw new IllegalArgumentException("southWest/northEast cannot be NULL");
 		}

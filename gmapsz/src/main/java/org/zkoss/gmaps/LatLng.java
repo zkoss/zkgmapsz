@@ -18,11 +18,10 @@ Copyright (C) 2013 Potix Corporation. All Rights Reserved.
 */
 package org.zkoss.gmaps;
 
-import org.zkoss.json.JSONArray;
+import java.util.Objects;
+
 import org.zkoss.json.JSONAware;
 import org.zkoss.json.JSONObject;
-
-import java.util.Objects;
 
 /**
  * A point in geographical coordinates represented by latitude and longitude.

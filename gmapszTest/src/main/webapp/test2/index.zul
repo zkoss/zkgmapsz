@@ -9,7 +9,7 @@ function newWindow(url){
 </script>
 <h:form id="newform" target="_blank" method="post"/>
 	<borderlayout id="main" use="org.zkoss.gmapstest.test2.MainLayout">
-	<west title="ZK ${desktop.webApp.version}, build ${desktop.webApp.build}" size="355px" collapsible="true" maxsize="600" splittable="true" flex="true">
+	<west title="ZK ${desktop.webApp.version}, build ${desktop.webApp.build}" size="355px" collapsible="true" maxsize="600" splittable="true" vflex="1">
 	<!-- ******************** Ctrl Panel ******************** -->
 			<window id="w1" contentStyle="overflow:auto;position:relative;">
 				<vbox>
@@ -143,7 +143,7 @@ if (lb.getSelectedItem() != null) {
 				</vbox>
 			</window>
 	</west>
-	<center id="center" title="ZK Gmap TEST2" autoscroll="true" flex="true">
+	<center id="center" title="ZK Gmap TEST2" autoscroll="true" vflex="1">
 		<!-- ******************** View Panel ******************** -->
 		<iframe id="ifr" height="98%" width="100%" autohide="true"/>
 	</center>
