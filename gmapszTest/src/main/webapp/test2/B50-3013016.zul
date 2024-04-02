@@ -8,7 +8,6 @@
 </ol>
 ]]>
 </html>
-<script type="text/javascript" content="zk.googleAPIkey='${gkey}'"/>
 	<zscript><![CDATA[
 		String sn = Executions.getCurrent().getServerName();
 		int sp = Executions.getCurrent().getServerPort();
@@ -33,7 +32,6 @@
 				gkey="ABQIAAAAmGxmYR57XDAbAumS9tV5fxTT6-Op-9nAQgn7qnDG0QjE8aldaBRU1BQK2ADNWCt1BR2yg4ghOM6YIA";
 		}
 	]]></zscript>
-	<script type="text/javascript" content="zk.googleAPIkey='${gkey}'"/>
 	<gmaps id="testMap" width="500px" height="300px" showSmallCtrl="true" lat="47.4" lng="-99.2">
 		<attribute name="onMapClick">
 			Gmarker gmarker = event.getGmarker();

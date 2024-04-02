@@ -1,0 +1,26 @@
+<zk>
+  <window border="normal" title="hello" apply="org.zkoss.gmapstest.test2.ZKGMAPS_35_Composer">
+    <div>
+      <gmaps
+             id="gmaps"
+             width="520px"
+             height="400px"
+             onMapZoom='Clients.log("zoom: "+event.zoom)'
+             showSmallCtrl="true">
+        <ginfo
+               id="info"
+               open="true"
+               content="Hello, &lt;a href=&quot;http://www.zkoss.org\&quot;&gt;ZK&lt;/a&gt;."/>
+        <gmarker
+                 id="marker"
+                 lat="37.4410"
+                 lng="-122.1490"
+                 iconImage="https://acf.rockybytes.com/i/962/java-development-kit.jpg"
+                 height="50px"
+                 width="50px"
+                 content="Hello"/>
+      </gmaps>
+      <button id="btn">Move Marker</button>
+    </div>
+  </window>
+</zk>
