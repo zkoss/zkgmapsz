@@ -1,0 +1,10 @@
+<language-addon>
+	<addon-name>gmapsztest</addon-name>
+	<depends>gmapsz</depends>
+	<language-name>xul/html</language-name>
+
+	<javascript>
+		zk.googleAPIkey='PUT_YOUR_KEY_FOR_TESTING_HERE';
+	</javascript>
+
+</language-addon>

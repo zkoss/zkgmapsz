@@ -32,4 +32,9 @@ Copyright (C) 2012 Potix Corporation. All Rights Reserved.
 		<name>org.zkoss.web.classWebResource.cache</name>
 		<value>false</value>
 	</library-property>
+	
+	 <language-config>
+	     <addon-uri>/WEB-INF/lang-addon.xml</addon-uri>
+	 </language-config>
+	
 </zk>
