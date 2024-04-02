@@ -127,6 +127,8 @@ gmaps.Gpolyline = zk.$extends(gmaps.Goverlay, {
 	        this._insertAt = google.maps.event.addListener(path, "insert_at", _zkf = function() {wgt._updatePath();});
 	        this._removeAt = google.maps.event.addListener(path, "remove_at", _zkf);
 	        this._setAt = google.maps.event.addListener(path, "set_at", _zkf);
+	        gpolyline.clickable=true;
+			this._click = gpolyline.addListener("click", function(event){wgt.fire('onClick')});
 		}
 	},
 	_clearListeners: function() {
@@ -177,5 +179,8 @@ gmaps.Gpolyline = zk.$extends(gmaps.Goverlay, {
 	setRerender_: function(info) {
 		this.prepareRerender_(info);
 		this.rebindMapitem_();
+	},
+	onClick_: function(){
+		this.fire("onClick",path);
 	}
 });
