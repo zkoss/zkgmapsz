@@ -680,7 +680,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	},
 	_findMaxZoomLevel: function() {
 		var types = this._gmaps.mapTypes;
-		var mapsMaxZoom = 19;
+		var mapsMaxZoom = 22;
 		for (var type in types ) {
 			if (typeof types.get(type) === 'object' && typeof types.get(type).maxZoom === 'number') {
 				var zoom = types.get(type).maxZoom;
