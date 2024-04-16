@@ -63,6 +63,21 @@ public class LatLngBounds implements JSONAware {
 				",north:" + _northEast.getLatitude() +
 				",east:" + _northEast.getLongitude() + "}";
 	}
+	
+	public LatLng getCenter() {
+		
+		double west = _southWest.getLongitude();
+		double east = _northEast.getLongitude();
+		if ((west - east > 180) || (east - west > 180)) {
+			west += 360;
+			west %= 360;
+			east += 360;
+			east %= 360;
+		  }
+		
+		LatLng center = new LatLng((_northEast.getLatitude() + _southWest.getLatitude())/2, (west + east) / 2);
+		return center ;
+	}
 
 	@Override
 	public boolean equals(Object o) {
@@ -76,4 +91,5 @@ public class LatLngBounds implements JSONAware {
 	public int hashCode() {
 		return Objects.hash(_southWest, _northEast);
 	}
+	
 }

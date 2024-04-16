@@ -2,7 +2,7 @@
 	<gmaps id="mygm" width="400px" height="300px" version="3.24" />
 	<zscript><![CDATA[
 		void setBounds(){
-			mygm.fitBounds(new org.zkoss.gmaps.LatLngBounds(new org.zkoss.gmaps.LatLng(0, 0), new org.zkoss.gmaps.LatLng(0,0)));
+			mygm.fitBounds(new org.zkoss.gmaps.LatLngBounds(new org.zkoss.gmaps.LatLng(0, 0), new org.zkoss.gmaps.LatLng(1,1)));
 			mygm.setLat(40);
 			mygm.setLng(40);
 		}
