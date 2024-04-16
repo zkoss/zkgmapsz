@@ -31,9 +31,12 @@ def show_help():
     """)
 
 file_list = [
-    "src/main/java/org/zkoss/gmaps/Version.java",
-    "src/main/resources/META-INF/MANIFEST.MF",
-    "src/main/resources/metainfo/zk/lang-addon.xml"
+    "pom.xml",
+    "gmapszTest/pom.xml",
+    "gmapsz/pom.xml",
+    "gmapsz/src/main/java/org/zkoss/gmaps/Version.java",
+    "gmapsz/src/main/resources/META-INF/MANIFEST.MF",
+    "gmapsz/src/main/resources/metainfo/zk/lang-addon.xml"
     ]
 
 
