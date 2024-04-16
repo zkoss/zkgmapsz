@@ -129,6 +129,7 @@ public class Gmaps extends XulElement {
 		}
 		if (!Objects.equals(_center, center)) {
 			_center = center;
+			setBoundsByClient(null);
 			smartUpdate("center", center);
 		}
 	}
@@ -257,6 +258,7 @@ public class Gmaps extends XulElement {
 		if(!Objects.equals(_boundsToFit, bounds)) {
 			_boundsToFit = bounds;
 			syncModel();
+			setCenter(bounds.getCenter());
 			Clients.response(new AuInvoke(this, "fitBounds", bounds));
 		}
 	}
@@ -1428,6 +1430,7 @@ public class Gmaps extends XulElement {
 			setCenterByClient(evt.getLatLng());
 			setBoundsByClient(evt.getBounds());
 			setZoomByClient(evt.getZoom());
+			setBoundsByClient(evt.getBounds());
 			Events.postEvent(evt);
 		} else if (cmd.equals("onMapZoom")) {
 			final MapZoomEvent evt = MapZoomEvent.getMapZoomEvent(request);
