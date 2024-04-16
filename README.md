@@ -24,8 +24,20 @@ Component References:
 # Issues
  Now we've transferred issues to [jira issue tracker](http://tracker.zkoss.org/browse/ZKGMAPS)
 
+# Portable Development Setup
+Run `mvn jetty:run` on gmapsz parent pom to build the library and launch the test app
 
-# Development Setup
+# Automated / manual testing
+After running test app (above), access testing panel at http://localhost:8080/gmapszTest/test2/
+Use left-side navigation to select test case
+
+## adding test cases
+Create test case file under `/gmapszTest/src/main/webapp/test2`
+Current test file name convention: ZKGMAPS-[tracker entry number].zul
+Then add the test file to `/gmapszTest/src/main/webapp/test2/config.properties`
+Run the project again and access `http://localhost:8080/gmapszTest/test2/` to run test
+
+# Legacy Development Setup
 * start gmapszTest with maven jetty plugin with the current SNAPSHOT version
 * after modifying js, run gradle task `install` to install jar into local maven repository
 wait for several seconds, jetty will restart to reload jar

@@ -1,17 +1,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.zkoss.gmaps</groupId>
 	<artifactId>gmapszTest</artifactId>
+	<parent>
+		<groupId>org.zkoss.zkforge</groupId>
+		<artifactId>gmapsz-parent</artifactId>
+		<version>4.0.1-dev</version>
+	</parent>
 	<properties>
 		<servlet.version>2.4</servlet.version>
-		<jetty.version>9.4.43.v20210629</jetty.version>
-		<poi.version>3.17</poi.version>
-		<gmapsz.version>4.0.1</gmapsz.version>
 	    <maven.compiler.source>1.8</maven.compiler.source>
     	<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
-	<version>10.0.0</version>
+	<version>4.0.1-dev</version>
 	<packaging>war</packaging>
 	<licenses>
 		<license>
@@ -41,17 +42,17 @@
 		<dependency>
 			<groupId>org.zkoss.zk</groupId>
 			<artifactId>zkmax</artifactId>
-			<version>${project.version}</version>
+			<version>${zk.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.zkoss.zk</groupId>
 			<artifactId>zhtml</artifactId>
-			<version>${project.version}</version>
+			<version>${zk.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.zkoss.zkforge</groupId>
 			<artifactId>gmapsz</artifactId>
-			<version>${gmapsz.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
