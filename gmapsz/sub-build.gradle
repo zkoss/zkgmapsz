@@ -87,6 +87,16 @@ task prepareFiles {
 			from "../zkdoc"
 			into "${buildDir}/srczip/" + srcFolderName + "/doc"
 		}
+		delete("${buildDir}/srczip/" + srcFolderName + "/${name}/pom.xml")
+		copy{
+			from("${buildDir}/srczip/" + srcFolderName + "/${name}/")
+			into("${buildDir}/srczip/" + srcFolderName + "/${name}/")
+			include '.flattened-pom.xml'
+			rename { String fileName ->
+				fileName.replace(".flattened-pom.xml", "pom.xml")
+			}
+		}
+		delete("${buildDir}/srczip/" + srcFolderName + "/${name}/.flattened-pom.xml")
 	}
 }
 
@@ -114,12 +124,15 @@ task prepareBundleFiles(dependsOn: ['jar', 'sourceJar']) {
 		copy {
 			from "${buildDir}/libs/"
 			from ("${project.projectDir}") {
-				include "pom.xml"
+				include ".flattened-pom.xml"
                 filter (ReplaceTokens, tokens: [version: versionString.toString()])
 			}
 			into "${buildDir}/maven/"
 			rename { String fileName ->
 				fileName.replace("${project.name}", "${project.name}-${versionString}")
+			}
+			rename { String fileName ->
+				fileName.replace(".flattened-pom.xml", "pom.xml")
 			}
 		}
 	}
