@@ -5,14 +5,14 @@
 	<parent>
 		<groupId>org.zkoss.zkforge</groupId>
 		<artifactId>gmapsz-parent</artifactId>
-		<version>4.0.2</version>
+		<version>4.0.3</version>
 	</parent>
 	<properties>
 		<servlet.version>2.4</servlet.version>
 	    <maven.compiler.source>1.8</maven.compiler.source>
     	<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
-	<version>4.0.2</version>
+	<version>4.0.3</version>
 	<packaging>war</packaging>
 	<licenses>
 		<license>
