@@ -23,3 +23,4 @@ target/
 .idea/
 out/
 gmapszTest/src/main/webapp/WEB-INF/lang-addon.xml
+*.flattened-pom.xml
