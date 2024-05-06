@@ -36,7 +36,8 @@ file_list = [
     "gmapsz/pom.xml",
     "gmapsz/src/main/java/org/zkoss/gmaps/Version.java",
     "gmapsz/src/main/resources/META-INF/MANIFEST.MF",
-    "gmapsz/src/main/resources/metainfo/zk/lang-addon.xml"
+    "gmapsz/src/main/resources/metainfo/zk/lang-addon.xml",
+    "gmapsz/build.gradle"
     ]
 
 
