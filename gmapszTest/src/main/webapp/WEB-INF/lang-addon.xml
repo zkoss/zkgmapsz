@@ -4,7 +4,7 @@
 	<language-name>xul/html</language-name>
 
 	<javascript>
-		zk.googleAPIkey='PUT_YOUR_KEY_FOR_TESTING_HERE';
+		zk.googleAPIkey='AIzaSyB7CzQIO1uDB4gBnWdzv9dgZOjgnSivNoA';
 	</javascript>
 
 </language-addon>
