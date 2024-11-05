@@ -1,0 +1,5 @@
+<zk>
+	<div apply="org.zkoss.gmapstest.test2.ZKGMAPS_36_Composer">
+	    <gmaps id="myMaps" width="600px" height="600px"/>
+	</div>
+</zk>

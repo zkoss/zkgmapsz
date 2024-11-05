@@ -1,4 +1,0 @@
-<package name="gmaps.ext" language="xul/html" depends="gmaps">
-	<script src="markermanager.js"/>
-	<script>window.MarkerManager = MarkerManager;</script>
-</package>

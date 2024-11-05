@@ -68,7 +68,7 @@ public class Gmaps extends XulElement {
 	private static final String BASE_DOMAIN = "base_domain";
 	private static final String DEFAULT_PROTOCOL = "https";
 	private static final JSONObject DEFAULT_API_CONFIG_PARAMS = new JSONObject() {{
-		put(LIBRARIES, "geometry");
+		put(LIBRARIES, "geometry,marker");
 	}};
 	private transient Ginfo _oneinfo; //the only one Ginfo child of this Gmaps.
     //TODO: GMap should support multiple GInfo in the future.
@@ -103,6 +103,7 @@ public class Gmaps extends XulElement {
 	{
 		_gmapsApiConfigParams.putAll(DEFAULT_API_CONFIG_PARAMS);
 	}
+	private String _mapId;
 
 	private MapModel _model;
 	private MapitemRenderer _renderer;
@@ -1065,6 +1066,22 @@ public class Gmaps extends XulElement {
 			_model = null;
 		}
 	}
+	
+
+	/** Return the mapId, necessary for advanced markers
+     */
+	public String getMapId() {
+		return _mapId;
+	}
+
+	/** Sets the mapId, necessary for advanced markers.
+	 * @param mapId the mapId.
+     */
+	public void setMapId(String _mapId) {
+		this._mapId = _mapId;
+	}
+	
+	
 	private class UpdateBoundsListener implements EventListener, java.io.Serializable {
 		private static final long serialVersionUID = 200808261207L;
 
@@ -1397,6 +1414,9 @@ public class Gmaps extends XulElement {
 		if (!Objects.equals(_gmapsApiConfigParams, DEFAULT_API_CONFIG_PARAMS)) {
 			renderer.render("gmapsApiConfigParams", _gmapsApiConfigParams);
 		}
+		if(null != _mapId) {
+			renderer.render("mapId", _mapId);
+		}
 		renderGlobalApiKey(renderer);
 		renderGlobalClientId(renderer);
 	}
@@ -1466,6 +1486,8 @@ public class Gmaps extends XulElement {
 		} else
 			super.service(request, everError);
 	}
+
+
 
 	//register the Gmaps related event
 	static {

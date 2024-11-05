@@ -39,9 +39,70 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	_extraMapOptions: null,
 	_protocol: 'https',
 	_gmapsApiConfigParams: {
-		libraries: 'geometry'
+		libraries: 'geometry,marker'
 	},
-	
+	_gmapsEventListeners: {
+		/*"bounds_changed":function (wgt, gmap, evt){
+			wgt.fire("onMapBoundsChanged",{nativeEvent:evt});
+		},*/
+		/*"center_changed":function (wgt, gmap, evt){
+			wgt.fire("onMapCenterChanged",{nativeEvent:evt});
+		},*/
+		"click":function (wgt, gmap, evt){
+			wgt.doClick_(new zk.Event(wgt, 'onClick', {latLng: evt.latLng}));
+		},
+		/*"contextmenu":function (wgt, gmap, evt){
+			wgt.fire("onMapContextmenu",{nativeEvent:evt});
+		},*/
+		"dblclick":function (wgt, gmap, evt){
+			wgt.doDoubleClick_(evt);
+		},
+		/*"drag":function (wgt, gmap, evt){
+			wgt.fire("onMapDrag",{nativeEvent:evt});
+		},*/
+		/*"dragend":function (wgt, gmap, evt){
+			wgt.fire("onMapDragend",{nativeEvent:evt});
+		},*/
+		/*"dragstart":function (wgt, gmap, evt){
+			wgt.fire("onMapDragstart",{nativeEvent:evt});
+		},*/
+		/*"heading_changed":function (wgt, gmap, evt){
+			wgt.fire("onMapHeadingChanged",{nativeEvent:evt});
+		},*/
+		"idle":function (wgt, gmap, evt){
+			wgt._doMoveEnd();
+		},
+		"maptypeid_changed":function (wgt, gmap, evt){
+			wgt._doMapTypeChanged();
+		},
+		/*"mousemove":function (wgt, gmap, evt){
+			wgt.fire("onMapMousemove",{nativeEvent:evt});
+		},*/
+		/*"mouseout":function (wgt, gmap, evt){
+			wgt.fire("onMapMouseout",{nativeEvent:evt});
+		},*/
+		/*"mouseover":function (wgt, gmap, evt){
+			wgt.fire("onMapMouseover",{nativeEvent:evt});
+		},*/
+		/*"projection_changed":function (wgt, gmap, evt){
+			wgt.fire("onMapProjectionChanged",{nativeEvent:evt});
+		},*/
+		/*"resize":function (wgt, gmap, evt){
+			wgt.fire("onMapResize",{nativeEvent:evt});
+		},*/
+		/*"rightclick":function (wgt, gmap, evt){
+			wgt.fire("onMapRightclick",{nativeEvent:evt});
+		},*/
+		/*"tilesloaded":function (wgt, gmap, evt){
+			wgt.fire("onMapTilesloaded",{nativeEvent:evt});
+		},*/
+		/*"tilt_changed":function (wgt, gmap, evt){
+			wgt.fire("onMapTiltChanged",{nativeEvent:evt});
+		},*/
+		"zoom_changed":function (wgt, gmap, evt){
+			wgt._doZoomEnd();
+		}
+	},
 	$define: {
 		/**
 		 * Returns the center point of this Gmaps.
@@ -377,7 +438,19 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		 * @param protocol the protocol to load the Maps API
 		 * @since 3.0.5
 		 */
-		gmapsApiConfigParams: null 
+		gmapsApiConfigParams: null,
+
+		/**
+		 * Returns the google maps API mapId, required for advanced markers.
+		 * @return the mapId String.
+		 * @since freshly
+		 */
+		/**
+		 * Set the google maps API mapId, required for advanced markers.
+		 * @param mapId the mapId String.
+		 * @since freshly
+		 */
+		mapId: null 
 	},
 	/**
 	 * @deprecated use fitBounds() instead (the current bounds are not stored)
@@ -392,23 +465,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	 * @return Object
 	 */
 	getBounds: function() {
-		var maps = this._gmaps;
-		if (maps) {
-			var bounds = maps.getBounds();
-			var sw = bounds.getSouthWest();
-			var ne = bounds.getNorthEast();
-			return {
-				southWest: {
-					latitude: sw.lat(),
-					longitude: sw.lng()
-				},
-				northEast: {
-					latitude: ne.lat(),
-					longitude: ne.lng()
-				}
-			};
-		}
-		return null;
+		return this._bounds;
 	},
 	/**
 	 * Sets the viewport to contain the given bounds. This effectively adjust the current center and zoom level.
@@ -621,7 +678,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		if(!this._gmapsApiConfigParams.key) {
 			this._gmapsApiConfigParams.key = zk.googleAPIkey;
 		}
-		gmapsGapi.loadGoogleMapsApi(this._protocol, jq.param(this._gmapsApiConfigParams), function() {
+		gmapsGapi.loadGoogleMapsApi(this._protocol, this._gmapsApiConfigParams, async function() {
 			wgt._realBind(dt, skipper, after);
 		});
 		this.initLoadFailureHandler();
@@ -637,39 +694,26 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		this._maxzoom = this._findMaxZoomLevel(); // Issue 28
 
 		var wgt = this; // Issue 8: First gmarker fails when there are more than one gmap in a page
+		
+		wgt._initListeners(n);
 
-		wgt._mm = new MarkerManager(this._gmaps, {trackMarkers: true, maxZoom: this._maxzoom});
-		google.maps.event.addListener(wgt._mm, 'loaded', function(){
-			wgt._mmLoaded = true;
-			wgt.overrideMarkermanager();
-			//init listeners
-			wgt._initListeners(n);
+		//bug #2929253 map canvas partly broken when map was invisible
+		//watch the global event onSize/onShow (must after $supers(gmaps.Gmaps, 'bind_', arguments))
+		zWatch.listen({onSize: wgt, onShow: wgt});
+		// set the hflex/vflex again after bind
+		if (wgt._hflex)
+			wgt.setHflex(wgt._hflex, {force:true});
+		if (wgt._vflex)
+			wgt.setVflex(wgt._vflex, {force:true});
 
-			//bug #2929253 map canvas partly broken when map was invisible
-			//watch the global event onSize/onShow (must after $supers(gmaps.Gmaps, 'bind_', arguments))
-			zWatch.listen({onSize: wgt, onShow: wgt});
-			// set the hflex/vflex again after bind
-			if (wgt._hflex)
-				wgt.setHflex(wgt._hflex, {force:true});
-			if (wgt._vflex)
-				wgt.setVflex(wgt._vflex, {force:true});
-
-			zAu.cmd0.clearBusy(wgt);
-
-			//Tricky!
-			//IE will not fire onSize at the end, so we have to enforce a
-			//resize(true) to restore the center
-			if (zk.ie) {
-				setTimeout(function () {wgt._resize(true);}, 500);
-			}
-		});
+		zAu.cmd0.clearBusy(wgt);
 	},
 	/* ZKGMAPS-21 show a loading failure message when it fails to load google map js API*/
 	initLoadFailureHandler: function(){
 	    var gmapsWidget = this;
 	    this.loadFailureTimeout = setTimeout(
 	        function(){
-	            if (!gmapsWidget._mmLoaded){
+	            if (!window._gmapsApiLoaded){
 	                zAu.cmd0.clearBusy(gmapsWidget);
 	                gmapsWidget.$n().textContent = gmaps.Gmaps.LOAD_FAILURE_MESSAGE;
 	                console.error(gmaps.Gmaps.LOAD_FAILURE_MESSAGE);
@@ -749,7 +793,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		//@see Gmarker#_initListeners
 		if(!evt.latLng) return;
 		var latlng = evt.latLng,
-			xy = this._mm.projection_.fromLatLngToDivPixel(latlng, this._gmaps.getZoom());
+			xy = this._gmaps.getProjection().fromLatLngToPoint(latlng);
 		var	pageXY = gmaps.Gmaps.xyToPageXY(this, xy.x, xy.y),
 			wgt = evt.target? evt.target : this,
 			data ={};
@@ -767,7 +811,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			pageXY; 
 		// maybe from google event or dom event
 		if (evt.latLng) {
-			xy = this._mm.projection_.fromLatLngToDivPixel(evt.latLng, this._gmaps.getZoom());
+			xy = this._gmaps.getProjection().fromLatLngToPoint(evt.latLng);
 			latlng = evt.latLng;
 			pageXY = gmaps.Gmaps.xyToPageXY(this, xy.x, xy.y);
 		} else {
@@ -809,27 +853,29 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		var wgt = this;
 		
 		var maps = this._gmaps,
-			b = maps.getBounds(),
-			sw = b.getSouthWest(),
-			ne = b.getNorthEast();
-		this._centerRestored = null;
-		// if this is not real visible, the move should caused by calling api,
-		// and map will move to wrong position,
-		// do not get center value from map, just keep default.
-		if (this.isRealVisible()) {
-			var c = maps.getCenter();
-			this._center = {latitude: c.lat(), longitude: c.lng()};
-			this._zoom = maps.getZoom();
+			b = this.getBounds();
+		if(b){
+			var sw = b.getSouthWest(),
+				ne = b.getNorthEast();
+			this._centerRestored = null;
+			// if this is not real visible, the move should caused by calling api,
+			// and map will move to wrong position,
+			// do not get center value from map, just keep default.
+			if (this.isRealVisible()) {
+				var c = maps.getCenter();
+				this._center = {latitude: c.lat(), longitude: c.lng()};
+				this._zoom = maps.getZoom();
+			}
+			this.fireX(new zk.Event(this, 'onMapMove', {
+				lat: this._center.latitude,
+				lng: this._center.longitude,
+				swlat: sw.lat(),
+				swlng: sw.lng(),
+				nelat: ne.lat(),
+				nelng: ne.lng(),
+				zoom:this._zoom
+			}, {}, null));
 		}
-		this.fireX(new zk.Event(this, 'onMapMove', {
-			lat: this._center.latitude,
-			lng: this._center.longitude,
-			swlat: sw.lat(),
-			swlng: sw.lng(),
-			nelat: ne.lat(),
-			nelng: ne.lng(),
-			zoom:this._zoom
-		}, {}, null));
 	},
 	_doZoomEnd: function() {
 		var maps = this._gmaps;
@@ -914,13 +960,23 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	_initListeners: function(n) {
 		var maps = this._gmaps,
 			wgt = this;
+		/*
 		this._moveend = google.maps.event.addListener(maps, 'idle', function() {wgt._mm.onMapMoveEnd_(); wgt._doMoveEnd();});
 		this._click = google.maps.event.addListener(maps, 'click', function(event) {wgt.doClick_(new zk.Event(wgt, 'onClick', {latLng: event.latLng}))});
 		this._doubleclick = google.maps.event.addListener(maps, 'dblclick', function(event) {wgt.doDoubleClick_(event)});
 		this._zoomend = google.maps.event.addListener(maps, 'zoom_changed', function() {wgt._doZoomEnd()});
 		this._maptypechanged = google.maps.event.addListener(maps, 'maptypeid_changed', function() {wgt._doMapTypeChanged()});
+		*/
+		
+
+		Object.keys(this._gmapsEventListeners).forEach(each =>{
+			google.maps.event.addListener(maps, each, function(event) {
+				wgt._gmapsEventListeners[each](wgt, this, event);
+			});
+		});
 	},
 	_clearListeners: function() {
+		/*
 		if (this._moveend ) {
 			google.maps.event.removeListener(this._moveend);
 			this._moveend = null;
@@ -947,7 +1003,12 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		if (this._maptypechanged) {
 			google.maps.event.removeListener(this._maptypechanged);
 			this._maptypechanged = null;
-		}
+		}*/
+
+		Object.keys(this._gmapsEventListeners).forEach(each =>{
+			google.maps.event.removeListener(wgt._gmapsEventListeners[each]);
+		});
+
 	},
 	/**
 	 * keep the map options so we can modify it later
@@ -958,13 +1019,15 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			var mtids = [];
 			this._mapOptions = {
 				// used to be {type: G_PHYSICAL_MAP}
-				mapTypeControlOptions: {mapTypeIds: mtids}
+				mapTypeControlOptions: {mapTypeIds: mtids},
+				mapId: this.getMapId()
 			};
 		}
 		return this._mapOptions;
 	},
 	_initGmaps: function(n) {
-		var maps = new google.maps.Map(n, this.getMapOptions());
+		var maps = new google.maps.Map(n, this.getMapOptions()),
+			self = this;
 
 		this._gmaps = maps;
 		this.setNormal(this._normal, {force:true}) //prepare map types
@@ -982,12 +1045,12 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			.setEnableDragging(this._enableDragging, {force:true})
 			.setCenter(this._center, {force:true})
 			.setZoom(this._zoom, {force:true})
-			.setExtraMapOptions(this._extraMapOptions, {force:true});
+			.setExtraMapOptions(this._extraMapOptions, {force:true});			
 		if (this._boundsToFit) {
 			this.fitBounds(this._boundsToFit);
 		}
 	},
-	overrideMarkermanager: function() {
+	/*overrideMarkermanager: function() {
 		var mm = this._mm; //markermanager
 		mm.addOverlay_ = function (marker) {
 			var markerwgt = marker._wgt; //Gmarker widget
@@ -1006,11 +1069,11 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			markerwgt._clearListeners();
 		}
 		this.overlayOverride = true;
-	},
+	},*/
 	_clearGmaps: function() {
 		this._clearListeners();
 		this._gmaps = this._lctrl = this._sctrl = this._tctrl = this._cctrl = this._octrl
-			= this._mm = this._mmLoaded = this._centerRestored = this._onMapClickData = null;
+			= this._centerRestored = this._onMapClickData = null;
 	},
 	//zWatch//
 	onSize: function() {
@@ -1038,16 +1101,21 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	},
 	// given Gmaps widget, latlng, return xy as [x, y]
 	latlngToXY: function (wgt, latlng) {
-		var gmaps = wgt._gmaps,
-			zoom = gmaps.getZoom(),
-			bounds = gmaps.getBounds(),
-			nwLatlng = new google.maps.LatLng(bounds.getNorthEast().lat(),
-							bounds.getSouthWest().lng()),
-			projection = wgt._mm.projection_,
-			nwXY = projection.fromLatLngToDivPixel(nwLatlng, zoom), // X, Y of North West of bounds
-			evtXY = projection.fromLatLngToDivPixel(latlng, zoom); // X, Y of clicked point
-
-		return {x: evtXY.x-nwXY.x, y: evtXY.y-nwXY.y};
+		return gmaps.Gmaps.latLng2Point(latlng, wgt._gmaps);
+	},
+	latLng2Point: function(latLng, map) {
+		var topRight = map.getProjection().fromLatLngToPoint(map.getBounds().getNorthEast());
+		var bottomLeft = map.getProjection().fromLatLngToPoint(map.getBounds().getSouthWest());
+		var scale = Math.pow(2, map.getZoom());
+		var worldPoint = map.getProjection().fromLatLngToPoint(latLng);
+		return new google.maps.Point((worldPoint.x - bottomLeft.x) * scale, (worldPoint.y - topRight.y) * scale);
+	},
+	point2LatLng: function(point, map) {
+		var topRight = map.getProjection().fromLatLngToPoint(map.getBounds().getNorthEast());
+		var bottomLeft = map.getProjection().fromLatLngToPoint(map.getBounds().getSouthWest());
+		var scale = Math.pow(2, map.getZoom());
+		var worldPoint = new google.maps.Point(point.x / scale + bottomLeft.x, point.y / scale + topRight.y);
+		return map.getProjection().fromPointToLatLng(worldPoint);
 	},
 	errormsg: '<p>To use <code>&lt;gmaps&gt;</code>, you have to specify the following statement in your page:</p>'
 		+'<code>&lt;script content="zk.googleAPIkey='+"'key-assigned-by-google'"+'" /></code>',

@@ -31,16 +31,69 @@ gmapsGapi.loadGoogleMapsApi = function(protocol, apiParams, callback) {
 		console.warn("ZK Gmaps - ignored parameters: ", apiParams);
 	}
 	if(!window.gmapsApiLoaded) {
-		var scheme = !protocol ? '//' : (protocol + '://');
-		zk.loadScript(scheme + gmapsGapi.GOOGLE_MAPS_API_URL + '?' + apiParams + '&callback=gmapsApiLoaded', gmapsGapi.GOOGLE_MAPS_API_LOADSCRIPT_KEY);
-		window.gmapsApiLoaded = function() {
-			zk.setScriptLoaded(gmapsGapi.GOOGLE_MAPS_API_LOADSCRIPT_KEY);
-			zk.load('gmaps.ext');
-		};
+		gmapsGapi.loadScript(apiParams, callback);
 	}
-	zk.afterLoad(gmapsGapi.GOOGLE_MAPS_API_LOADSCRIPT_KEY, function() {
-		zk.afterLoad('gmaps.ext', callback);
-	});
+}
+
+gmapsGapi.loadScript = async function loadScript(apiParams, callback) {
+	if(!window._gmapsApiLoaded){
+		window._gmapsApiLoaded = "loading";
+		gmapsGapi.loadedCallbacksArray.push(callback);
+
+		(g => {
+			var h, a, k, p = "The Google Maps JavaScript API",
+				c = "google",
+				l = "importLibrary",
+				q = "__ib__",
+				m = document,
+				b = window;
+			b = b[c] || (b[c] = {});
+			var d = b.maps || (b.maps = {}),
+				r = new Set,
+				e = new URLSearchParams,
+				u = () => h || (h = new Promise(async (f, n) => {
+					await (a = m.createElement("script"));
+					e.set("libraries", [...r] + "");
+					for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]);
+					e.set("callback", c+".maps."+q);
+					a.src = `https://maps.${c}apis.com/maps/api/js?` + e;
+					d[q] = f;
+					a.onerror = () => h = n(Error(p + " could not load."));
+					a.nonce = m.querySelector("script[nonce]")?.nonce || "";
+					m.head.append(a)
+				}));
+			d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n))
+		})({
+			key: apiParams.key,
+			v: "weekly"
+		});
+		
+		
+		
+		/*var script = document.createElement('script');
+		script.type = 'text/javascript';
+		script.src = 'https://maps.googleapis.com/maps/api/js?'+ apiParams +'&' + 'libraries=places&'+'callback=googleMapsApiLoaded';
+		script.async = true;
+		*/
+		await Promise.all([google.maps.importLibrary("marker"),google.maps.importLibrary("geometry")]);
+		gmapsGapi.loadedCallbacks();
+	}else{
+		if(window._gmapsApiLoaded == "loading"){
+			gmapsGapi.loadedCallbacksArray.push(callback);
+		}else{
+			callback();
+		}
+	}
+}
+
+gmapsGapi.loadedCallbacksArray = [];
+
+gmapsGapi.loadedCallbacks = function(){
+	window._gmapsApiLoaded = true;
+	while (gmapsGapi.loadedCallbacksArray.length){
+		let callback = gmapsGapi.loadedCallbacksArray.pop();
+		callback();
+	}
 }
 
 gmapsGapi.waitUntil = function(wgt, opts) {
