@@ -35,7 +35,7 @@ gmaps.Gmarker = zk.$extends(gmaps.Ginfo, {
 					newPoint = new google.maps.LatLng(c.latitude, c.longitude);
 				this.mapitem_.setPosition(newPoint);
 				if (this.parent) {
-					//this.parent._mm.onMarkerMoved_(this.mapitem_, oldPoint, newPoint); 
+					this.parent._mm.onMarkerMoved_(this.mapitem_, oldPoint, newPoint); 
 				}
 			}
 		},
@@ -313,11 +313,8 @@ gmaps.Gmarker = zk.$extends(gmaps.Ginfo, {
 				var parent = this.parent,
 					maxzoom = this._maxzoom;
 				// Issue 28: Limit correspond to Gmaps max zoom level.
-				//parent._mm.addMarker(this.mapitem_, this._minzoom, (maxzoom < 0 || maxzoom > parent._maxzoom) ? parent._maxzoom : maxzoom);
+				parent._mm.addMarker(this.mapitem_, this._minzoom, (maxzoom < 0 || maxzoom > parent._maxzoom) ? parent._maxzoom : maxzoom);
 				// open at begining, no panTo
-				
-
-
 				if (this._open) parent.openInfo(this);
 			}
 		}
@@ -333,7 +330,6 @@ gmaps.Gmarker = zk.$extends(gmaps.Ginfo, {
 			tooltiptext = this._tooltiptext,
 			visible = this._visible,
 			opts = {};
-			opts.map = this.gmaps();
 		if(anch) opts.position = new google.maps.LatLng(anch.latitude, anch.longitude);
 		if (iimg) {
 			var markerImage = new google.maps.MarkerImage(iimg,
@@ -356,8 +352,8 @@ gmaps.Gmarker = zk.$extends(gmaps.Ginfo, {
 		if (tooltiptext) {
 			opts.title = tooltiptext;
 		}
-		//opts.visible = visible;
-		gmarker = new google.maps.marker.AdvancedMarkerElement(opts);
+		opts.visible = visible;
+		var gmarker = new google.maps.Marker(opts);
 		gmarker._wgt = this;
 		this.mapitem_ = gmarker;
 		this._initDraggable();  
@@ -377,6 +373,7 @@ gmaps.Gmarker = zk.$extends(gmaps.Ginfo, {
 					if (curZoom < this.getMinzoom() || curZoom > maxzoom)
 						this.parent.closeInfo(this);
 				}
+				parent._mm.removeMarker(gmarker);
 			}
 			gmarker._wgt = null;
 			this.mapitem_ = null;
@@ -411,7 +408,7 @@ gmaps.Gmarker = zk.$extends(gmaps.Ginfo, {
 	//private//
 	_initDraggable: function() {
 		if (this.mapitem_) {
-			this.mapitem_.draggable = this._draggingEnabled;
+			this.mapitem_.setDraggable(this._draggingEnabled);
 			// if draggingEnabled then set gmarker can be dragged in map,
 			// and cleanDrag
 			// else if draggable then initDrag
@@ -439,7 +436,7 @@ gmaps.Gmarker = zk.$extends(gmaps.Ginfo, {
 	_doDragend: function(latlng) {
 		if (this._dragstarted) {
 			//update the MarkerManager managing info to new point
-			//this.parent._mm.onMarkerMoved_(this.mapitem_, this._dragstarted, latlng); 
+			this.parent._mm.onMarkerMoved_(this.mapitem_, this._dragstarted, latlng); 
 			this._dragstarted = null;
 		}
 
@@ -450,7 +447,7 @@ gmaps.Gmarker = zk.$extends(gmaps.Ginfo, {
 		var data = this._zkEvt ? this._zkEvt.data : {which:1}, //for keys only
 			opts = this._zkEvt ? this._zkEvt.opts : {},
 			domEvent = this._zkEvt ? this._zkEvt.domEvent : {},
-			xy = this.parent.latlngToXY(this.parent,latlng),
+			xy = this.parent._mm.projection_.fromLatLngToDivPixel(latlng, this.parent._gmaps.getZoom()),
 			pageXY = gmaps.Gmaps.xyToPageXY(this.parent, xy.x, xy.y),
 			nlat = latlng.lat(),
 			nlng = latlng.lng(),
