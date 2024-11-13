@@ -39,7 +39,69 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	_extraMapOptions: null,
 	_protocol: 'https',
 	_gmapsApiConfigParams: {
-		libraries: 'geometry'
+		libraries: 'geometry,marker'
+	},
+	_gmapsEventListeners: {
+		/*"bounds_changed":function (wgt, gmap, evt){
+			wgt.fire("onMapBoundsChanged",{nativeEvent:evt});
+		},*/
+		/*"center_changed":function (wgt, gmap, evt){
+			wgt.fire("onMapCenterChanged",{nativeEvent:evt});
+		},*/
+		"click":function (wgt, gmap, evt){
+			wgt.doClick_(new zk.Event(wgt, 'onClick', {latLng: evt.latLng}));
+		},
+		/*"contextmenu":function (wgt, gmap, evt){
+			wgt.fire("onMapContextmenu",{nativeEvent:evt});
+		},*/
+		"dblclick":function (wgt, gmap, evt){
+			wgt.doDoubleClick_(evt);
+		},
+		/*"drag":function (wgt, gmap, evt){
+			wgt.fire("onMapDrag",{nativeEvent:evt});
+		},*/
+		/*"dragend":function (wgt, gmap, evt){
+			wgt.fire("onMapDragend",{nativeEvent:evt});
+		},*/
+		/*"dragstart":function (wgt, gmap, evt){
+			wgt.fire("onMapDragstart",{nativeEvent:evt});
+		},*/
+		/*"heading_changed":function (wgt, gmap, evt){
+			wgt.fire("onMapHeadingChanged",{nativeEvent:evt});
+		},*/
+		"idle":function (wgt, gmap, evt){
+			wgt._doMoveEnd();
+		},
+		"maptypeid_changed":function (wgt, gmap, evt){
+			wgt._doMapTypeChanged();
+		},
+		/*"mousemove":function (wgt, gmap, evt){
+			wgt.fire("onMapMousemove",{nativeEvent:evt});
+		},*/
+		/*"mouseout":function (wgt, gmap, evt){
+			wgt.fire("onMapMouseout",{nativeEvent:evt});
+		},*/
+		/*"mouseover":function (wgt, gmap, evt){
+			wgt.fire("onMapMouseover",{nativeEvent:evt});
+		},*/
+		/*"projection_changed":function (wgt, gmap, evt){
+			wgt.fire("onMapProjectionChanged",{nativeEvent:evt});
+		},*/
+		/*"resize":function (wgt, gmap, evt){
+			wgt.fire("onMapResize",{nativeEvent:evt});
+		},*/
+		/*"rightclick":function (wgt, gmap, evt){
+			wgt.fire("onMapRightclick",{nativeEvent:evt});
+		},*/
+		/*"tilesloaded":function (wgt, gmap, evt){
+			wgt.fire("onMapTilesloaded",{nativeEvent:evt});
+		},*/
+		/*"tilt_changed":function (wgt, gmap, evt){
+			wgt.fire("onMapTiltChanged",{nativeEvent:evt});
+		},*/
+		"zoom_changed":function (wgt, gmap, evt){
+			wgt._doZoomEnd();
+		}
 	},
 	$define: {
 		/**
@@ -376,7 +438,19 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		 * @param protocol the protocol to load the Maps API
 		 * @since 3.0.5
 		 */
-		gmapsApiConfigParams: null
+		gmapsApiConfigParams: null,
+
+		/**
+		 * Returns the google maps API mapId, required for advanced markers.
+		 * @return the mapId String.
+		 * @since freshly
+		 */
+		/**
+		 * Set the google maps API mapId, required for advanced markers.
+		 * @param mapId the mapId String.
+		 * @since freshly
+		 */
+		mapId: null 
 	},
 	/**
 	 * @deprecated use fitBounds() instead (the current bounds are not stored)
@@ -391,23 +465,7 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	 * @return Object
 	 */
 	getBounds: function() {
-		var maps = this._gmaps;
-		if (maps) {
-			var bounds = maps.getBounds();
-			var sw = bounds.getSouthWest();
-			var ne = bounds.getNorthEast();
-			return {
-				southWest: {
-					latitude: sw.lat(),
-					longitude: sw.lng()
-				},
-				northEast: {
-					latitude: ne.lat(),
-					longitude: ne.lng()
-				}
-			};
-		}
-		return null;
+		return this._bounds;
 	},
 	/**
 	 * Sets the viewport to contain the given bounds. This effectively adjust the current center and zoom level.
@@ -902,13 +960,23 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 	_initListeners: function(n) {
 		var maps = this._gmaps,
 			wgt = this;
+		/*
 		this._moveend = google.maps.event.addListener(maps, 'idle', function() {wgt._mm.onMapMoveEnd_(); wgt._doMoveEnd();});
 		this._click = google.maps.event.addListener(maps, 'click', function(event) {wgt.doClick_(new zk.Event(wgt, 'onClick', {latLng: event.latLng}))});
 		this._doubleclick = google.maps.event.addListener(maps, 'dblclick', function(event) {wgt.doDoubleClick_(event)});
 		this._zoomend = google.maps.event.addListener(maps, 'zoom_changed', function() {wgt._doZoomEnd()});
 		this._maptypechanged = google.maps.event.addListener(maps, 'maptypeid_changed', function() {wgt._doMapTypeChanged()});
+		*/
+		
+
+		Object.keys(this._gmapsEventListeners).forEach(each =>{
+			google.maps.event.addListener(maps, each, function(event) {
+				wgt._gmapsEventListeners[each](wgt, this, event);
+			});
+		});
 	},
 	_clearListeners: function() {
+		/*
 		if (this._moveend ) {
 			google.maps.event.removeListener(this._moveend);
 			this._moveend = null;
@@ -935,7 +1003,12 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 		if (this._maptypechanged) {
 			google.maps.event.removeListener(this._maptypechanged);
 			this._maptypechanged = null;
-		}
+		}*/
+
+		Object.keys(this._gmapsEventListeners).forEach(each =>{
+			google.maps.event.removeListener(wgt._gmapsEventListeners[each]);
+		});
+
 	},
 	/**
 	 * keep the map options so we can modify it later
@@ -946,13 +1019,15 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			var mtids = [];
 			this._mapOptions = {
 				// used to be {type: G_PHYSICAL_MAP}
-				mapTypeControlOptions: {mapTypeIds: mtids}
+				mapTypeControlOptions: {mapTypeIds: mtids},
+				mapId: this.getMapId()
 			};
 		}
 		return this._mapOptions;
 	},
 	_initGmaps: function(n) {
-		var maps = new google.maps.Map(n, this.getMapOptions());
+		var maps = new google.maps.Map(n, this.getMapOptions()),
+			self = this;
 
 		this._gmaps = maps;
 		this.setNormal(this._normal, {force:true}) //prepare map types
@@ -975,6 +1050,26 @@ gmaps.Gmaps = zk.$extends(zul.Widget, {
 			this.fitBounds(this._boundsToFit);
 		}
 	},
+	/*overrideMarkermanager: function() {
+		var mm = this._mm; //markermanager
+		mm.addOverlay_ = function (marker) {
+			var markerwgt = marker._wgt; //Gmarker widget
+
+			if (mm.show_) {
+				marker.setMap(mm.map_);
+				mm.shownMarkers_++;
+				markerwgt._initListeners();
+			}
+		};
+		mm.removeOverlay_ = function(marker) {
+			var markerwgt = marker._wgt; //Gmarker widget
+
+			marker.setMap(null);
+			mm.shownMarkers_--;
+			markerwgt._clearListeners();
+		}
+		this.overlayOverride = true;
+	},*/
 	_clearGmaps: function() {
 		this._clearListeners();
 		this._gmaps = this._lctrl = this._sctrl = this._tctrl = this._cctrl = this._octrl

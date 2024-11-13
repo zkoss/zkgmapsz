@@ -192,7 +192,7 @@ gmaps.Gcircle = zk.$extends(gmaps.Goverlay, {
 			if (strokeWeight)
 				circleOption['strokeWeight'] = strokeWeight;
 		}
-
+		circleOption.map = this.gmaps();
 		// override one property, used by setters
 		if (prop)
 			circleOption[prop] = val;
