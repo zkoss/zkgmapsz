@@ -4,6 +4,7 @@
 	<script src="Goverlay.js"/>
 	<widget name="Ginfo"/>
 	<widget name="Gmarker"/>
+	<widget name="GadvancedMarker"/>
 	<widget name="Gpolyline"/>
 	<widget name="Gpolygon"/>
 	<widget name="Gimage"/>

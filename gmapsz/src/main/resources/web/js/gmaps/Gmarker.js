@@ -34,9 +34,6 @@ gmaps.Gmarker = zk.$extends(gmaps.Ginfo, {
 				var oldPoint = this.mapitem_.getPosition(),
 					newPoint = new google.maps.LatLng(c.latitude, c.longitude);
 				this.mapitem_.setPosition(newPoint);
-				if (this.parent) {
-					this.parent._mm.onMarkerMoved_(this.mapitem_, oldPoint, newPoint); 
-				}
 			}
 		},
 		/**
@@ -312,8 +309,6 @@ gmaps.Gmarker = zk.$extends(gmaps.Ginfo, {
 			if (this.parent) {
 				var parent = this.parent,
 					maxzoom = this._maxzoom;
-				// Issue 28: Limit correspond to Gmaps max zoom level.
-				parent._mm.addMarker(this.mapitem_, this._minzoom, (maxzoom < 0 || maxzoom > parent._maxzoom) ? parent._maxzoom : maxzoom);
 				// open at begining, no panTo
 				if (this._open) parent.openInfo(this);
 			}
