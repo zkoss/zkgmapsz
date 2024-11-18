@@ -26,7 +26,7 @@ public class ZKGMAPS_36_Composer extends SelectorComposer<Component> {
 		
 		myMaps.setCenter(0, 0);
 		myMaps.setZoom(15);
-		myMaps.setMapId("3dd20b4cb742b084");
+//		myMaps.setMapId("3dd20b4cb742b084");
 		
 //		myMaps.appendChild(new Gimage("~./test/Test-Logo.svg.png", new LatLngBounds(new LatLng(0, 0),new LatLng(0.1, 0.1))));
 		Ginfo gInfo = new Ginfo("Ginfo", new LatLng(-0.01, -0.01));
