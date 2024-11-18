@@ -36,5 +36,9 @@ Copyright (C) 2012 Potix Corporation. All Rights Reserved.
 	 <language-config>
 	     <addon-uri>/WEB-INF/lang-addon.xml</addon-uri>
 	 </language-config>
+	 
+	 <listener>
+	 	<listener-class>org.zkoss.gmapstest.setup.TestWebappInit</listener-class>
+	 </listener>
 	
 </zk>

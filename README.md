@@ -24,6 +24,9 @@ Component References:
 # Issues
  Now we've transferred issues to [jira issue tracker](http://tracker.zkoss.org/browse/ZKGMAPS)
 
+# API Key
+Run the project with -DgoogleAPIkey=yourKeyHere VM argument to set your google API key.
+
 # Portable Development Setup
 Run `mvn jetty:run` on gmapsz parent pom to build the library and launch the test app
 
