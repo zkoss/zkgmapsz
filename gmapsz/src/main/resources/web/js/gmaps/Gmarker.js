@@ -325,6 +325,7 @@ gmaps.Gmarker = zk.$extends(gmaps.Ginfo, {
 			tooltiptext = this._tooltiptext,
 			visible = this._visible,
 			opts = {};
+			opts.map = this.gmaps();
 		if(anch) opts.position = new google.maps.LatLng(anch.latitude, anch.longitude);
 		if (iimg) {
 			var markerImage = new google.maps.MarkerImage(iimg,

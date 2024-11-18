@@ -21,7 +21,7 @@ Copyright (C) 2009 Potix Corporation. All Rights Reserved.
 /**
  * The gmarker that can be overlay on the Google Maps.
  */
-gmaps.Gmarker = zk.$extends(gmaps.Gmarker, {
+gmaps.GadvancedMarker = zk.$extends(gmaps.Gmarker, {
 	initMapitem_: function() {
 		var gmaps = this.parent,
 			iimg = this._iconImage,

@@ -171,7 +171,7 @@ Copyright (C) 2006 Potix Corporation. All Rights Reserved.
 	<component>
 		<component-name>gadvancedmarker</component-name>
 		<component-class>org.zkoss.gmaps.GadvancedMarker</component-class>
-		<widget-class>gmaps.GadvanacedMarker</widget-class>
+		<widget-class>gmaps.GadvancedMarker</widget-class>
 		<text-as>content</text-as>
 	</component>
 

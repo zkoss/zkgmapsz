@@ -1,5 +1,6 @@
 package org.zkoss.gmapstest.test2;
 
+import org.zkoss.gmaps.GadvancedMarker;
 import org.zkoss.gmaps.Gcircle;
 import org.zkoss.gmaps.Gimage;
 import org.zkoss.gmaps.Ginfo;
@@ -27,23 +28,26 @@ public class ZKGMAPS_36_Composer extends SelectorComposer<Component> {
 		myMaps.setZoom(15);
 		myMaps.setMapId("3dd20b4cb742b084");
 		
-		myMaps.appendChild(new Gimage("~./test/Test-Logo.svg.png", new LatLngBounds(new LatLng(0, 0),new LatLng(0.1, 0.1))));
+//		myMaps.appendChild(new Gimage("~./test/Test-Logo.svg.png", new LatLngBounds(new LatLng(0, 0),new LatLng(0.1, 0.1))));
 		Ginfo gInfo = new Ginfo("Ginfo", new LatLng(-0.01, -0.01));
 		gInfo.setOpen(true);
-		myMaps.appendChild(gInfo);
-		myMaps.appendChild(new Gmarker("Gmarker", new LatLng(0.02, -0.01)));
+//		myMaps.appendChild(gInfo);
+		Gmarker gmarker = new Gmarker("Gmarker", new LatLng(0.001, -0.01));
+		myMaps.appendChild(gmarker);
+		GadvancedMarker gadvancedMarker = new GadvancedMarker("Gmarker", new LatLng(0.002, -0.01));
+//		myMaps.appendChild(gadvancedMarker);
 		Gpolyline gpolyline = new Gpolyline();
 		gpolyline.setPath("0,0,0,0.1,0.1,0.2,0,0.3,0.1,0.4,0,0");
-		myMaps.appendChild(gpolyline);
+//		myMaps.appendChild(gpolyline);
 		Gpolygon gpolygon = new Gpolygon();
 		gpolygon.setPath("0,0,0,-0.1,-0.1,-0.2,0,-0.3,-0.1,-0.4,0,0");
-		myMaps.appendChild(gpolygon);
+//		myMaps.appendChild(gpolygon);
 		Gcircle gcircle = new Gcircle();
 		gcircle.setCenter(new LatLng(0.03, 0));
 		gcircle.setRadius(2000);
 		gcircle.setVisible(true);
 		gcircle.setStrokeColor("red");
-		myMaps.appendChild(gcircle);
+//		myMaps.appendChild(gcircle);
 		
 	}
 	
