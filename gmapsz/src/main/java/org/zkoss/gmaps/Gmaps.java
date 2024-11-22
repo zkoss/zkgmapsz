@@ -1075,7 +1075,7 @@ public class Gmaps extends XulElement {
 	}
 
 	/** Sets the mapId, necessary for advanced markers.
-	 * @param mapId the mapId.
+	 * @param _mapId the mapId.
      */
 	public void setMapId(String _mapId) {
 		this._mapId = _mapId;

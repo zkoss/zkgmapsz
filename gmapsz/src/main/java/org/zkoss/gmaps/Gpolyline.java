@@ -349,7 +349,7 @@ public class Gpolyline extends XulElement implements Mapitem {
 
 	/**
 	 * @see #setPathEncoded(boolean)
-	 * @return
+	 * @return boolean true if path is encoded using the polyline algorithm, false if raw
 	 */
 	public boolean isPathEncoded() {
 		return _pathEncoded;
