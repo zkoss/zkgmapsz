@@ -60,7 +60,7 @@ gmapsGapi.loadScript = async function loadScript(apiParams, callback) {
 					d[q] = f;
 					a.onerror = () => h = n(Error(p + " could not load."));
 					let querySel = m.querySelector("script[nonce]");
-					a.nonce = querySel?querySel.nonce:"" || "";
+					a.nonce = querySel?querySel.nonce:"";
 					m.head.append(a)
 				}));
 			d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n))
