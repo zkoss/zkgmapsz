@@ -19,7 +19,7 @@ Copyright (C) 2006 Potix Corporation. All Rights Reserved.
 	<version>
 		<version-class>org.zkoss.gmaps.Version</version-class>
 		<version-uid>4.1.0</version-uid>
-		<zk-version>5.0.0</zk-version><!-- or later -->
+		<zk-version>5.0.0-FL</zk-version><!-- or later -->
 	</version>
 
 	<!-- Which language this addon will be added to -->
