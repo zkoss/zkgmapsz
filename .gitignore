@@ -5,6 +5,7 @@ codegen
 javadoc
 Thumbs.db
 .project
+.settings
 dist/lib/z*.jar
 dist/lib/z*.war
 dist/lib/osgi
