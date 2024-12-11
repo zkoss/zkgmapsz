@@ -34,6 +34,7 @@ file_list = [
     "pom.xml",
     "gmapszTest/pom.xml",
     "gmapsz/pom.xml",
+    "gmapsz/.flattened-pom.xml",
     "gmapsz/src/main/java/org/zkoss/gmaps/Version.java",
     "gmapsz/src/main/resources/META-INF/MANIFEST.MF",
     "gmapsz/src/main/resources/metainfo/zk/lang-addon.xml",
