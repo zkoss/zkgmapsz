@@ -10,7 +10,8 @@ switch ( project.name ) {
 println project.name
 def isOfficial = project.hasProperty("target") && "official" == project.getProperty("target") ? true : ""
 version = isOfficial && version.contains("-FL") ? version.substring(0, version.indexOf("-FL")) : version
-def fldate = isOfficial ? "" : new Date().format("yyyy-MM-dd")
+//def fldate = isOfficial ? "" : new Date().format("yyyy-MM-dd")
+def fldate = "" //handled by jenkins build
 def versionString = isOfficial ? version : "${version}-${fldate}"
 println ((isOfficial ? "official" : "FL") + " version: " + versionString)
 
