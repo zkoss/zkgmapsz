@@ -1,7 +1,25 @@
+buildscript {
+	repositories {
+		maven { url "https://mavensync.zkoss.org/maven2" }
+		mavenCentral()
+	}
+	dependencies {
+		// SBOM (CycloneDX / CRA compliance, ZK-6120).
+		// PINNED to the 1.7.x line ON PURPOSE: this module builds on Gradle 6.7
+		// (see gradle/wrapper/gradle-wrapper.properties, and `id 'maven'` below which
+		// Gradle 7 removed). cyclonedx-gradle-plugin 2.x needs Gradle 7+, 3.x needs 8+.
+		// >>> If the Gradle version here is ever upgraded, bump this plugin to the newest
+		//     compatible line (Gradle 8.4+ -> 3.x). Note: 1.7.x caps at CycloneDX spec 1.4. <<<
+		classpath 'org.cyclonedx:cyclonedx-gradle-plugin:1.7.4'
+	}
+}
+
 plugins {
 	id 'java'
 	id 'maven'
 }
+
+apply plugin: 'org.cyclonedx.bom'
 
 group = "org.zkoss.zkforge"
 version = "5.0.0"
@@ -37,3 +55,26 @@ dependencies {
 }
 
 apply from: 'sub-build.gradle'
+
+// SBOM (CycloneDX / CRA, ZK-6120): produce a CycloneDX SBOM and stage it under
+// build/distributions/sbom/ so GMAPSZ_Build carries it to the fileserver release dir
+// (releases/<ver>/sbom/) where the deploy/appdeploy consumer attaches it as a classified
+// maven artifact. Scoped to runtimeClasspath = what the shipped gmapsz.jar actually needs.
+cyclonedxBom {
+	// gmapsz's real deps (zul, jsr305) are compileOnly/provided by the host ZK app,
+	// so include compileClasspath too — runtimeClasspath alone yields an empty SBOM.
+	// jettyRunner/test-only configs are deliberately excluded (not part of the artifact).
+	includeConfigs = ["compileClasspath", "runtimeClasspath"]
+	schemaVersion = "1.4"   // 1.7.x plugin caps here; see buildscript note above
+	outputFormat = "json"
+}
+// cyclonedxBom writes build/reports/bom.json; rename+stage into the distribution tree.
+task collectSbom(type: Copy, dependsOn: 'cyclonedxBom') {
+	from("${buildDir}/reports") {
+		include 'bom.json'
+		rename 'bom.json', 'gmapsz-sbom-cyclonedx.json'
+	}
+	into "${buildDir}/distributions/sbom"
+}
+// Wire into build so the existing `./gradlew build` in GMAPSZ_Build produces it (no job change).
+build.dependsOn 'collectSbom'
